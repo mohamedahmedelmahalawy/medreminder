@@ -33,6 +33,7 @@ import {
 	ListFilterIcon,
 	PlusIcon,
 	TrashIcon,
+	WalletIcon,
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -72,7 +73,13 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import Modal from "./Modal";
-
+import ModalDig from "./ModalDig";
+import { DialogContent, DialogHeader } from "./ui/dialog";
+import { DialogDescription, DialogTitle } from "@radix-ui/react-dialog";
+import {
+	Dialog
+	
+} from "@/components/ui/dialog";
 type Item = {
 	id: string;
 	name: string;
@@ -406,11 +413,8 @@ export default function TableOriginUI() {
 					)}
 					{/* Add user button */}
 					
-					{/* <Button className="ml-auto" variant="outline">
-						<PlusIcon className="-ms-1 opacity-60" size={16} aria-hidden="true" />
-						Add Patient
-					</Button> */}
-					<Modal />
+					
+					<Modal name="Add Patient" />
 				</div>
 			</div>
 
@@ -516,6 +520,7 @@ export default function TableOriginUI() {
 						of <span className="text-foreground">{table.getRowCount().toString()}</span>
 					</p>
 				</div>
+						
 
 				{/* Pagination buttons */}
 				<div>
@@ -573,33 +578,92 @@ export default function TableOriginUI() {
 					</Pagination>
 				</div>
 			</div>
+			
 		</div>
 	);
 }
 
 function RowActions({ row }: { row: Row<Item> }) {
-	return (
-		<DropdownMenu>
-			<DropdownMenuTrigger asChild>
-				<div className="flex justify-end">
-					<Button size="icon" variant="ghost" className="shadow-none" aria-label="Edit item">
-						<EllipsisIcon size={20} aria-hidden="true" />
-					</Button>
-				</div>
-			</DropdownMenuTrigger>
-			<DropdownMenuContent align="end">
-				<DropdownMenuGroup>
-					<DropdownMenuItem className="focus:bg-blue-600 focus:text-white">
-						<span>Edit</span>
-					</DropdownMenuItem>
-					<DropdownMenuItem className="focus:bg-violet-700 focus:text-white">
-						<span>Add Diagnosis</span>
-					</DropdownMenuItem>
-					<DropdownMenuItem className=" focus:bg-red-600 focus:text-white">
-						<span>Delete Patient</span>
-					</DropdownMenuItem>
-				</DropdownMenuGroup>
-			</DropdownMenuContent>
-		</DropdownMenu>
-	);
+  const [openDialog, setOpenDialog] = useState(false);
+
+  return (
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <div className="flex justify-end">
+            <Button size="icon" variant="ghost" className="shadow-none" aria-label="Edit item">
+              <EllipsisIcon size={20} aria-hidden="true" />
+            </Button>
+          </div>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuGroup>
+            <DropdownMenuItem className="focus:bg-blue-600 focus:text-white">
+              <span>Edit</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem 
+              className="focus:bg-violet-700 focus:text-white"
+              onSelect={() => setOpenDialog(true)}
+            >
+              Add Diagnostic
+            </DropdownMenuItem>
+            <DropdownMenuItem className="focus:bg-red-600 focus:text-white">
+              <span>Delete Patient</span>
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+        <DialogContent>
+          <div className="flex flex-col gap-2">
+            <div
+              className="flex size-11 shrink-0 items-center justify-center rounded-full border"
+              aria-hidden="true"
+            >
+              <WalletIcon className="opacity-80" size={16} />
+            </div>
+            <DialogHeader>
+              <DialogTitle className="text-left">Add Diagnostic</DialogTitle>
+              <DialogDescription className="text-left">
+                Enter the diagnostic information for this patient.
+              </DialogDescription>
+            </DialogHeader>
+          </div>
+
+          <form className="space-y-5">
+            <div className="space-y-4">
+              <div className="*:not-first:mt-2">
+                <Label>Diagnostic Name</Label>
+                <Input type="text" required />
+              </div>
+			  <div className="*:not-first:mt-2">
+                <Label>Medical Treatment</Label>
+                <Input type="text" required />
+              </div>
+			  <div className="*:not-first:mt-2">
+                <Label>Medical Report</Label>
+                <Input type="text" required />
+              </div>
+			  <div className="*:not-first:mt-2">
+                <Label>Prognosis Treatment</Label>
+                <Input type="text" required />
+              </div>
+              <div className="*:not-first:mt-2">
+                <Label>Complain</Label>
+                <Input type="text" required />
+              </div>
+              <div className="*:not-first:mt-2">
+                <Label>Schedule</Label>
+                <Input type="date" required />
+              </div>
+            </div>
+            <Button type="submit" className="w-full">
+              Save Diagnostic
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
 }
