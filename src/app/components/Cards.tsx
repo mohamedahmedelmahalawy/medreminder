@@ -30,7 +30,7 @@ export default function FeatureStrip() {
             >
               <div>
                 <h3 className="text-xl md:text-2xl font-semibold">{f.title}</h3>
-                <p className="mt-3 text-sm md:text-base text-white/90 leading-relaxed">
+                <p className="mt-3 text-[17px] text-shadow-2x md:text[12px] text-white/90 leading-relaxed">
                   {f.text}
                 </p>
               </div>
