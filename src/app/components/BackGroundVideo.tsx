@@ -1,6 +1,6 @@
 export default function BackGroundVideo() {
   return (
-    <div className="absolute inset-0 mt-3.5 -z-10 overflow-hidden opacity-95">
+    <div className="absolute inset-0 -z-10 overflow-hidden opacity-95">
       <video
         className="w-full h-full  object-cover pointer-events-none"
         autoPlay
