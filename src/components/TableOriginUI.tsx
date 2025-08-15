@@ -17,6 +17,7 @@ import {
 	useReactTable,
 	VisibilityState,
 } from "@tanstack/react-table";
+import { BriefcaseMedical } from "lucide-react";
 
 import {
 	ChevronDownIcon,
@@ -288,9 +289,10 @@ export default function TableOriginUI() {
 					{/* Filter by name or email */}
 					<div className="relative">
 						<Input
+
 							id={`${id}-input`}
 							ref={inputRef}
-							className={cn("peer min-w-60 ps-9", Boolean(table.getColumn("name")?.getFilterValue()) && "pe-9")}
+							className={cn("peer min-w-80 ps-9", Boolean(table.getColumn("name")?.getFilterValue()) && "pe-9")}
 							value={(table.getColumn("name")?.getFilterValue() ?? "") as string}
 							onChange={(e) => table.getColumn("name")?.setFilterValue(e.target.value)}
 							placeholder="Filter by name or email..."
@@ -615,17 +617,17 @@ function RowActions({ row }: { row: Row<Item> }) {
       </DropdownMenu>
 
       <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-        <DialogContent>
-          <div className="flex flex-col gap-2">
+        <DialogContent className="w-full max-w-[90vw] sm:max-w-[625px] lg:max-w-[700px] ">
+          <div className="flex flex-col items-center justify-center gap-2">
             <div
               className="flex size-11 shrink-0 items-center justify-center rounded-full border"
               aria-hidden="true"
             >
-              <WalletIcon className="opacity-80" size={16} />
+              <BriefcaseMedical className="opacity-80" size={20} />
             </div>
             <DialogHeader>
-              <DialogTitle className="text-left">Add Diagnostic</DialogTitle>
-              <DialogDescription className="text-left">
+              <DialogTitle className="text-center">Add Diagnostic</DialogTitle>
+              <DialogDescription className="text-center">
                 Enter the diagnostic information for this patient.
               </DialogDescription>
             </DialogHeader>
@@ -658,7 +660,7 @@ function RowActions({ row }: { row: Row<Item> }) {
                 <Input type="date" required />
               </div>
             </div>
-            <Button type="submit" className="w-full">
+            <Button type="submit"  className="w-full rounded-2xl">
               Save Diagnostic
             </Button>
           </form>

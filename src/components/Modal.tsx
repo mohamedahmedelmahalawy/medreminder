@@ -47,7 +47,7 @@ export default function Modal({name}:ModalProps) {
 					{name}
 				</Button>
 			</DialogTrigger>
-			<DialogContent>
+			<DialogContent className="w-full max-w-[90vw] sm:max-w-[625px] lg:max-w-[700px]">
 				<div className="flex flex-col items-center gap-2">
 					<div className="flex size-11 shrink-0 items-center justify-center rounded-full border" aria-hidden="true">
 						<svg
