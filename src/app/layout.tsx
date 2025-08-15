@@ -16,11 +16,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="bg-gray-50">  
-        <Navbar/>
-        {children}
-        <Footer/>
-        </body>   
+      <body className="bg-gray-50">
+        <Navbar />
+        <div className="relative pt-21.5 ">
+          {children}
+        </div>
+
+        <Footer />
+      </body>
     </html>
   );
 }
