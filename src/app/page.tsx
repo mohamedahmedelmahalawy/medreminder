@@ -11,7 +11,7 @@ import AskedQuestions from "@/components/AskedQuestions";
 export default function Home() {
  return (
         <>
-            <main className="relative pt-21.5 ">
+            <main>
                 <section className="relative min-h-screen  overflow-hidden z-10 text-white px-8 py-6 mx-auto">
                     <BackGroundVideo />
                     <div className="flex flex-col items-center text-center mt-20 ">
