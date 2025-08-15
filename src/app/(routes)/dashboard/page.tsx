@@ -7,6 +7,7 @@ import React from "react";
 export default function page() {
 	return (
 		<>
+
 			<div className="w-4/5 mx-auto mt-10">
 					<div className="text-2xl font-semibold mb-4 bg-muted-foreground/10 p-4 rounded-md">
 						<p>All Patients</p>
