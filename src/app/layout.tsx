@@ -18,10 +18,9 @@ export default function RootLayout({
     <html lang="en">
       <body className="bg-gray-50">
         <Navbar />
-        <div className="relative pt-21.5 ">
+        <div className="pt-23.5 pb-7 ">
           {children}
         </div>
-
         <Footer />
       </body>
     </html>

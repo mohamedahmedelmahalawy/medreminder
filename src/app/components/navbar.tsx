@@ -53,7 +53,7 @@ function Navbar() {
 
         {/* Dropdown Menu for Login/Signup will be added when signin islogged =True */}
         <div className="flex items-center space-x-4">
-          <Link href="/login" className='bg-white border text-dark p-2 rounded-2xl px-4 '>Login</Link>
+          <Link href="/dashboard" className='bg-white border text-dark p-2 rounded-2xl px-4 '>Login</Link>
           <Link href="/signup" className='bg-[#4B4EFC] border text-white p-2 rounded-2xl px-4 '>SignUp</Link>
         </div>
       </div>
