@@ -87,40 +87,28 @@ export default function RegisterPage() {
 			<div className="hidden md:flex md:w-1/2 bg-purple-800 text-white flex-col justify-center items-center p-8">
 				<div className="max-w-md text-center">
 					<div className="flex items-center justify-center mb-6">
-						<div className="w-6 h-6 rounded-md bg-purple-400 mr-2"></div>
-						<span className="text-lg font-medium">Untitled UI</span>
 					</div>
 					<p className="text-xl font-medium mb-6">
-						We’ve been using Untitled to kick start every new project and can’t
-						imagine working without it.
+						Helping You Reach, Treat, and Inspire Your Patients
 					</p>
 					<div className="flex flex-col items-center">
 						<Image
-							src="/avatar.png"
-							alt="Kelly Williams"
-							width={48}
-							height={48}
-							className="rounded-full border-2 border-purple-300"
+							src="/Register.jpg"
+							alt="Register Image"
+							width={800}
+							height={200}
 						/>
-						<p className="mt-2 font-medium">Kelly Williams</p>
-						<p className="text-sm text-purple-200">Head of Design, Layers</p>
-						<div className="flex mt-2">
-							{Array.from({ length: 5 }).map((_, i) => (
-								<span key={i} className="text-yellow-400 text-lg">
-									★
-								</span>
-							))}
-						</div>
+						
 					</div>
-					<p className="text-xs text-purple-300 mt-8">© Untitled UI 2077</p>
+					
 				</div>
 			</div>
 
 			<div className="flex-1 flex justify-center items-center p-4 sm:p-8">
 				<div className="w-full max-w-md">
-					<h2 className="text-2xl font-bold">Welcome back</h2>
+					<h2 className="text-2xl font-bold mb-3">New Doctor Registration</h2>
 					<p className="text-gray-500 mb-6">
-						Welcome back! Please enter your details.
+						Welcome! Please Complete Your Doctor Registration
 					</p>
 
 					<form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
