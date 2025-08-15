@@ -7,10 +7,11 @@ import React from "react";
 export default function page() {
 	return (
 		<>
-			Hello from dash board
-			<div className='w-4/5 mx-auto mt-10'>
-				<div className='flex flex-row justify-between align-middle'>
-					<div className='w-1/4'>
+
+			<div className="w-4/5 mx-auto mt-10">
+				<div className="flex flex-row justify-between align-middle">
+					<div className="w-1/4">
+
 						<SearchInput />
 					</div>
 					<div className='flex flex-row gap-5'>

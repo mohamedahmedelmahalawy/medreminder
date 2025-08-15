@@ -1,4 +1,4 @@
-import { useId, useState } from "react";
+import { ReactNode, useId, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -18,8 +18,11 @@ import SelectGender from "./SelectGender";
 import { DatePicker } from "react-aria-components";
 import DatePickerComp from "./DatePickerComp";
 import { Controller } from "react-hook-form";
+interface ModalProps{
+	name:string
+}
 
-export default function Modal() {
+export default function Modal({name}:ModalProps) {
 	const id = useId();
 	const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 	const [selectedGender, setSelectedGender] = useState<string>("");
@@ -41,7 +44,7 @@ export default function Modal() {
 			<DialogTrigger asChild>
 				<Button variant="outline" className="w-full">
 					<PlusIcon className="-ms-1 opacity-60" size={16} aria-hidden="true" />
-					Add Patient
+					{name}
 				</Button>
 			</DialogTrigger>
 			<DialogContent>
