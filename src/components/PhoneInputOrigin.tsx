@@ -17,40 +17,38 @@ type PhoneInputOriginProps = {
 	[key: string]: any;
 };
 
-const PhoneInputOrigin = forwardRef<
-	HTMLInputElement,
-	PhoneInputOriginProps
->(({ className, value, onChange, name, ...props }, ref) => {
-	const id = useId();
+const PhoneInputOrigin = forwardRef<HTMLInputElement, PhoneInputOriginProps>(
+	({ className, value, onChange, name, ...props }, ref) => {
+		const id = useId();
 
-	// Bridge react-phone-number-input's onChange to react-hook-form's event signature
-	const handleChange = (phoneValue?: string) => {
-		if (onChange) {
-			const safeValue = typeof phoneValue === "string" ? phoneValue : "";
-			// Call onChange with just the value, as react-phone-number-input expects
-			onChange(safeValue);
-		}
-	};
+		// Bridge react-phone-number-input's onChange to react-hook-form's event signature
+		const handleChange = (phoneValue?: string) => {
+			if (onChange) {
+				const safeValue = typeof phoneValue === "string" ? phoneValue : "";
+				// Call onChange with just the value, as react-phone-number-input expects
+				onChange(safeValue);
+			}
+		};
 
-	return (
-		<div className='*:not-first:mt-2' dir='ltr'>
-			<Label htmlFor={id}>Telephone</Label>
-			<RPNInput.default
-				className='flex rounded-md shadow-xs'
-				defaultCountry='EG'
-				international
-				flagComponent={FlagComponent}
-				countrySelectComponent={CountrySelect}
-				inputComponent={(inputProps) => (
-					<PhoneInput ref={ref} {...inputProps} {...props} />
-				)}
-				id={id}
-				value={value as string}
-				onChange={handleChange}
-			/>
-		</div>
-	);
-});
+		return (
+			<div className='*:not-first:mt-2' dir='ltr'>
+				<Label htmlFor={id}>Telephone</Label>
+				<RPNInput.default
+					className='flex rounded-md shadow-xs'
+					defaultCountry='EG'
+					international
+					flagComponent={FlagComponent}
+					countrySelectComponent={CountrySelect}
+					inputComponent={PhoneInput}
+					id={id}
+					value={value as string}
+					onChange={handleChange}
+					{...props}
+				/>
+			</div>
+		);
+	}
+);
 
 PhoneInputOrigin.displayName = "PhoneInputOrigin";
 export default PhoneInputOrigin;
