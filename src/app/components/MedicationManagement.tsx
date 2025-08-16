@@ -23,10 +23,10 @@ export default function MedicationManagement() {
             <div className="mx-auto max-w-screen-xl px-4 py-16 sm:py-20">
           
                 <div className="text-center">
-                    <h2 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-gray-900 animate-pulse">
+                    <h3 className="text-3xl sm:text-5xl lg:text-[34px] font-extrabold tracking-tight text-gray-900 animate-pulse">
                         What's Different About Our App?
-                    </h2>
-                    <p className="mx-auto mt-5 max-w-3xl text-base sm:text-lg leading-7 sm:leading-8 text-gray-600">
+                    </h3>
+                    <p className="mx-auto mt-5 max-w-3xl text-[17px] sm:text-[18px] leading-7 sm:leading-8 text-gray-600">
                         Through our innovative approach, we ensure medical crew schedule is organised and maintained to
                         Enhance patient safety for medical
                         administration and medication management.
