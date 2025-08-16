@@ -1,6 +1,7 @@
 "use client";
 
 
+
 import * as React from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { XIcon } from "lucide-react";
@@ -29,12 +30,14 @@ function DialogClose({
 	...props
 }: React.ComponentProps<typeof DialogPrimitive.Close>) {
 	return <DialogPrimitive.Close data-slot='dialog-close' {...props} />;
+
 }
 
 function DialogOverlay({
 	className,
 	...props
 }: React.ComponentProps<typeof DialogPrimitive.Overlay>) {
+
 
 	return (
 		<DialogPrimitive.Overlay
@@ -102,12 +105,14 @@ function DialogFooter({ className, ...props }: React.ComponentProps<"div">) {
 		/>
 	);
 
+
 }
 
 function DialogTitle({
 	className,
 	...props
 }: React.ComponentProps<typeof DialogPrimitive.Title>) {
+
 
 	return (
 		<DialogPrimitive.Title
@@ -117,12 +122,14 @@ function DialogTitle({
 		/>
 	);
 
+
 }
 
 function DialogDescription({
 	className,
 	...props
 }: React.ComponentProps<typeof DialogPrimitive.Description>) {
+
 
 	return (
 		<DialogPrimitive.Description
@@ -145,4 +152,5 @@ export {
 	DialogPortal,
 	DialogTitle,
 	DialogTrigger,
+
 };

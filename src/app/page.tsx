@@ -15,7 +15,7 @@ export default function Home() {
                 <section className="relative min-h-screen  overflow-hidden z-10 text-white px-8 py-6 mx-auto">
                     <BackGroundVideo />
                     <div className="flex flex-col items-center text-center mt-20 ">
-                        <h1 className="text-6xl font-semibold mt-4  mb-2.5 leading-tight animate-pulse">
+                        <h1 className="text-6xl font-semibold mt-4  mb-2.5 leading-tight animate-pulse-opacity ">
                             Connecting Medical Staff and Patients
                         </h1>
                         <p className=" text-2xl mt-4 w-1/3 mb-7 ">One Powerful App for Every Step of Care</p>
