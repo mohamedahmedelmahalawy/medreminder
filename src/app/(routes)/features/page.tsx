@@ -3,6 +3,7 @@ import PostCard from "@/app/components/PostCard";
 import { MedicalManagementPost } from "@/lib/interfaces/medicalManagement.types";
 import { Post } from "@/lib/interfaces/post.types";
 
+
  const posts: Post[] = [
   {
     id: "1",
@@ -49,21 +50,22 @@ desc: "Our app gives patients a clear view of their medical treatment plan, incl
 
 
 function Features() {
+
   return (
     <main className="mx-auto max-w-[1280px] pt-8">
-      <section className="flex flex-col pt-5">
+      <section className="flex flex-col justify-center gap-5 w-full pb-7">
         <h2 className="mb-5 font-semibold text-5xl text-center animate-pulse">Application Features</h2>
         <p className="mb-4  text-center">
           How Medical crew and patient stay in sync?
         </p>
-        <ul className="flex flex-col items-center md:items-start gap-8 mb-30 pt-4">
+        <ul className="grid grid-cols-1 md:grid-cols-2 gap-8 mx-auto w-full">
           {medicalManagementPosts?.map((post) => {
             return <MedicalManagementCard key={post.id} {...post} />;
           })}
         </ul>
       </section>
       <section className="flex flex-col justify-center gap-5 w-full pb-7">
-        <ul className="flex flex-wrap justify-center gap-8 mx-auto">
+        <ul className="grid grid-cols-1 md:grid-cols-2 gap-8 mx-auto w-full">
           {posts?.map((post) => {
             return <PostCard key={post.id} {...post} />;
           })}

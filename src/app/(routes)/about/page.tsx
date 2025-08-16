@@ -2,13 +2,13 @@ import React from 'react'
 
 function about() {
   return (
-     <main className="flex flex-col gap-14 mx-auto my-16 px-4 max-w-[1280px]">
+     <main className="flex flex-col gap-14  my-16  ">
       <section className="flex md:flex-row flex-col justify-center items-center gap-10">
-        <div className="flex flex-col flex-shrink-0 gap-4 max-w-[24rem]">
-          <h2 className="font-semibold text-3xl md:text-5xl">
+        <div className="flex flex-col flex-shrink-0 gap-4 w-1/2">
+          <h2 className="font-semibold text-2xl md:text-3xl w-full">
             Contact MidReminder Team
           </h2>
-          <p className="max-w-[32rem] text-base">
+          <p className="text-base w-3/5">
             Get in touch for inquiries about our technology solutions to enhance
             Medical Staff schedules & patient Medication Management .
           </p>
@@ -23,7 +23,7 @@ function about() {
           <p className="text-base">Alexandria, Egypt</p>
         </div>
 
-        <div className="flex flex-col gap-4 w-full max-w-md">
+        <div className="flex flex-col gap-4 mt-4 w-full max-w-md">
           <div className="flex flex-col gap-1">
             <label className="font-semibold text-sm" htmlFor="name">
               Your First Name

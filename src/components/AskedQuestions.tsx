@@ -40,12 +40,12 @@ const items = [
 
 export default function AskedQuestions() {
   return (
-    <div className="space-y-4">
-      <h2 className="text-xl text-center font-bold">Frequently asked questions</h2>
-      <h3 className="text-center">Everything you need to know about the App</h3>
-      <Accordion type="single" collapsible className="w-3/4 h-auto mx-auto content-center" defaultValue="3">
+    <div className="space-y-4 ">
+      <h3 className="text-[34px]  text-center font-bold">Frequently asked questions</h3>
+      <h4 className="text-center text-[17px] ">Everything you need to know about the App</h4>
+      <Accordion type="single" collapsible className="w-3/4 h-auto mx-auto content-center  " defaultValue="1">
         {items.map((item) => (
-          <AccordionItem value={item.id} key={item.id} className="py-2">
+          <AccordionItem value={item.id} key={item.id} className="py-2 px-2 border-2 borde-gray-200 rounded-lg">
             <AccordionPrimitive.Header className="flex">
               <AccordionPrimitive.Trigger className="focus-visible:border-ring focus-visible:ring-ring/50 flex flex-1 items-center justify-between rounded-md py-2 text-left text-[15px] leading-6 font-semibold transition-all outline-none focus-visible:ring-[3px] [&>svg>path:last-child]:origin-center [&>svg>path:last-child]:transition-all [&>svg>path:last-child]:duration-200 [&[data-state=open]>svg]:rotate-180 [&[data-state=open]>svg>path:last-child]:rotate-90 [&[data-state=open]>svg>path:last-child]:opacity-0">
                 <span className="flex flex-col space-y-1">
