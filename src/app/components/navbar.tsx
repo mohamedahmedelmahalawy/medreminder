@@ -8,7 +8,7 @@ import Link from 'next/link';
 
 function Navbar() {
   const [isClicked, setIsClicked] = useState("Home");
-  const navItems = ["Home", "Features", "About Us"];
+  const navItems = ["Home", "Features", "Contact Us"];
 
   return (
 
@@ -37,7 +37,7 @@ function Navbar() {
               href={
                 item === "Home"
                   ? "/"
-                  : item === "About Us"
+                  : item === "Contact Us"
                     ? "/about"
                     : `/${item.toLowerCase()}`
               }

@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState } from "react";
@@ -7,6 +8,8 @@ interface FormData {
 	firstName: string;
 	email: string;
 	message: string;
+
+
 }
 export default function about() {
 	const [formData, setFormData] = useState<FormData>({
