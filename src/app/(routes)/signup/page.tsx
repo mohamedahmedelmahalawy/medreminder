@@ -6,6 +6,7 @@ import DoctorRegistration from "@/app/components/DoctorRegistration";
 import PatientRegistration from "@/app/components/PatientRegistration";
 
 export default function RegisterPage() {
+
   const [role, setRole] = useState<"doctor" | "patient" | null>(null);
 
   if (role === "doctor") return <DoctorRegistration />;
@@ -65,3 +66,4 @@ export default function RegisterPage() {
     </div>
   );
 }
+
