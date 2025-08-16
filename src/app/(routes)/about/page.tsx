@@ -8,8 +8,7 @@ interface FormData {
 	email: string;
 	message: string;
 }
-
-const ContactPage: React.FC = () => {
+export default function about() {
 	const [formData, setFormData] = useState<FormData>({
 		firstName: "",
 		email: "",
@@ -46,6 +45,11 @@ const ContactPage: React.FC = () => {
 			setIsSubmitting(false);
 		}
 	};
+
+	const isFormValid =
+		formData.firstName.trim() !== "" &&
+		formData.email.trim() !== "" &&
+		formData.message.trim() !== "";
 
 	return (
 		<div className='min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50'>
@@ -223,7 +227,7 @@ const ContactPage: React.FC = () => {
 
 							<button
 								onClick={handleSubmit}
-								disabled={isSubmitting}
+								disabled={!isFormValid || isSubmitting}
 								className='w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-medium py-3 px-6 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2'
 							>
 								{isSubmitting ? (
@@ -248,6 +252,4 @@ const ContactPage: React.FC = () => {
 			</div>
 		</div>
 	);
-};
-
-export default ContactPage;
+}
