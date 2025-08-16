@@ -2,6 +2,7 @@
 
 import { useForm } from "react-hook-form";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 type LoginFormData = {
   email: string;
@@ -15,6 +16,13 @@ export default function LoginPage() {
     formState: { errors, isSubmitting },
   } = useForm<LoginFormData>();
 
+  const [imgVisible, setImgVisible] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setImgVisible(true), 100);
+    return () => clearTimeout(timer);
+  }, []);
+
   const onSubmit = async (data: LoginFormData) => {
     console.log("Login form submitted:", data);
     await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -22,41 +30,51 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row">
-      {/* Left Section */}
-      <div className="md:w-1/2 bg-purple-700 text-white flex flex-col justify-center items-center p-10">
-        <h2 className="text-xl md:text-2xl font-semibold mb-4 text-center">
-          Connecting Doctors and Patients Seamlessly.
-        </h2>
-        <p className="text-center text-purple-100 max-w-sm">
-          We make it easy for you to reach and care for more patients.
-        </p>
-        <div className="mt-6 flex flex-col items-center">
+    <div className="min-h-screen flex flex-col md:flex-row font-sans">
+      {/* Left Section (Image, smaller width) */}
+      <div className="md:w-2/5 relative">
+        <div
+          className={`absolute inset-0 transform transition-all duration-700 ease-out ${
+            imgVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"
+          }`}
+        >
           <img
             src="/LoginPics.jpeg"
             alt="Doctor and patient"
-            width={600}
-            height={200}
-            // className="rounded-full w-16 h-16 mb-2"
+            className="w-full h-full object-cover"
           />
-          <span className="text-sm text-purple-200">Your trusted platform</span>
+
+          {/* Centered Title */}
+          <h2 className="absolute inset-0 flex items-center justify-center text-3xl md:text-4xl font-extrabold text-white text-center px-6 drop-shadow-lg leading-tight">
+            Connecting Doctors and Patients Seamlessly.
+          </h2>
+
+          {/* Footer text */}
+          <span className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-black/50 text-white text-sm px-4 py-2 rounded font-medium">
+            Your trusted platform
+          </span>
         </div>
       </div>
 
-      {/* Right Section */}
-      <div className="md:w-1/2 w-full p-6 md:p-10 flex flex-col justify-center items-center">
-        <h1 className="text-2xl font-bold mb-2">Sign In</h1>
-        <p className="text-gray-500 mb-6">
+      {/* Right Section (Form, larger width) */}
+      <div className="md:w-3/5 w-full p-8 md:p-16 flex flex-col justify-center items-center bg-white">
+        <h1 className="text-3xl md:text-4xl font-bold mb-2 text-gray-800">
+          Sign In
+        </h1>
+        <p className="text-gray-500 mb-8 text-base font-normal">
           Please enter your credentials to log in.
         </p>
 
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="space-y-4 w-full max-w-sm"
+          className="space-y-6 w-full max-w-md"
         >
-          {/* Email Input */}
+          {/* Email */}
           <div>
-            <label className="block text-sm font-medium mb-1" htmlFor="email">
+            <label
+              className="block text-sm font-medium text-gray-700 mb-1"
+              htmlFor="email"
+            >
               Email
             </label>
             <input
@@ -70,17 +88,19 @@ export default function LoginPage() {
                 },
               })}
               placeholder="Enter your email"
-              className="w-full border rounded p-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="w-full rounded-md p-3 text-sm text-gray-800 border focus:outline-none focus:ring-2 focus:ring-purple-500"
             />
             {errors.email && (
-              <p className="text-red-500 text-sm">{errors.email.message}</p>
+              <p className="text-red-500 text-xs mt-1">
+                {errors.email.message}
+              </p>
             )}
           </div>
 
-          {/* Password Input */}
+          {/* Password */}
           <div>
             <label
-              className="block text-sm font-medium mb-1"
+              className="block text-sm font-medium text-gray-700 mb-1"
               htmlFor="password"
             >
               Password
@@ -96,29 +116,33 @@ export default function LoginPage() {
                 },
               })}
               placeholder="Password"
-              className="w-full border rounded p-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="w-full rounded-md p-3 text-sm text-gray-800 border focus:outline-none focus:ring-2 focus:ring-purple-500"
             />
             {errors.password && (
-              <p className="text-red-500 text-sm">{errors.password.message}</p>
+              <p className="text-red-500 text-xs mt-1">
+                {errors.password.message}
+              </p>
             )}
           </div>
 
-          {/* Submit Button */}
-          <div className="flex justify-start">
+          {/* Submit */}
+          <div>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="bg-purple-600 text-white rounded px-6 py-2 hover:bg-purple-700 transition disabled:bg-purple-400"
+              className="bg-purple-600 text-white w-full rounded-lg px-6 py-3 font-semibold text-sm hover:bg-purple-700 transition disabled:bg-purple-400"
             >
               {isSubmitting ? "Logging in..." : "Login"}
             </button>
           </div>
         </form>
 
-        {/* Sign Up Link */}
-        <p className="text-sm mt-4 text-gray-500">
+        <p className="text-sm mt-6 text-gray-500">
           Don't have an account?{" "}
-          <Link href="/signup" className="text-purple-500 hover:underline">
+          <Link
+            href="/signup"
+            className="text-purple-600 font-medium hover:underline"
+          >
             Sign Up
           </Link>
         </p>
