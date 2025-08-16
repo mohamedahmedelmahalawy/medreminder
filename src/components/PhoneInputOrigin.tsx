@@ -32,7 +32,7 @@ const PhoneInputOrigin = forwardRef<HTMLInputElement, PhoneInputOriginProps>(
 
 		return (
 			<div className='*:not-first:mt-2' dir='ltr'>
-				<Label htmlFor={id}>Telephone</Label>
+				<Label htmlFor={id}>Phone Number</Label>
 				<RPNInput.default
 					className='flex rounded-md shadow-xs'
 					defaultCountry='EG'
