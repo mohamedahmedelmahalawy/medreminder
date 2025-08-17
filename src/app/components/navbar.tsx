@@ -55,7 +55,12 @@ function Navbar() {
         <div className="flex items-center space-x-4">
           <Link href="/login" className='bg-white border text-dark p-2 rounded-2xl px-4 '>Login</Link>
           <Link href="/signup" className='bg-[#4B4EFC] border text-white p-2 rounded-2xl px-4 '>SignUp</Link>
-        </div>
+        </div>     {/* if (usedrlogged && userdetails) dropdown of dcotor component instead of login and sign up 
+        >>>>>>>>>>>>>>>>>>> 1- profile 2- my patients 3- my schedule 4- logout 
+        */}
+         {/* if (patient & user details ) dropdown of patient component instead of login and sign up 
+        >>>>>>>>>>>>>>>>>>> 1- profile 2- My dcotors and vists and details  3- logout 
+        */}
       </div>
     </div>
   )
