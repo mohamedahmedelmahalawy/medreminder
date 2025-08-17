@@ -4,12 +4,21 @@ import { useState } from "react";
 import Image from "next/image";
 import DoctorRegistration from "@/app/components/DoctorRegistration";
 import PatientRegistration from "@/app/components/PatientRegistration";
+import { useDispatch } from "react-redux";
+import { setRole } from "@/lib/store/Slices/Auth";
 
 export default function RegisterPage() {
   const [role, setRole] = useState<"doctor" | "patient" | null>(null);
+  const dispatch = useDispatch();
 
-  if (role === "doctor") return <DoctorRegistration />;
-  if (role === "patient") return <PatientRegistration />;
+  if (role === "doctor") {
+    dispatch(setRole(showLogin));
+    return <DoctorRegistration />;
+  }
+  if (role === "patient") {
+    dispatch(setRole(showLogin));
+    return <PatientRegistration />;
+  }
 
   return (
     <div className="flex justify-center items-center bg-gradient-to-br from-purple-100 via-white to-purple-50 min-h-screen">
