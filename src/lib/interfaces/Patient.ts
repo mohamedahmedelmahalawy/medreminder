@@ -1,6 +1,6 @@
 export interface Patient {
   id: number;                        // recommended for updates too
-  username: string;
+  email: string;
   name: string;
   phone: string;
   password: string;

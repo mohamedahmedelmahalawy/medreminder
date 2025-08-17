@@ -42,11 +42,11 @@ export const loginDoctor = createAsyncThunk<Doctor, { email: string; password: s
   }
 );
 
-export const loginPatient = createAsyncThunk<Patient, { username: string; password: string }>(
+export const loginPatient = createAsyncThunk<Patient, { email: string; password: string }>(
   "auth/loginPatient",
-  async ({ username, password }) => {
+  async ({ email, password }) => {
     const matches = await getJSON<Patient[]>(
-      `${BASE_URL}/patients?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
+      `${BASE_URL}/patients?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`
     );
     const pat = matches[0];
     if (!pat) throw new Error("Patient not found or wrong credentials.");

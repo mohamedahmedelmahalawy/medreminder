@@ -28,7 +28,7 @@
 	],
 	"patients": [
 		{
-			"username": "mazen",
+			"email": "mazen",
 			"name": "Mazen Ahmed",
 			"age": 23,
 			"phone": "+201205621566",
