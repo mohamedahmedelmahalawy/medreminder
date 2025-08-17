@@ -64,6 +64,7 @@ const authSlice = createSlice({
       state.userDetails = null;
       state.status = "idle";
       state.error = undefined;
+      console.log("role set to :", state.role)
     },
     setCode(state, action: PayloadAction<string | null>) {  
         //hna when patient types doctor code 

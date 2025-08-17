@@ -6,17 +6,18 @@ import DoctorRegistration from "@/app/components/DoctorRegistration";
 import PatientRegistration from "@/app/components/PatientRegistration";
 import { useDispatch } from "react-redux";
 import { setRole } from "@/lib/store/Slices/Auth";
+import { sign } from "crypto";
 
 export default function RegisterPage() {
-  const [role, setRole] = useState<"doctor" | "patient" | null>(null);
+  const [signupRole, setSignupRole] = useState< "medical" | "patient" | null>(null);
   const dispatch = useDispatch();
 
-  if (role === "doctor") {
-    dispatch(setRole(showLogin));
+  if (signupRole === "medical") {
+    dispatch(setRole(signupRole));
     return <DoctorRegistration />;
   }
-  if (role === "patient") {
-    dispatch(setRole(showLogin));
+  if (signupRole === "patient") {
+    dispatch(setRole(signupRole));
     return <PatientRegistration />;
   }
 
@@ -51,14 +52,14 @@ export default function RegisterPage() {
           </h2>
 
           <button
-            onClick={() => setRole("doctor")}
+            onClick={() => setSignupRole("medical")}
             className="bg-gradient-to-r from-purple-700 to-purple-900 shadow-lg hover:shadow-purple-400/50 mb-5 py-4 rounded-xl w-56 font-semibold text-white text-lg text-center hover:scale-105 transition duration-300 ease-in-out transform"
           >
             Medical Crew
           </button>
 
           <button
-            onClick={() => setRole("patient")}
+            onClick={() => setSignupRole("patient")}
             className="bg-gradient-to-r from-purple-700 to-purple-900 shadow-lg hover:shadow-purple-400/50 py-4 rounded-xl w-56 font-semibold text-white text-lg text-center hover:scale-105 transition duration-300 ease-in-out transform"
           >
             Patient

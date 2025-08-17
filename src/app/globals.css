@@ -148,7 +148,7 @@
   .animate-enter-pulse-3_5s {
     opacity: 0; /* hidden during the 3.5s delay */
     animation:
-      fade-in .6s ease 3.5s both,                                    /* smooth entrance */
+      fade-in .6s ease 2s both,                                    /* smooth entrance */
       pulse-moderate 2s cubic-bezier(0.4, 0, 0.6, 1) 4.1s infinite;  /* pulse starts after fade */
   }
 }
