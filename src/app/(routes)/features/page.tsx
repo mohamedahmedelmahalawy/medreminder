@@ -54,7 +54,7 @@ function Features() {
   return (
     <main className="mx-auto max-w-[1280px] pt-8">
       <section className="flex flex-col justify-center gap-5 w-full pb-7">
-        <h2 className="mb-5 font-semibold text-5xl text-center animate-pulse">Application Features</h2>
+        <h2 className="mb-5 font-semibold text-5xl text-center animate-pulse text-[#42307D]">Application Features</h2>
         <p className="mb-4  text-center">
           How Medical crew and patient stay in sync?
         </p>

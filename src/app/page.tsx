@@ -18,8 +18,9 @@ export default function Home() {
             <h1 style={{ ["--n" as any]: "32ch" }} className=" text-6xl font-semibold mt-4  mb-2.5 leading-tight   inline-block overflow-hidden whitespace-nowrap align-baseline font-mono
     /* 23s total = ~3s typing + 20s hold; no caret/border */
     animate-[type-hold_23s_steps(32,end)_infinite]">
-              Connecting Medical Staff and Patients
+              Connecting Medical <br /> Staff and Patients
             </h1>
+            
             <p className=" text-2xl mt-4 w-1/3 mb-7  inline-block animate-enter-pulse-3_5s">One Powerful App for Every Step of Care</p>
             <button className="px-14 py-4 border-2 border-white text-white font-semibold bg-transparent rounded-full mb-14 inline-block animate-enter-pulse-3_5s">Learn More</button>
           </div>
