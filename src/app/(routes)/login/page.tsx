@@ -3,150 +3,71 @@
 import { useForm } from "react-hook-form";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 
-type LoginFormData = {
-  email: string;
-  password: string;
-};
+import { setRole } from "@/lib/store/Slices/Auth";
+import LoginComponent from "@/app/components/LoginComponent";
+import Image from "next/image";
 
 export default function LoginPage() {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<LoginFormData>();
+	const [showLogin, setShowLogin] = useState<null | "medical" | "patient">(null);
+	const dispatch = useDispatch();
 
-  const [imgVisible, setImgVisible] = useState(false);
+	if (showLogin === "medical" || showLogin === "patient") {
+		dispatch(setRole(showLogin));
+		return <LoginComponent />;
+	}
 
-  useEffect(() => {
-    const timer = setTimeout(() => setImgVisible(true), 100);
-    return () => clearTimeout(timer);
-  }, []);
+	return (
+		<div className='min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-100 via-white to-purple-50'>
+			<div className='flex flex-col md:flex-row w-full max-w-5xl bg-white shadow-2xl rounded-2xl overflow-hidden border border-gray-200'>
+				{/* Left side */}
+				<div className='relative w-full md:w-1/2 h-72 md:h-auto'>
+					<Image
+						src='/midpage.jpg'
+						alt='Doctor and Patient'
+						fill
+						className='object-cover'
+						priority
+					/>
+					<div className='absolute inset-0 bg-purple-800/80 flex items-center justify-center p-6'>
+						<p className='text-white text-xl md:text-2xl font-semibold text-center leading-relaxed'>
+							"For the heroes in white coats and the patients they care for — <br />"
+							<span className='font-bold text-purple-200'>MedReminder</span> makes
+							communication effortless and care stronger.
+						</p>
+					</div>
+				</div>
+				{/* Right side */}
+				<div className='flex-1 flex flex-col items-center justify-center p-10 bg-white'>
+					<h2 className='text-3xl font-extrabold text-gray-800 mb-8'>Join as</h2>
+					<button
+						onClick={() => setShowLogin("medical")}
+						className='w-56 text-center bg-gradient-to-r from-purple-700 to-purple-900 text-white py-4 rounded-xl mb-5 text-lg font-semibold 
+						   shadow-lg hover:shadow-purple-400/50 transform hover:scale-105 transition duration-300 ease-in-out'
+					>
+						Medical Crew
+					</button>
 
-  const onSubmit = async (data: LoginFormData) => {
-    console.log("Login form submitted:", data);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    alert("Login successful!");
-  };
+					<button
+						onClick={() => setShowLogin("patient")}
+						className='w-56 text-center bg-gradient-to-r from-purple-700 to-purple-900 text-white py-4 rounded-xl text-lg font-semibold 
+						   shadow-lg hover:shadow-purple-400/50 transform hover:scale-105 transition duration-300 ease-in-out'
+					>
+						Patient
+					</button>
 
-  return (
-    <div className="min-h-screen flex flex-col md:flex-row font-sans">
-      {/* Left Section (Image, smaller width) */}
-      <div className="md:w-2/5 relative">
-        <div
-          className={`absolute inset-0 transform transition-all duration-700 ease-out ${
-            imgVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"
-          }`}
-        >
-          <img
-            src="/LoginPics.jpeg"
-            alt="Doctor and patient"
-            className="w-full h-full object-cover"
-          />
-
-          {/* Centered Title */}
-          <h2 className="absolute inset-0 flex items-center justify-center text-3xl md:text-4xl font-extrabold text-white text-center px-6 drop-shadow-lg leading-tight">
-            Connecting Doctors and Patients Seamlessly.
-          </h2>
-
-          {/* Footer text */}
-          <span className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-black/50 text-white text-sm px-4 py-2 rounded font-medium">
-            Your trusted platform
-          </span>
-        </div>
-      </div>
-
-      {/* Right Section (Form, larger width) */}
-      <div className="md:w-3/5 w-full p-8 md:p-16 flex flex-col justify-center items-center bg-white">
-        <h1 className="text-3xl md:text-4xl font-bold mb-2 text-gray-800">
-          Sign In
-        </h1>
-        <p className="text-gray-500 mb-8 text-base font-normal">
-          Please enter your credentials to log in.
-        </p>
-
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="space-y-6 w-full max-w-md"
-        >
-          {/* Email */}
-          <div>
-            <label
-              className="block text-sm font-medium text-gray-700 mb-1"
-              htmlFor="email"
-            >
-              Email
-            </label>
-            <input
-              id="email"
-              type="email"
-              {...register("email", {
-                required: "Email is required",
-                pattern: {
-                  value: /^\S+@\S+$/i,
-                  message: "Invalid email format",
-                },
-              })}
-              placeholder="Enter your email"
-              className="w-full rounded-md p-3 text-sm text-gray-800 border focus:outline-none focus:ring-2 focus:ring-purple-500"
-            />
-            {errors.email && (
-              <p className="text-red-500 text-xs mt-1">
-                {errors.email.message}
-              </p>
-            )}
-          </div>
-
-          {/* Password */}
-          <div>
-            <label
-              className="block text-sm font-medium text-gray-700 mb-1"
-              htmlFor="password"
-            >
-              Password
-            </label>
-            <input
-              id="password"
-              type="password"
-              {...register("password", {
-                required: "Password is required",
-                minLength: {
-                  value: 6,
-                  message: "Password must be at least 6 characters",
-                },
-              })}
-              placeholder="Password"
-              className="w-full rounded-md p-3 text-sm text-gray-800 border focus:outline-none focus:ring-2 focus:ring-purple-500"
-            />
-            {errors.password && (
-              <p className="text-red-500 text-xs mt-1">
-                {errors.password.message}
-              </p>
-            )}
-          </div>
-
-          {/* Submit */}
-          <div>
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="bg-purple-600 text-white w-full rounded-lg px-6 py-3 font-semibold text-sm hover:bg-purple-700 transition disabled:bg-purple-400"
-            >
-              {isSubmitting ? "Logging in..." : "Login"}
-            </button>
-          </div>
-        </form>
-
-        <p className="text-sm mt-6 text-gray-500">
-          Don't have an account?{" "}
-          <Link
-            href="/signup"
-            className="text-purple-600 font-medium hover:underline"
-          >
-            Sign Up
-          </Link>
-        </p>
-      </div>
-    </div>
-  );
+					<p className='text-gray-500 text-sm mt-8 text-center'>
+						Already registered?{" "}
+						<a
+							href='/login'
+							className='text-purple-700 font-semibold hover:underline'
+						>
+							Sign in here
+						</a>
+					</p>
+				</div>
+			</div>
+		</div>
+	);
 }
