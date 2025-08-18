@@ -98,6 +98,43 @@ export const loginPatient = createAsyncThunk<Patient, { email: string; password:
 );
 
 
+export type RegisterPatientPayload = Omit<Patient, "id"|"drCodes">;
+
+export const registerPatient = createAsyncThunk<
+  Patient,                      // return type
+  RegisterPatientPayload,       // arg type
+  { rejectValue: string }       // thunkApi config
+>(
+  "auth/registerPatient",
+  async (payload, { rejectWithValue }) => {
+    try {
+     
+      const existing = await getJSON<Patient>(`${BASE_URL}/patients`);
+
+      if (existing.email===payload.email) {
+      return rejectWithValue("Email is already registered.");
+    }
+
+       if (existing.phone===payload.phone) {
+      return rejectWithValue("Phone is already registered.");
+    }
+
+      const body: Patient = {
+        ...payload,
+        id: undefined,
+        drCodes:[]
+      };
+
+      // 4) Create
+      const created = await postJSON<Patient>(`${BASE_URL}/patients`, body);
+      return created;
+    } catch (e: any) {
+      return rejectWithValue(e?.message ?? "Registration failed");
+    }
+  }
+);
+
+
 
 
 const authSlice = createSlice({
@@ -143,6 +180,10 @@ const authSlice = createSlice({
       .addCase(registerDoctor.pending,(s)=>{ s.status="loading"; s.error=undefined})
       .addCase(registerDoctor.fulfilled, (s,a)=>{s.status="succeeded";s.userDetails=a.payload; s.role="medical"})
       .addCase(registerDoctor.rejected, (s,a)=>{s.status="failed";s.error=a.error.message})
+      //Register Patient
+       .addCase(registerPatient.pending,(s)=>{ s.status="loading"; s.error=undefined})
+      .addCase(registerPatient.fulfilled, (s,a)=>{s.status="succeeded";s.userDetails=a.payload; s.role="medical"})
+      .addCase(registerPatient.rejected, (s,a)=>{s.status="failed";s.error=a.error.message})
   },
 });
 

@@ -10,16 +10,18 @@ import PasswordCheckOrigin from "@/components/PasswordCheckOrigin";
 import PhoneInputOrigin from "@/components/PhoneInputOrigin";
 import CountryInput from "@/components/CountryInput";
 import SelectInput from "@/components/SelectInput";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/lib/store/Slices/Store";
+import { registerPatient, RegisterPatientPayload } from "@/lib/store/Slices/Auth";
 
 type PatientFormData = {
-  fullName: string;
+  name: string;
   age: number;
   email: string;
   password: string;
   confirmPassword: string;
-  telephone: string;
+  phone: string;
   country: string;
-  city: string;
 };
 
 const cities = [
@@ -38,6 +40,7 @@ const Button: React.FC<{ label: string }> = ({ label }) => (
 );
 
 export default function PatientRegistration() {
+  const dispatch=useDispatch<AppDispatch>();
   const {
     register,
     handleSubmit,
@@ -46,8 +49,21 @@ export default function PatientRegistration() {
     formState: { errors },
   } = useForm<PatientFormData>();
 
-  const onSubmit = (data: PatientFormData) => {
-    console.log("Patient Registered:", data);
+  const onSubmit = async (data: PatientFormData) => {
+    try {
+      // shape the payload to match the thunk’s expected type
+      const payload: RegisterPatientPayload = {
+        ...data,
+     
+      };
+
+      const created = await dispatch(registerPatient(payload)).unwrap();
+
+      console.log("Doctor Registered:", created);
+      alert(`Welcome ${created.name.charAt(0).toUpperCase()+created.name.slice(1)}`);
+    } catch (err: any) {
+      alert(err?.message ?? "Registration failed");
+    }
   };
 
   const passwordValue = watch("password");
@@ -83,13 +99,13 @@ export default function PatientRegistration() {
             {/* Full Name */}
             <div>
               <input
-                {...register("fullName", { required: "Full Name is required" })}
+                {...register("name", { required: "Full Name is required" })}
                 placeholder="Full Name"
                 className="w-full rounded-md border px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
-              {errors.fullName && (
+              {errors.name && (
                 <p className="text-red-500 text-sm mt-1">
-                  {errors.fullName.message}
+                  {errors.name.message}
                 </p>
               )}
             </div>
@@ -153,15 +169,15 @@ export default function PatientRegistration() {
             {/* Telephone */}
             <div>
               <PhoneInputOrigin
-                name="telephone"
-                value={watch("telephone") || ""}
-                onChange={(val: string) => setValue("telephone", val)}
-                placeholder="Telephone"
+                name="phone"
+                value={watch("phone") || ""}
+                onChange={(val: string) => setValue("phone", val)}
+                placeholder="phone"
                 className="w-full rounded-md border px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
-              {errors.telephone && (
+              {errors.phone && (
                 <p className="text-red-500 text-sm mt-1">
-                  {errors.telephone.message}
+                  {errors.phone.message}
                 </p>
               )}
             </div>
@@ -180,7 +196,7 @@ export default function PatientRegistration() {
             </div>
 
             {/* City */}
-            <div>
+            {/* <div>
               <SelectInput
                 label="City"
                 options={cities}
@@ -192,7 +208,7 @@ export default function PatientRegistration() {
                   {errors.city.message}
                 </p>
               )}
-            </div>
+            </div> */}
 
             {/* Submit */}
             <Button label="Register" />
