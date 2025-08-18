@@ -42,6 +42,7 @@ async function fetchDoctorByCode(code: string): Promise<Doctor> {
 export const addPatient = createAsyncThunk<
   Doctor,
   { doctorCode: string; patient: DoctorPatient }
+   
 >(
   "doctor/addPatient",
   async ({ doctorCode, patient }) => {
@@ -77,7 +78,7 @@ export const removePatient = createAsyncThunk<
   const doc = await fetchDoctorByCode(doctorCode);
   const updatedPatients = (doc.patient || []).filter(p => p.phone !== patientPhone);
   const updated = await patchJSON<Doctor>(`${BASE_URL}/doctors/${doc.code}`, { patient: updatedPatients });
-  return updated;
+  return updated; 
 });
 
 /** Add a diagnosis entry to a specific patient's first cases[] */
