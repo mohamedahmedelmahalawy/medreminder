@@ -74,7 +74,7 @@ export default function CountryInput({ value, onChange, name }: any) {
 						<SelectGroup key={continent.continent}>
 							<SelectLabel className='ps-2'>{continent.continent}</SelectLabel>
 							{continent.items.map((item) => (
-								<SelectItem key={item.value} value={item.value}>
+								<SelectItem key={item.value} value={item.label}>
 									<span className='text-lg leading-none'>{item.flag}</span>
 									<span className='truncate'>{item.label}</span>
 								</SelectItem>

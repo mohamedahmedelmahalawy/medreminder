@@ -3,12 +3,22 @@ import { Patient } from "@/lib/interfaces/Patient";
 import { Role } from "@/lib/interfaces/Role";
             //   Feha doctor role w el patient role w logged user details
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import { generateCode } from "@/app/components/RandomcodeGenerator";
 
 
-const BASE_URL = "http://localhost:3001";   //hna 7ansta5dm url beta3na
+const BASE_URL = "https://fast-api-dnk5.vercel.app";   //hna 7ansta5dm url beta3na
 
 async function getJSON<T>(url: string): Promise<T> {
   const res = await fetch(url, { headers: { "Content-Type": "application/json" } });
+  if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
+  return res.json();
+}
+export async function postJSON<T>(url: string, body: unknown): Promise<T> {
+  const res = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
   if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
   return res.json();
 }
@@ -29,30 +39,66 @@ const initialState: AuthState = {
   userDetails: null,
   status: "idle",
 };
+   
+export const loginDoctor = createAsyncThunk<
+  Doctor,
+  { email: string; password: string }
+>("auth/loginDoctor", async ({ email, password }) => {
+  const doctors = await getJSON<Doctor[]>(`${BASE_URL}/doctors`);
+  const doc = doctors.find(
+    (d) => d.email === email && d.password === password
+  );
+  if (!doc) throw new Error("Invalid email or password.");
+  return doc; // includes patients + cases from your JSON
+});
 
-export const loginDoctor = createAsyncThunk<Doctor, { email: string; password: string }>(
-  "auth/loginDoctor",
-  async ({ email, password }) => {
-    const matches = await getJSON<Doctor[]>(
-      `${BASE_URL}/doctors?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`
+export type RegisterDoctorPayload = Omit<Doctor, "id" | "patient" | "code"> & {
+  code?: string;
+  patient?: Doctor["patient"];
+};
+export const registerDoctor = createAsyncThunk<
+  Doctor,                       
+  RegisterDoctorPayload,       
+  { rejectValue: string }
+>(
+  "auth/registerDoctor",
+  async (payload, { rejectWithValue }) => {
+    // Optional: enforce unique email
+    const existing = await getJSON<Doctor>(
+      `${BASE_URL}/doctors`
     );
-    const doc = matches[0];
-    if (!doc) throw new Error("Doctor not found or wrong credentials.");
-    return doc; // includes patients and their cases
+    if (existing.email===payload.email) {
+      return rejectWithValue("Email is already registered.");
+    }
+     
+     const body: Doctor = {
+      ...payload,
+      code: generateCode({ countryCode: payload.country.slice(0,2), kind: "alphanumeric" }),
+      patient: payload.patient ?? [],   
+    };
+    if (existing.code===body.code)
+    {
+        body.code=generateCode({ countryCode: payload.country.slice(0,2), kind: "alphanumeric" })
+    }
+    const created = await postJSON<Doctor>(`${BASE_URL}/doctors`, body);
+    return created;
   }
 );
+
+
 
 export const loginPatient = createAsyncThunk<Patient, { email: string; password: string }>(
   "auth/loginPatient",
   async ({ email, password }) => {
-    const matches = await getJSON<Patient[]>(
-      `${BASE_URL}/patients?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`
-    );
-    const pat = matches[0];
+    const patients = await getJSON<Patient[]>(`${BASE_URL}/patients`);   
+    const pat = patients.find((p)=> p.email===email && p.password === password)
     if (!pat) throw new Error("Patient not found or wrong credentials.");
     return pat;
   }
 );
+
+
+
 
 const authSlice = createSlice({
   name: "auth",
@@ -78,6 +124,10 @@ const authSlice = createSlice({
       state.status = "idle";
       state.error = undefined;
     },
+    setUserDetails(state, action: PayloadAction<UserDetails>) {
+      state.userDetails = action.payload;
+    },
+
   },
   extraReducers: (builder) => {
     builder
@@ -88,7 +138,11 @@ const authSlice = createSlice({
       // patient
       .addCase(loginPatient.pending, (s) => { s.status = "loading"; s.error = undefined; })
       .addCase(loginPatient.fulfilled, (s, a) => { s.status = "succeeded"; s.userDetails = a.payload; s.role = "patient"; })
-      .addCase(loginPatient.rejected, (s, a) => { s.status = "failed"; s.error = a.error.message; });
+      .addCase(loginPatient.rejected, (s, a) => { s.status = "failed"; s.error = a.error.message; })
+      //Register Doctor
+      .addCase(registerDoctor.pending,(s)=>{ s.status="loading"; s.error=undefined})
+      .addCase(registerDoctor.fulfilled, (s,a)=>{s.status="succeeded";s.userDetails=a.payload; s.role="medical"})
+      .addCase(registerDoctor.rejected, (s,a)=>{s.status="failed";s.error=a.error.message})
   },
 });
 
