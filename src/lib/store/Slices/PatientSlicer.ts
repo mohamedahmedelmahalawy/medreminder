@@ -46,7 +46,9 @@ export const fetchCasesForDoctor = createAsyncThunk<
   const patients = await getJSON<Patient[]>(`${BASE_URL}/patients`);
   const loggedPat = patients.find(p => p.phone === patientPhone);
   if (!loggedPat) throw new Error("You are not registered with this phone");
-  loggedPat.drCodes.push(doctorCode)
+  if (!loggedPat.drCodes.find(c => c === doctorCode)) {
+    loggedPat.drCodes.push(doctorCode);
+  }
   return { doc, aCase: sanitized };
 });
 // feha kolla method beta3t el patient 
