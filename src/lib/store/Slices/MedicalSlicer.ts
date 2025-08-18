@@ -42,12 +42,32 @@ async function fetchDoctorByCode(code: string): Promise<Doctor> {
 export const addPatient = createAsyncThunk<
   Doctor,
   { doctorCode: string; patient: DoctorPatient }
->("doctor/addPatient", async ({ doctorCode, patient }) => {
-  const doc = await fetchDoctorByCode(doctorCode);
-  const updatedPatients = [...(doc.patient || []), patient];
-  const updated = await patchJSON<Doctor>(`${BASE_URL}/doctors/${doc.code}`, { patient: updatedPatients });
-  return updated;
-});
+>(
+  "doctor/addPatient",
+  async ({ doctorCode, patient }) => {
+    const doc = await fetchDoctorByCode(doctorCode);
+// hna bencheck bas
+    const phone = (patient.phone ?? "").trim();
+    const exists = (doc.patient ?? []).find(
+      p => (p.phone ?? "").trim() === phone
+    );
+
+    if (exists) {
+      if (typeof window !== "undefined") {
+        alert("This phone exists");
+      }
+      // stop the flow so nothing is added
+      throw new Error("This phone exists");
+    }
+
+    const updatedPatients = [...(doc.patient || []), patient];
+    const updated = await patchJSON<Doctor>(
+      `${BASE_URL}/doctors/${doc.code}`,
+      { patient: updatedPatients }
+    );
+    return updated;
+  }
+);
 
 /** Remove a patient by patient.phone */
 export const removePatient = createAsyncThunk<
@@ -91,7 +111,7 @@ export const removeDiagnosis = createAsyncThunk<
     diag.splice(index, 1);
     return { ...p, cases: [{ ...cases0, diagnosis: diag }] };
   });
-  const updated = await patchJSON<Doctor>(`${BASE_URL}/doctors/${doc.id}`, { patient: patients });
+  const updated = await patchJSON<Doctor>(`${BASE_URL}/doctors/${doc.code}`, { patient: patients });
   return updated;
 });
 
