@@ -3,13 +3,25 @@
 import { Link } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
+import { loginDoctor } from "@/lib/store/Slices/Auth";
+import { loginPatient } from "@/lib/store/Slices/Auth";
+import type { AppDispatch, RootState } from "@/lib/store/Slices/Store";
+
+
+
 
 type LoginFormData = {
 	email: string;
 	password: string;
 };
 
+
+
 function LoginComponent() {
+	const dispatch = useDispatch<AppDispatch>();
+	const  {userDetails} = useSelector((state: RootState) => state.auth);
+	const { role } = useSelector((state: RootState) => state.auth)
 	const {
 		register,
 		handleSubmit,
@@ -23,10 +35,25 @@ function LoginComponent() {
 		return () => clearTimeout(timer);
 	}, []);
 
+
+
 	const onSubmit = async (data: LoginFormData) => {
-		console.log("Login form submitted:", data);
-		await new Promise((resolve) => setTimeout(resolve, 1000));
-		alert("Login successful!");
+		try {
+			if (role === "medical") {
+				await dispatch(loginDoctor({ email: data.email, password: data.password })).unwrap();
+				 console.log(userDetails);
+				alert("Login successful!");
+			}
+			else if (role === "patient") {
+				await dispatch(loginPatient({ email: data.email, password: data.password })).unwrap();
+				alert("Login successful!");
+			}
+
+		} catch (err: any) {
+			await new Promise((resolve) => setTimeout(resolve, 1000));
+
+			alert(err.message ?? "Login failed kza kza kzaaa");
+		}
 	};
 
 	return (
@@ -34,9 +61,8 @@ function LoginComponent() {
 			{/* Left Section (Image, smaller width) */}
 			<div className='md:w-2/5 relative'>
 				<div
-					className={`absolute inset-0 transform transition-all duration-700 ease-out ${
-						imgVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"
-					}`}
+					className={`absolute inset-0 transform transition-all duration-700 ease-out ${imgVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"
+						}`}
 				>
 					<img
 						src='/LoginPics.jpeg'

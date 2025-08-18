@@ -6,7 +6,7 @@ import type { Role } from "@/lib/interfaces/Role";
 
                                   //Hna feha doctore methods zai add patient add diagnosis w later 7anzawod 
                                 //   add doctor and genrate new code in register
-const BASE_URL = "http://localhost:3001";
+const BASE_URL = "https://fast-api-dnk5.vercel.app";
 
 async function getJSON<T>(url: string): Promise<T> {
   const res = await fetch(url, { headers: { "Content-Type": "application/json" } });
@@ -45,7 +45,7 @@ export const addPatient = createAsyncThunk<
 >("doctor/addPatient", async ({ doctorCode, patient }) => {
   const doc = await fetchDoctorByCode(doctorCode);
   const updatedPatients = [...(doc.patient || []), patient];
-  const updated = await patchJSON<Doctor>(`${BASE_URL}/doctors/${doc.id}`, { patient: updatedPatients });
+  const updated = await patchJSON<Doctor>(`${BASE_URL}/doctors/${doc.code}`, { patient: updatedPatients });
   return updated;
 });
 
@@ -56,7 +56,7 @@ export const removePatient = createAsyncThunk<
 >("doctor/removePatient", async ({ doctorCode, patientPhone }) => {
   const doc = await fetchDoctorByCode(doctorCode);
   const updatedPatients = (doc.patient || []).filter(p => p.phone !== patientPhone);
-  const updated = await patchJSON<Doctor>(`${BASE_URL}/doctors/${doc.id}`, { patient: updatedPatients });
+  const updated = await patchJSON<Doctor>(`${BASE_URL}/doctors/${doc.code}`, { patient: updatedPatients });
   return updated;
 });
 
@@ -72,7 +72,7 @@ export const addDiagnosis = createAsyncThunk<
     const updatedCases0 = { ...cases0, diagnosis: [...(cases0.diagnosis || []), entry] };
     return { ...p, cases: [updatedCases0] };
   });
-  const updated = await patchJSON<Doctor>(`${BASE_URL}/doctors/${doc.id}`, { patient: patients });
+  const updated = await patchJSON<Doctor>(`${BASE_URL}/doctors/${doc.code}`, { patient: patients });
   return updated;
 });
 
@@ -103,6 +103,7 @@ const doctorSlice = createSlice({
       state.current = action.payload;
     },
   },
+//   optional for ui 
   extraReducers: (b) => {
     b.addCase(addPatient.pending, (s) => { s.status = "loading"; s.error = undefined; })
      .addCase(addPatient.fulfilled, (s, a) => { s.status = "succeeded"; s.current = a.payload; })

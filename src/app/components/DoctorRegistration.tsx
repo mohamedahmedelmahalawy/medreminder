@@ -11,20 +11,25 @@ import PasswordCheckOrigin from "@/components/PasswordCheckOrigin";
 import PhoneInputOrigin from "@/components/PhoneInputOrigin";
 import SelectInput from "@/components/SelectInput";
 import CountryInput from "@/components/CountryInput";
+import { Dispatch } from "@reduxjs/toolkit";
+import { registerDoctor, RegisterDoctorPayload } from "@/lib/store/Slices/Auth";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/lib/store/Slices/Store";
 
 type Option = { id: number; name: string };
 
 type DoctorFormData = {
-  fullName: string;
-  age: number;
+  name: string;
+  Age: number;
   email: string;
   password: string;
   confirmPassword: string;
-  telephone: string;
+  phone: string;
   profession: string;
-  speciality: string;
+  specialty: string;
   country: string;
   city: string;
+  gender: "male" | "female";
 };
 
 const cities: Option[] = [
@@ -59,6 +64,8 @@ const Button: React.FC<ButtonProps> = ({ label, className, type = "submit", ...p
 );
 
 export default function DoctorRegistration() {
+  const dispatch = useDispatch<AppDispatch>();
+
   const {
     register,
     handleSubmit,
@@ -67,9 +74,25 @@ export default function DoctorRegistration() {
     formState: { errors },
   } = useForm<DoctorFormData>();
 
-  const onSubmit = (data: DoctorFormData) => {
-    console.log("Doctor Registered:", data);
+  const onSubmit = async (data: DoctorFormData) => {
+    try {
+      // shape the payload to match the thunk’s expected type
+      const payload: RegisterDoctorPayload = {
+        ...data,
+        // optional: generate or pass code; patients starts empty
+        patient: [],
+      };
+
+      const created = await dispatch(registerDoctor(payload)).unwrap();
+
+      console.log("Doctor Registered:", created);
+      alert(`Welcome Dr. ${created.name}! Your code is ${created.code}`);
+      // router.push("/doctor/dashboard");
+    } catch (err: any) {
+      alert(err?.message ?? "Registration failed");
+    }
   };
+
 
   const passwordValue = watch("password");
   const confirmPasswordValue = watch("confirmPassword");
@@ -103,24 +126,24 @@ export default function DoctorRegistration() {
             <div>
               <label className="block text-sm font-medium text-gray-700">Full Name</label>
               <input
-                {...register("fullName", { required: "Full Name is required" })}
+                {...register("name", { required: "Full Name is required" })}
                 type="text"
                 placeholder="Enter your Name"
                 className="mt-1 block w-full rounded-md border px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
               />
-              {errors.fullName && <p className="text-red-500 text-sm">{errors.fullName.message}</p>}
+              {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
             </div>
 
             {/* Age */}
             <div>
               <label className="block text-sm font-medium text-gray-700">Age</label>
               <input
-                {...register("age", { required: "Age is required" })}
+                {...register("Age", { required: "Age is required" })}
                 type="number"
                 placeholder="Enter your Age"
                 className="mt-1 block w-full rounded-md border px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
               />
-              {errors.age && <p className="text-red-500 text-sm">{errors.age.message}</p>}
+              {errors.Age && <p className="text-red-500 text-sm">{errors.Age.message}</p>}
             </div>
 
             {/* Email */}
@@ -154,14 +177,14 @@ export default function DoctorRegistration() {
 
             {/* Phone */}
             <PhoneInputOrigin
-              name="telephone"
-              value={watch("telephone") || ""}
-              onChange={(val: string) => setValue("telephone", val)}
-              placeholder="Enter your Telephone number"
+              name="phone"
+              value={watch("phone") || ""}
+              onChange={(val: string) => setValue("phone", val)}
+              placeholder="Enter your phone number"
               className="mt-1 block w-full rounded-md border px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
             />
-            {errors.telephone && (
-              <p className="text-red-500 text-sm">{errors.telephone.message}</p>
+            {errors.phone && (
+              <p className="text-red-500 text-sm">{errors.phone.message}</p>
             )}
 
             {/* Profession + Speciality */}
@@ -175,12 +198,26 @@ export default function DoctorRegistration() {
               <div>
                 <label className="block text-sm font-medium text-gray-700">Speciality</label>
                 <input
-                  {...register("speciality")}
+                  {...register("specialty")}
                   type="text"
                   placeholder="Enter your Speciality"
                   className="mt-2 block w-full rounded-md border px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
                 />
               </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Gender</label>
+              <div className="mt-2 flex gap-4">
+                <label className="flex items-center gap-2">
+                  <input type="radio" value="male" {...register("gender", { required: "Gender is required" })} />
+                  Male
+                </label>
+                <label className="flex items-center gap-2">
+                  <input type="radio" value="female" {...register("gender", { required: "Gender is required" })} />
+                  Female
+                </label>
+              </div>
+              {errors.gender && <p className="text-red-500 text-sm">{errors.gender.message}</p>}
             </div>
 
             {/* Country + City */}

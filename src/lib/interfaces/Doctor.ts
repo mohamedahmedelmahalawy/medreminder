@@ -1,7 +1,7 @@
 import { DoctorPatient } from "./DoctorPatient";
 
 export interface Doctor {
-  id: number;                        // REQUIRED by json-server
+  id?: number;                        // REQUIRED by json-server
   code: string;
   name: string;
   Age?: number;
@@ -11,7 +11,7 @@ export interface Doctor {
   gender?: string;
   email: string;
   password: string;
-  country?: string;
+  country: string;
   city?: string;
   patient: DoctorPatient[];
 }

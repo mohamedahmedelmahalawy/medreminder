@@ -2,8 +2,9 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { Doctor } from "@/lib/interfaces/Doctor";
 import type { CaseRecord } from "@/lib/interfaces/CaseRecord";
 import type { DiagnosisEntry } from "@/lib/interfaces/DiagnosisEntry";
+import { DoctorPatient } from "@/lib/interfaces/DoctorPatient";
 
-const BASE_URL = "http://localhost:3001";
+const BASE_URL = "https://fast-api-dnk5.vercel.app";
 
 async function getJSON<T>(url: string): Promise<T> {
   const res = await fetch(url, { headers: { "Content-Type": "application/json" } });
@@ -16,7 +17,7 @@ function sanitizeForPatient(cases: CaseRecord | undefined | null): CaseRecord | 
   return {
     ...cases,
     diagnosis: (cases.diagnosis || []).map((d: DiagnosisEntry) => {
-      const { ["medical-report"]: _omit, ...rest } = d;
+      const { ["medical-report"]: _omit, ...rest } = d;  //can remove medical report if needed from here
       return rest as DiagnosisEntry; // TS: medical-report omitted
     }),
   };
@@ -29,9 +30,9 @@ interface PatientState {
 }
 const initialState: PatientState = { status: "idle", casesByDoctorCode: {} };
 
-/** Patient: fetch own cases for a specific doctor code */
+/** Patient: fetch docotor by code and the specified patient */
 export const fetchCasesForDoctor = createAsyncThunk<
-  { doctorCode: string; cases: CaseRecord | null },
+  { doc: Doctor; aCase: CaseRecord | null },
   { doctorCode: string; patientPhone: string }
 >("patient/fetchCasesForDoctor", async ({ doctorCode, patientPhone }) => {
   const docs = await getJSON<Doctor[]>(`${BASE_URL}/doctors?code=${encodeURIComponent(doctorCode)}`);
@@ -41,7 +42,7 @@ export const fetchCasesForDoctor = createAsyncThunk<
   if (!pat) throw new Error("This doctor does not have a patient with that phone.");
   const cases0 = pat.cases?.[0] ?? null;
   const sanitized = sanitizeForPatient(cases0);
-  return { doctorCode, cases: sanitized };
+  return { doc, aCase: sanitized };
 });
                                 // feha kolla method beta3t el patient 
 const patientSlice = createSlice({
@@ -52,7 +53,7 @@ const patientSlice = createSlice({
     b.addCase(fetchCasesForDoctor.pending, (s) => { s.status = "loading"; s.error = undefined; })
      .addCase(fetchCasesForDoctor.fulfilled, (s, a) => {
        s.status = "succeeded";
-       s.casesByDoctorCode[a.payload.doctorCode] = a.payload.cases;
+       s.casesByDoctorCode[a.payload.doc.code] = a.payload.aCase;
      })
      .addCase(fetchCasesForDoctor.rejected, (s, a) => {
        s.status = "failed";
