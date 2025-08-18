@@ -59,7 +59,7 @@ export default function PatientRegistration() {
 
       const created = await dispatch(registerPatient(payload)).unwrap();
 
-      console.log("Doctor Registered:", created);
+      console.log("Patient Registered:", created);
       alert(`Welcome ${created.name.charAt(0).toUpperCase()+created.name.slice(1)}`);
     } catch (err: any) {
       alert(err?.message ?? "Registration failed");
