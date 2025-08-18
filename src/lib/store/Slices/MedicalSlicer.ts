@@ -62,7 +62,7 @@ export const addPatient = createAsyncThunk<
 
     const updatedPatients = [...(doc.patient || []), patient];
     const updated = await patchJSON<Doctor>(
-      `${BASE_URL}/doctors/${doc.code}`,
+      `${BASE_URL}/doctors/${doc.code}/patients`,
       { patient: updatedPatients }
     );
     return updated;
