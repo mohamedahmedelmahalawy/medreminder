@@ -9,7 +9,9 @@ import { setRole } from "@/lib/store/Slices/Auth";
 import { sign } from "crypto";
 
 export default function RegisterPage() {
-  const [signupRole, setSignupRole] = useState< "medical" | "patient" | null>(null);
+  const [signupRole, setSignupRole] = useState<"medical" | "patient" | null>(
+    null
+  );
   const dispatch = useDispatch();
 
   if (signupRole === "medical") {

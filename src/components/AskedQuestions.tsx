@@ -1,11 +1,11 @@
-import { PlusIcon } from "lucide-react"
-import { Accordion as AccordionPrimitive } from "radix-ui"
+import { PlusIcon } from "lucide-react";
+import { Accordion as AccordionPrimitive } from "radix-ui";
 
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
-} from "@/components/ui/accordion"
+} from "@/components/ui/accordion";
 
 const items = [
   {
@@ -36,37 +36,52 @@ const items = [
     content:
       "Our support team is available around the Clock to assist you. For technical issues, or general questions, you can reach us through live chat, email at MedReminder@gmail.com, or schedule a call with our technical team. Premium support is available for all.",
   },
-]
+];
 
 export default function AskedQuestions() {
   return (
-    <div className="space-y-4 ">
-      <h3 className="text-[34px]  text-center font-bold">Frequently asked questions</h3>
-      <h4 className="text-center text-[17px] ">Everything you need to know about the App</h4>
-      <Accordion type="single" collapsible className="w-3/4 h-auto mx-auto content-center  " defaultValue="1">
+    <div className="space-y-4 mx-auto max-w-[1280px]">
+      <div className="flex flex-col gap-5">
+        <h2 className="font-extrabold text-[#42307D] text-5xl text-center animate-pulse">
+          Frequently asked questions
+        </h2>
+        <h2 className="mb-8 text-[17px] text-center">
+          Everything you need to know about the App
+        </h2>
+      </div>
+      <Accordion
+        type="single"
+        collapsible
+        className="flex flex-col content-center gap-2 mx-auto w-full h-auto"
+        defaultValue="1"
+      >
         {items.map((item) => (
-          <AccordionItem value={item.id} key={item.id} className="py-2 px-2 border-2 borde-gray-200 rounded-lg">
+          <AccordionItem
+            value={item.id}
+            key={item.id}
+            className="px-5 py-2 border-2 rounded-lg borde-gray-200"
+          >
             <AccordionPrimitive.Header className="flex">
-              <AccordionPrimitive.Trigger className="focus-visible:border-ring focus-visible:ring-ring/50 flex flex-1 items-center justify-between rounded-md py-2 text-left text-[15px] leading-6 font-semibold transition-all outline-none focus-visible:ring-[3px] [&>svg>path:last-child]:origin-center [&>svg>path:last-child]:transition-all [&>svg>path:last-child]:duration-200 [&[data-state=open]>svg]:rotate-180 [&[data-state=open]>svg>path:last-child]:rotate-90 [&[data-state=open]>svg>path:last-child]:opacity-0">
+              <AccordionPrimitive.Trigger className="flex flex-1 justify-between items-center [&[data-state=open]>svg>path:last-child]:opacity-0 py-2 focus-visible:border-ring rounded-md outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 font-semibold text-[15px] text-left leading-6 [&[data-state=open]>svg]:rotate-180 [&[data-state=open]>svg>path:last-child]:rotate-90 [&>svg>path:last-child]:origin-center transition-all [&>svg>path:last-child]:transition-all [&>svg>path:last-child]:duration-200">
                 <span className="flex flex-col space-y-1">
                   <span>{item.title}</span>
                   {item.sub && (
-                    <span className="text-sm font-normal">{item.sub}</span>
+                    <span className="font-normal text-sm">{item.sub}</span>
                   )}
                 </span>
                 <PlusIcon
                   size={16}
-                  className="pointer-events-none shrink-0 opacity-60 transition-transform duration-200"
+                  className="opacity-60 transition-transform duration-200 pointer-events-none shrink-0"
                   aria-hidden="true"
                 />
               </AccordionPrimitive.Trigger>
             </AccordionPrimitive.Header>
-            <AccordionContent className="text-muted-foreground pb-2">
+            <AccordionContent className="pb-2 text-muted-foreground">
               {item.content}
             </AccordionContent>
           </AccordionItem>
         ))}
       </Accordion>
     </div>
-  )
+  );
 }
