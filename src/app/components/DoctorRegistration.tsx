@@ -87,7 +87,7 @@ export default function DoctorRegistration() {
 
       console.log("Doctor Registered:", created);
       alert(`Welcome Dr. ${created.name}! Your code is ${created.code}`);
-      // router.push("/doctor/dashboard");
+      
     } catch (err: any) {
       alert(err?.message ?? "Registration failed");
     }
