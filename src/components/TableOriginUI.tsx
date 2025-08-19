@@ -228,7 +228,7 @@ export default function TableOriginUI() {
 			console.log(current)
 		}
 		fetchPosts();
-	}, []);
+	}, [current]);
 
 	const handleDeleteRows = async () => {
 		const selectedRows = table.getSelectedRowModel().rows;
