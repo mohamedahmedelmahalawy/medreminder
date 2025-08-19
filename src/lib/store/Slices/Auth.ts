@@ -265,7 +265,7 @@ const authSlice = createSlice({
     builder
       // doctor
       .addCase(loginDoctor.pending, (s) => { s.status = "loading"; s.error = undefined; })
-      .addCase(loginDoctor.fulfilled, (s, a) => { s.status = "succeeded"; s.userDetails = a.payload; s.role = "medical"; })
+      .addCase(loginDoctor.fulfilled, (s, a) => { s.status = "succeeded"; s.userDetails = a.payload; s.role = "medical";s.code=a.payload.code;  })
       .addCase(loginDoctor.rejected, (s, a) => { s.status = "failed"; s.error = a.error.message; })
       // patient
       .addCase(loginPatient.pending, (s) => { s.status = "loading"; s.error = undefined; })
@@ -273,7 +273,7 @@ const authSlice = createSlice({
       .addCase(loginPatient.rejected, (s, a) => { s.status = "failed"; s.error = a.error.message; })
       //Register Doctor
       .addCase(registerDoctor.pending, (s) => { s.status = "loading"; s.error = undefined })
-      .addCase(registerDoctor.fulfilled, (s, a) => { s.status = "succeeded"; s.userDetails = a.payload; s.role = "medical" })
+      .addCase(registerDoctor.fulfilled, (s, a) => { s.status = "succeeded"; s.userDetails = a.payload; s.role = "medical" ;s.code=a.payload.code})
       .addCase(registerDoctor.rejected, (s, a) => { s.status = "failed"; s.error = a.error.message })
       //Register Patient
       .addCase(registerPatient.pending, (s) => { s.status = "loading"; s.error = undefined })
@@ -285,6 +285,7 @@ const authSlice = createSlice({
         s.status = "succeeded";
         // if the logged-in user is this doctor, keep userDetails in sync
         s.userDetails = a.payload;
+        s.code=a.payload.code
       })
       .addCase(editDoctorProfileByEmail.rejected, (s, a) => {
         s.status = "failed";
