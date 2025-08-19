@@ -96,7 +96,7 @@ export default function Modal({ name }: ModalProps) {
 						</div>
 						<div className="*:not-first:mt-2">
 							<Controller
-								name="date"
+								name="dateOfAdmission"
 								control={control}
 								rules={{ required: "date is required" }}
 								render={({ field }) => <DatePickerComp value={field.value} onChange={field.onChange} />}
@@ -166,6 +166,20 @@ export default function Modal({ name }: ModalProps) {
 								type="text"
 							/>
 							{errors.profession && <span className="text-destructive">{String(errors.profession.message)}</span>}
+						</div>
+						<div className="*:not-first:mt-2">
+							<Input
+								placeholder="age"
+								id={`${id}-age`}
+								{...register("age", {
+									required: {
+										value: true,
+										message: "age is required",
+									},
+								})}
+								type="number"
+							/>
+							{errors.age && <span className="text-destructive">{String(errors.age.message)}</span>}
 						</div>
 					</div>
 

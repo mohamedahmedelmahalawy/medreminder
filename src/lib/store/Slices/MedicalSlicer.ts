@@ -13,9 +13,9 @@ async function getJSON<T>(url: string): Promise<T> {
   if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
   return res.json();
 }
-async function patchJSON<T>(url: string, body: any): Promise<T> {
+async function postJSON<T>(url: string, body: any): Promise<T> {
   const res = await fetch(url, {
-    method: "PATCH",
+    method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
   });
@@ -62,7 +62,7 @@ export const addPatient = createAsyncThunk<
     }
 
     const updatedPatients = [...(doc.patient || []), patient];
-    const updated = await patchJSON<Doctor>(
+    const updated = await postJSON<Doctor>(
       `${BASE_URL}/doctors/${doc.code}/patients`,
       { patient: updatedPatients }
     );
@@ -77,7 +77,7 @@ export const removePatient = createAsyncThunk<
 >("doctor/removePatient", async ({ doctorCode, patientPhone }) => {
   const doc = await fetchDoctorByCode(doctorCode);
   const updatedPatients = (doc.patient || []).filter(p => p.phone !== patientPhone);
-  const updated = await patchJSON<Doctor>(`${BASE_URL}/doctors/${doc.code}`, { patient: updatedPatients });
+  const updated = await postJSON<Doctor>(`${BASE_URL}/doctors/${doc.code}`, { patient: updatedPatients });
   return updated; 
 });
 
@@ -93,7 +93,7 @@ export const addDiagnosis = createAsyncThunk<
     const updatedCases0 = { ...cases0, diagnosis: [...(cases0.diagnosis || []), entry] };
     return { ...p, cases: [updatedCases0] };
   });
-  const updated = await patchJSON<Doctor>(`${BASE_URL}/doctors/${doc.code}`, { patient: patients });
+  const updated = await postJSON<Doctor>(`${BASE_URL}/doctors/${doc.code}`, { patient: patients });
   return updated;
 });
 
@@ -112,7 +112,7 @@ export const removeDiagnosis = createAsyncThunk<
     diag.splice(index, 1);
     return { ...p, cases: [{ ...cases0, diagnosis: diag }] };
   });
-  const updated = await patchJSON<Doctor>(`${BASE_URL}/doctors/${doc.code}`, { patient: patients });
+  const updated = await postJSON<Doctor>(`${BASE_URL}/doctors/${doc.code}`, { patient: patients });
   return updated;
 });
 
