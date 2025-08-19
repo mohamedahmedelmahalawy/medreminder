@@ -8,6 +8,6 @@ export interface DoctorPatient {
   gender?: string;
   profession?: string;
   age?: number;
-  dateOfAdmission: string;
-  cases: CaseRecord[];               // typically 1 element array in your data
+  dateOfAdmission?: string;
+  cases?: CaseRecord[];               // typically 1 element array in your data
 }

@@ -77,23 +77,25 @@ import Modal from "./Modal";
 import ModalDig from "./ModalDig";
 import { DialogContent, DialogHeader } from "./ui/dialog";
 import { DialogDescription, DialogTitle } from "@radix-ui/react-dialog";
-import {
-	Dialog
-	
-} from "@/components/ui/dialog";
+import { Dialog } from "@/components/ui/dialog";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/lib/store/Slices/Store";
+import { addPatient } from "@/lib/store/Slices/MedicalSlicer";
 type Item = {
-	id: string;
+	id?: string; // your patient id in doctor list
 	name: string;
-	email: string;
-	location: string;
-	flag: string;
-	status: "Active" | "Inactive" | "Pending";
-	balance: number;
+	phone: string;
+	country?: string;
+	gender?: string;
+	profession?: string;
+	age?: number;
+	dateOfAdmission?: string;
+	
 };
 
 // Custom filter function for multi-column searching
 const multiColumnFilterFn: FilterFn<Item> = (row, columnId, filterValue) => {
-	const searchableRowContent = `${row.original.name} ${row.original.email}`.toLowerCase();
+	const searchableRowContent = `${row.original.name} ${row.original.phone}`.toLowerCase();
 	const searchTerm = (filterValue ?? "").toLowerCase();
 	return searchableRowContent.includes(searchTerm);
 };
@@ -134,26 +136,35 @@ const columns: ColumnDef<Item>[] = [
 		enableHiding: false,
 	},
 	{
-		header: "Date Of Admission ",
-		accessorKey: "email",
-		size: 220,
+		header: "Age",
+		accessorKey: "age",
+		cell: ({ row }) => <div className="font-medium">{row.getValue("age")}</div>,
+		size: 180,
+		filterFn: multiColumnFilterFn,
+		enableHiding: false,
 	},
 	{
-		header: "Telphone",
-		accessorKey: "location",
+		header: "Date Of Admission ",
+		accessorKey: "dateOfAdmission",
+		size: 220,
+		
+	},
+	{
+		header: "Phone",
+		accessorKey: "phone",
 		cell: ({ row }) => (
 			<div>
-				<span className="text-lg leading-none">{row.original.flag}</span> {row.getValue("location")}
+				<span className="text-lg leading-none"></span> {row.getValue("phone")}
 			</div>
 		),
 		size: 180,
 	},
 	{
 		header: "Country",
-		accessorKey: "status",
+		accessorKey: "country",
 		cell: ({ row }) => (
-			<Badge className={cn(row.getValue("status") === "Inactive" && "bg-muted-foreground/60 text-primary-foreground")}>
-				{row.getValue("status")}
+			<Badge className={cn(row.getValue("country") === "Inactive" && "bg-muted-foreground/60 text-primary-foreground")}>
+				{row.getValue("country")}
 			</Badge>
 		),
 		size: 100,
@@ -161,20 +172,12 @@ const columns: ColumnDef<Item>[] = [
 	},
 	{
 		header: "Gender",
-		accessorKey: "performance",
+		accessorKey: "gender",
 	},
 	{
 		header: "Profession",
-		accessorKey: "balance",
-		cell: ({ row }) => {
-			const amount = parseFloat(row.getValue("balance"));
-			const formatted = new Intl.NumberFormat("en-US", {
-				style: "currency",
-				currency: "USD",
-			}).format(amount);
-			return formatted;
-		},
-		size: 120,
+		accessorKey: "profession",
+		
 	},
 	{
 		id: "actions",
@@ -187,8 +190,12 @@ const columns: ColumnDef<Item>[] = [
 
 export default function TableOriginUI() {
 	const id = useId();
+
+	
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+	
+
 	const [pagination, setPagination] = useState<PaginationState>({
 		pageIndex: 0,
 		pageSize: 10,
@@ -205,9 +212,9 @@ export default function TableOriginUI() {
 	const [data, setData] = useState<Item[]>([]);
 	useEffect(() => {
 		async function fetchPosts() {
-			const res = await fetch(
-				"https://raw.githubusercontent.com/origin-space/origin-images/refs/heads/main/users-01_fertyx.json"
-			);
+
+			
+			const res = await fetch("https://fast-api-dnk5.vercel.app/doctors/EGP12Hop676/patients");
 			const data = await res.json();
 			setData(data);
 		}
@@ -243,43 +250,43 @@ export default function TableOriginUI() {
 	});
 
 	// Get unique status values
-	const uniqueStatusValues = useMemo(() => {
-		const statusColumn = table.getColumn("status");
+	// const uniqueStatusValues = useMemo(() => {
+	// 	const statusColumn = table.getColumn("status");
 
-		if (!statusColumn) return [];
+	// 	if (!statusColumn) return [];
 
-		const values = Array.from(statusColumn.getFacetedUniqueValues().keys());
+	// 	const values = Array.from(statusColumn.getFacetedUniqueValues().keys());
 
-		return values.sort();
-	}, [table.getColumn("status")?.getFacetedUniqueValues()]);
+	// 	return values.sort();
+	// }, [table.getColumn("status")?.getFacetedUniqueValues()]);
 
-	// Get counts for each status
-	const statusCounts = useMemo(() => {
-		const statusColumn = table.getColumn("status");
-		if (!statusColumn) return new Map();
-		return statusColumn.getFacetedUniqueValues();
-	}, [table.getColumn("status")?.getFacetedUniqueValues()]);
+	// // Get counts for each status
+	// const statusCounts = useMemo(() => {
+	// 	const statusColumn = table.getColumn("status");
+	// 	if (!statusColumn) return new Map();
+	// 	return statusColumn.getFacetedUniqueValues();
+	// }, [table.getColumn("status")?.getFacetedUniqueValues()]);
 
-	const selectedStatuses = useMemo(() => {
-		const filterValue = table.getColumn("status")?.getFilterValue() as string[];
-		return filterValue ?? [];
-	}, [table.getColumn("status")?.getFilterValue()]);
+	// const selectedStatuses = useMemo(() => {
+	// 	const filterValue = table.getColumn("status")?.getFilterValue() as string[];
+	// 	return filterValue ?? [];
+	// }, [table.getColumn("status")?.getFilterValue()]);
 
-	const handleStatusChange = (checked: boolean, value: string) => {
-		const filterValue = table.getColumn("status")?.getFilterValue() as string[];
-		const newFilterValue = filterValue ? [...filterValue] : [];
+	// const handleStatusChange = (checked: boolean, value: string) => {
+	// 	const filterValue = table.getColumn("status")?.getFilterValue() as string[];
+	// 	const newFilterValue = filterValue ? [...filterValue] : [];
 
-		if (checked) {
-			newFilterValue.push(value);
-		} else {
-			const index = newFilterValue.indexOf(value);
-			if (index > -1) {
-				newFilterValue.splice(index, 1);
-			}
-		}
+	// 	if (checked) {
+	// 		newFilterValue.push(value);
+	// 	} else {
+	// 		const index = newFilterValue.indexOf(value);
+	// 		if (index > -1) {
+	// 			newFilterValue.splice(index, 1);
+	// 		}
+	// 	}
 
-		table.getColumn("status")?.setFilterValue(newFilterValue.length ? newFilterValue : undefined);
-	};
+	// 	table.getColumn("status")?.setFilterValue(newFilterValue.length ? newFilterValue : undefined);
+	// };
 
 	return (
 		<div className="space-y-4">
@@ -289,7 +296,6 @@ export default function TableOriginUI() {
 					{/* Filter by name or email */}
 					<div className="relative">
 						<Input
-
 							id={`${id}-input`}
 							ref={inputRef}
 							className={cn("peer min-w-80 ps-9", Boolean(table.getColumn("name")?.getFilterValue()) && "pe-9")}
@@ -319,7 +325,7 @@ export default function TableOriginUI() {
 					{/* Filter by status */}
 					<Popover>
 						<PopoverTrigger asChild>
-							<Button variant="outline">
+							{/* <Button variant="outline">
 								<FilterIcon className="-ms-1 opacity-60" size={16} aria-hidden="true" />
 								Status
 								{selectedStatuses.length > 0 && (
@@ -327,10 +333,10 @@ export default function TableOriginUI() {
 										{selectedStatuses.length}
 									</span>
 								)}
-							</Button>
+							</Button> */}
 						</PopoverTrigger>
 						<PopoverContent className="w-auto min-w-36 p-3" align="start">
-							<div className="space-y-3">
+							{/* <div className="space-y-3">
 								<div className="text-muted-foreground text-xs font-medium">Filters</div>
 								<div className="space-y-3">
 									{uniqueStatusValues.map((value, i) => (
@@ -346,7 +352,7 @@ export default function TableOriginUI() {
 										</div>
 									))}
 								</div>
-							</div>
+							</div> */}
 						</PopoverContent>
 					</Popover>
 					{/* Toggle columns visibility */}
@@ -414,8 +420,7 @@ export default function TableOriginUI() {
 						</AlertDialog>
 					)}
 					{/* Add user button */}
-					
-					
+
 					<Modal name="Add Patient" />
 				</div>
 			</div>
@@ -522,7 +527,6 @@ export default function TableOriginUI() {
 						of <span className="text-foreground">{table.getRowCount().toString()}</span>
 					</p>
 				</div>
-						
 
 				{/* Pagination buttons */}
 				<div>
@@ -580,92 +584,85 @@ export default function TableOriginUI() {
 					</Pagination>
 				</div>
 			</div>
-			
 		</div>
 	);
 }
 
 function RowActions({ row }: { row: Row<Item> }) {
-  const [openDialog, setOpenDialog] = useState(false);
+	const [openDialog, setOpenDialog] = useState(false);
 
-  return (
-    <>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <div className="flex justify-end">
-            <Button size="icon" variant="ghost" className="shadow-none" aria-label="Edit item">
-              <EllipsisIcon size={20} aria-hidden="true" />
-            </Button>
-          </div>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuGroup>
-            <DropdownMenuItem className="focus:bg-blue-600 focus:text-white">
-              <span>Edit</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem 
-              className="focus:bg-violet-700 focus:text-white"
-              onSelect={() => setOpenDialog(true)}
-            >
-              Add Diagnostic
-            </DropdownMenuItem>
-            <DropdownMenuItem className="focus:bg-red-600 focus:text-white">
-              <span>Delete Patient</span>
-            </DropdownMenuItem>
-          </DropdownMenuGroup>
-        </DropdownMenuContent>
-      </DropdownMenu>
+	return (
+		<>
+			<DropdownMenu>
+				<DropdownMenuTrigger asChild>
+					<div className="flex justify-end">
+						<Button size="icon" variant="ghost" className="shadow-none" aria-label="Edit item">
+							<EllipsisIcon size={20} aria-hidden="true" />
+						</Button>
+					</div>
+				</DropdownMenuTrigger>
+				<DropdownMenuContent align="end">
+					<DropdownMenuGroup>
+						<DropdownMenuItem className="focus:bg-blue-600 focus:text-white">
+							<span>Edit</span>
+						</DropdownMenuItem>
+						<DropdownMenuItem className="focus:bg-violet-700 focus:text-white" onSelect={() => setOpenDialog(true)}>
+							Add Diagnostic
+						</DropdownMenuItem>
+						<DropdownMenuItem className="focus:bg-red-600 focus:text-white">
+							<span>Delete Patient</span>
+						</DropdownMenuItem>
+					</DropdownMenuGroup>
+				</DropdownMenuContent>
+			</DropdownMenu>
 
-      <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-        <DialogContent className="w-full max-w-[90vw] sm:max-w-[625px] lg:max-w-[700px] ">
-          <div className="flex flex-col items-center justify-center gap-2">
-            <div
-              className="flex size-11 shrink-0 items-center justify-center rounded-full border"
-              aria-hidden="true"
-            >
-              <BriefcaseMedical className="opacity-80" size={20} />
-            </div>
-            <DialogHeader>
-              <DialogTitle className="text-center">Add Diagnostic</DialogTitle>
-              <DialogDescription className="text-center">
-                Enter the diagnostic information for this patient.
-              </DialogDescription>
-            </DialogHeader>
-          </div>
+			<Dialog open={openDialog} onOpenChange={setOpenDialog}>
+				<DialogContent className="w-full max-w-[90vw] sm:max-w-[625px] lg:max-w-[700px] ">
+					<div className="flex flex-col items-center justify-center gap-2">
+						<div className="flex size-11 shrink-0 items-center justify-center rounded-full border" aria-hidden="true">
+							<BriefcaseMedical className="opacity-80" size={20} />
+						</div>
+						<DialogHeader>
+							<DialogTitle className="text-center">Add Diagnostic</DialogTitle>
+							<DialogDescription className="text-center">
+								Enter the diagnostic information for this patient.
+							</DialogDescription>
+						</DialogHeader>
+					</div>
 
-          <form className="space-y-5">
-            <div className="space-y-4">
-              <div className="*:not-first:mt-2">
-                <Label>Diagnostic Name</Label>
-                <Input type="text" required />
-              </div>
-			  <div className="*:not-first:mt-2">
-                <Label>Medical Treatment</Label>
-                <Input type="text" required />
-              </div>
-			  <div className="*:not-first:mt-2">
-                <Label>Medical Report</Label>
-                <Input type="text" required />
-              </div>
-			  <div className="*:not-first:mt-2">
-                <Label>Prognosis Treatment</Label>
-                <Input type="text" required />
-              </div>
-              <div className="*:not-first:mt-2">
-                <Label>Complain</Label>
-                <Input type="text" required />
-              </div>
-              <div className="*:not-first:mt-2">
-                <Label>Schedule</Label>
-                <Input type="date" required />
-              </div>
-            </div>
-            <Button type="submit"  className="w-full rounded-2xl">
-              Save Diagnostic
-            </Button>
-          </form>
-        </DialogContent>
-      </Dialog>
-    </>
-  );
+					<form className="space-y-5">
+						<div className="space-y-4">
+							<div className="*:not-first:mt-2">
+								<Label>Diagnostic Name</Label>
+								<Input type="text" required />
+							</div>
+							<div className="*:not-first:mt-2">
+								<Label>Medical Treatment</Label>
+								<Input type="text" required />
+							</div>
+							<div className="*:not-first:mt-2">
+								<Label>Medical Report</Label>
+								<Input type="text" required />
+							</div>
+							<div className="*:not-first:mt-2">
+								<Label>Prognosis Treatment</Label>
+								<Input type="text" required />
+							</div>
+							<div className="*:not-first:mt-2">
+								<Label>Complain</Label>
+								<Input type="text" required />
+							</div>
+							<div className="*:not-first:mt-2">
+								<Label>Schedule</Label>
+								<Input type="date" required />
+							</div>
+						</div>
+						<Button type="submit" className="w-full rounded-2xl">
+							Save Diagnostic
+						</Button>
+					</form>
+				</DialogContent>
+			</Dialog>
+		</>
+	);
 }

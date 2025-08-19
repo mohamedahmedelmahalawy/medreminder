@@ -151,7 +151,7 @@ const authSlice = createSlice({
     },
     setCode(state, action: PayloadAction<string | null>) {  
         //hna when patient types doctor code 
-      state.code = action.payload;
+      state.code = action.payload;  
     },
     clearAuth(state) {          
          // clear user when loggin out 

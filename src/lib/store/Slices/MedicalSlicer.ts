@@ -13,13 +13,17 @@ async function getJSON<T>(url: string): Promise<T> {
   if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
   return res.json();
 }
-async function patchJSON<T>(url: string, body: any): Promise<T> {
+async function postJSON<T>(url: string, body: any): Promise<T> {
   const res = await fetch(url, {
-    method: "PATCH",
+    method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
   });
-  if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
+  if (!res.ok) {
+    // helpful when debugging FastAPI 422 payload errors
+    const text = await res.text();
+    throw new Error(`HTTP ${res.status}: ${text}`);
+  }
   return res.json();
 }
 
@@ -42,6 +46,7 @@ async function fetchDoctorByCode(code: string): Promise<Doctor> {
 export const addPatient = createAsyncThunk<
   Doctor,
   { doctorCode: string; patient: DoctorPatient }
+   
 >(
   "doctor/addPatient",
   async ({ doctorCode, patient }) => {
@@ -60,10 +65,9 @@ export const addPatient = createAsyncThunk<
       throw new Error("This phone exists");
     }
 
-    const updatedPatients = [...(doc.patient || []), patient];
-    const updated = await patchJSON<Doctor>(
-      `${BASE_URL}/doctors/${doc.code}/patients`,
-      { patient: updatedPatients }
+    const updated = await postJSON<Doctor>(
+      `${BASE_URL}/doctors/${encodeURIComponent(doc.code)}/patients`,
+      patient
     );
     return updated;
   }
@@ -72,12 +76,12 @@ export const addPatient = createAsyncThunk<
 /** Remove a patient by patient.phone */
 export const removePatient = createAsyncThunk<
   Doctor,
-  { doctorCode: string; patientPhone: string }
+  { doctorCode: string; patientPhone: string } //e.target.phone 
 >("doctor/removePatient", async ({ doctorCode, patientPhone }) => {
   const doc = await fetchDoctorByCode(doctorCode);
   const updatedPatients = (doc.patient || []).filter(p => p.phone !== patientPhone);
-  const updated = await patchJSON<Doctor>(`${BASE_URL}/doctors/${doc.code}`, { patient: updatedPatients });
-  return updated;
+  const updated = await postJSON<Doctor>(`${BASE_URL}/doctors/${doc.code}`, { patient: updatedPatients });
+  return updated; 
 });
 
 /** Add a diagnosis entry to a specific patient's first cases[] */
@@ -92,7 +96,7 @@ export const addDiagnosis = createAsyncThunk<
     const updatedCases0 = { ...cases0, diagnosis: [...(cases0.diagnosis || []), entry] };
     return { ...p, cases: [updatedCases0] };
   });
-  const updated = await patchJSON<Doctor>(`${BASE_URL}/doctors/${doc.code}`, { patient: patients });
+  const updated = await postJSON<Doctor>(`${BASE_URL}/doctors/${doc.code}`, { patient: patients });
   return updated;
 });
 
@@ -111,7 +115,7 @@ export const removeDiagnosis = createAsyncThunk<
     diag.splice(index, 1);
     return { ...p, cases: [{ ...cases0, diagnosis: diag }] };
   });
-  const updated = await patchJSON<Doctor>(`${BASE_URL}/doctors/${doc.code}`, { patient: patients });
+  const updated = await postJSON<Doctor>(`${BASE_URL}/doctors/${doc.code}`, { patient: patients });
   return updated;
 });
 
