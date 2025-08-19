@@ -19,7 +19,11 @@ async function postJSON<T>(url: string, body: any): Promise<T> {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
   });
-  if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
+  if (!res.ok) {
+    // helpful when debugging FastAPI 422 payload errors
+    const text = await res.text();
+    throw new Error(`HTTP ${res.status}: ${text}`);
+  }
   return res.json();
 }
 
@@ -61,10 +65,9 @@ export const addPatient = createAsyncThunk<
       throw new Error("This phone exists");
     }
 
-    const updatedPatients = [...(doc.patient || []), patient];
     const updated = await postJSON<Doctor>(
-      `${BASE_URL}/doctors/${doc.code}/patients`,
-      { patient: updatedPatients }
+      `${BASE_URL}/doctors/${encodeURIComponent(doc.code)}/patients`,
+      patient
     );
     return updated;
   }
@@ -73,7 +76,7 @@ export const addPatient = createAsyncThunk<
 /** Remove a patient by patient.phone */
 export const removePatient = createAsyncThunk<
   Doctor,
-  { doctorCode: string; patientPhone: string }
+  { doctorCode: string; patientPhone: string } //e.target.phone 
 >("doctor/removePatient", async ({ doctorCode, patientPhone }) => {
   const doc = await fetchDoctorByCode(doctorCode);
   const updatedPatients = (doc.patient || []).filter(p => p.phone !== patientPhone);
