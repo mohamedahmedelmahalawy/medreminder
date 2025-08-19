@@ -9,7 +9,7 @@ import type { Role } from "@/lib/interfaces/Role";
 const BASE_URL = "https://fast-api-dnk5.vercel.app";
 
 async function getJSON<T>(url: string): Promise<T> {
-    const res = await fetch(url, { headers: { "Content-Type": "application/json" } });
+    const res = await fetch(url, { headers: { "Content-Type": "application/json" } }); 4
     if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
     return res.json();
 }
@@ -188,39 +188,58 @@ export const editPatient = createAsyncThunk<
     }
 );
 
-/** Add a diagnosis entry to a specific patient's first cases[] */
-export const addDiagnosis = createAsyncThunk<
-    Doctor,
-    { doctorCode: string; patientPhone: string; entry: DiagnosisEntry }
->("doctor/addDiagnosis", async ({ doctorCode, patientPhone, entry }) => {
-    const doc = await fetchDoctorByCode(doctorCode);
-    const patients = (doc.patient || []).map(p => {
-        if (p.phone !== patientPhone) return p;
-        const cases0 = p.cases?.[0] ?? { id: p.phone, diagnosis: [] };
-        const updatedCases0 = { ...cases0, diagnosis: [...(cases0.diagnosis || []), entry] };
-        return { ...p, cases: [updatedCases0] };
-    });
-    const updated = await postJSON<Doctor>(`${BASE_URL}/doctors/${doc.code}`, { patient: patients });
-    return updated;
+export const getDiagnoses = createAsyncThunk<
+    DiagnosisEntry[],
+    { doctorCode: string; patientPhone: string },
+    { rejectValue: string }
+>("doctor/getDiagnoses", async ({ doctorCode, patientPhone }, { rejectWithValue }) => {
+    try {
+        return await getJSON<DiagnosisEntry[]>(
+            `${BASE_URL}/doctors/${encodeURIComponent(doctorCode)}/patients/${encodeURIComponent(patientPhone)}/diagnosis`
+        );
+    } catch (e: any) {
+        return rejectWithValue(e?.message ?? "Failed to load diagnoses");
+    }
 });
 
-/** Remove diagnosis by index for a patient */
+/** Add diagnosis (POST /doctors/{code}/patients/{phone}/diagnosis) */
+export const addDiagnosis = createAsyncThunk<
+    Doctor, 
+    { doctorCode: string; patientPhone: string; entry: DiagnosisEntry },
+    { rejectValue: string }
+>("doctor/addDiagnosis", async ({ doctorCode, patientPhone, entry }, { rejectWithValue }) => {
+    try {
+
+        const payload: DiagnosisEntry = { ...entry, schedule: new Date(entry.schedule).toISOString() };
+
+        await postJSON<void>(
+            `${BASE_URL}/doctors/${encodeURIComponent(doctorCode)}/patients/${encodeURIComponent(patientPhone)}/diagnosis`,
+            payload
+        );
+
+
+        return await fetchDoctorByCode(doctorCode);
+    } catch (e: any) {
+        return rejectWithValue(e?.message ?? "Failed to add diagnosis");
+    }
+});
+
+/** Remove diagnosis (DELETE …/diagnosis?index=N) */
 export const removeDiagnosis = createAsyncThunk<
     Doctor,
-    { doctorCode: string; patientPhone: string; index: number }
->("doctor/removeDiagnosis", async ({ doctorCode, patientPhone, index }) => {
-    const doc = await fetchDoctorByCode(doctorCode);
-    const patients = (doc.patient || []).map(p => {
-        if (p.phone !== patientPhone) return p;
-        const cases0 = p.cases?.[0];
-        if (!cases0) return p;
-        const diag = [...cases0.diagnosis];
-        if (index < 0 || index >= diag.length) return p;
-        diag.splice(index, 1);
-        return { ...p, cases: [{ ...cases0, diagnosis: diag }] };
-    });
-    const updated = await postJSON<Doctor>(`${BASE_URL}/doctors/${doc.code}`, { patient: patients });
-    return updated;
+    { doctorCode: string; patientPhone: string; index: number },
+    { rejectValue: string }
+>("doctor/removeDiagnosis", async ({ doctorCode, patientPhone, index }, { rejectWithValue }) => {
+    try {
+        // your API deletes by index
+        await deleteJSON<void>(
+            `${BASE_URL}/doctors/${encodeURIComponent(doctorCode)}/patients/${encodeURIComponent(patientPhone)}/diagnosis?index=${index}`
+        );
+
+        return await fetchDoctorByCode(doctorCode);
+    } catch (e: any) {
+        return rejectWithValue(e?.message ?? "Failed to remove diagnosis");
+    }
 });
 
 const doctorSlice = createSlice({
