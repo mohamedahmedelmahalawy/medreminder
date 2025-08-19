@@ -101,6 +101,7 @@ export const addPatient = createAsyncThunk<
 );
 
 /** Remove a patient by patient.phone */
+             //belpost
 // export const removePatient = createAsyncThunk<
 //   Doctor,
 //   { doctorCode: string; patientPhone: string } //e.target.phone 
@@ -113,22 +114,17 @@ export const addPatient = createAsyncThunk<
 // );
 //   return updated; 
 // });
-
+             //bel
 export const removePatient = createAsyncThunk<
   Doctor,
   { doctorCode: string; patientPhone: string }
 >("doctor/removePatient", async ({ doctorCode, patientPhone }) => {
   // Optional: you can skip this fetch if doctorCode is already the code you need
   const doc = await fetchDoctorByCode(doctorCode);
-
-  const url = `${BASE_URL}/doctors/${encodeURIComponent(doc.code)}/patients/${encodeURIComponent(
-    (patientPhone ?? "").trim()
-  )}`;
-
+  const url = `${BASE_URL}/doctors/${encodeURIComponent(doc.code)}/patients/${patientPhone}`;
   const maybeUpdated = await deleteJSON<Doctor>(url);
- 
-  if (maybeUpdated) return maybeUpdated;
 
+  if (maybeUpdated) return maybeUpdated;
   return await fetchDoctorByCode(doctorCode);
 });
 
