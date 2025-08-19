@@ -99,9 +99,10 @@ import ModalDig from "./ModalDig";
 import { DialogContent, DialogHeader } from "./ui/dialog";
 import { DialogDescription, DialogTitle } from "@radix-ui/react-dialog";
 import { Dialog } from "@/components/ui/dialog";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/lib/store/Slices/Store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/lib/store/Slices/Store";
 import { addPatient } from "@/lib/store/Slices/MedicalSlicer";
+import { removePatient } from "@/lib/store/Slices/MedicalSlicer"; 
 type Item = {
 	id?: string; // your patient id in doctor list
 	name: string;
@@ -222,6 +223,11 @@ const columns: ColumnDef<Item>[] = [
 export default function TableOriginUI() {
 	const id = useId();
 
+	const {current}=useSelector((s:RootState)=>s.doctor)
+	
+	const dispatch=useDispatch<AppDispatch>();
+
+	
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
@@ -237,7 +243,10 @@ export default function TableOriginUI() {
 			desc: false,
 		},
 	]);
-
+// const doctorCode =               lma nestah3'l bel code login w signup
+//   useAppSelector((s) =>
+//     s.auth.userDetails && "code" in s.auth.userDetails ? s.auth.userDetails.code : null
+//   ) ?? undefined;
 	const [data, setData] = useState<Item[]>([]);
 	useEffect(() => {
 		async function fetchPosts() {
@@ -246,16 +255,25 @@ export default function TableOriginUI() {
 			);
 			const data = await res.json();
 			setData(data);
+			console.log(current)
 		}
 		fetchPosts();
-	}, []);
+	}, [current]);
 
-	const handleDeleteRows = () => {
+	const handleDeleteRows = async () => {
 		const selectedRows = table.getSelectedRowModel().rows;
-		const updatedData = data.filter(
-			(item) => !selectedRows.some((row) => row.original.id === item.id)
-		);
+		const updatedData = data.filter((item) => !selectedRows.some((row) => row.original.id === item.id));
+		// const phone = data.filter((item) => !selectedRows.some((row) => row.original.id === item.id));
 		setData(updatedData);
+	   try {
+			for (const row of selectedRows) {
+				await dispatch(removePatient({ doctorCode: "EGP12Hop676", patientPhone: row.original.phone })).unwrap();
+				console.log(row.original.phone)
+			}
+		} catch (error) {
+			console.error('failed to delete patient', error);
+		}
+
 		table.resetRowSelection();
 	};
 
