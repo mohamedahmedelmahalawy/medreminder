@@ -1,7 +1,7 @@
 import { Doctor } from "@/lib/interfaces/Doctor";
 import { Patient } from "@/lib/interfaces/Patient";
 import { Role } from "@/lib/interfaces/Role";
-            //   Feha doctor role w el patient role w logged user details
+//   Feha doctor role w el patient role w logged user details
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { generateCode } from "@/app/components/RandomcodeGenerator";
 
@@ -16,6 +16,16 @@ async function getJSON<T>(url: string): Promise<T> {
 export async function postJSON<T>(url: string, body: unknown): Promise<T> {
   const res = await fetch(url, {
     method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
+  return res.json();
+}
+
+async function patchJSON<T>(url: string, body: unknown): Promise<T> {
+  const res = await fetch(url, {
+    method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
   });
@@ -39,7 +49,7 @@ const initialState: AuthState = {
   userDetails: null,
   status: "idle",
 };
-   
+
 export const loginDoctor = createAsyncThunk<
   Doctor,
   { email: string; password: string }
@@ -57,8 +67,8 @@ export type RegisterDoctorPayload = Omit<Doctor, "id" | "patient" | "code"> & {
   patient?: Doctor["patient"];
 };
 export const registerDoctor = createAsyncThunk<
-  Doctor,                       
-  RegisterDoctorPayload,       
+  Doctor,
+  RegisterDoctorPayload,
   { rejectValue: string }
 >(
   "auth/registerDoctor",
@@ -67,38 +77,75 @@ export const registerDoctor = createAsyncThunk<
     const existing = await getJSON<Doctor>(
       `${BASE_URL}/doctors`
     );
-    if (existing.email===payload.email) {
+    if (existing.email === payload.email) {
       return rejectWithValue("Email is already registered.");
     }
-     
-     const body: Doctor = {
+
+    const body: Doctor = {
       ...payload,
-      code: generateCode({ countryCode: payload.country.slice(0,2), kind: "alphanumeric" }),
-      patient: payload.patient ?? [],   
+      code: generateCode({ countryCode: payload.country.slice(0, 2), kind: "alphanumeric" }),
+      patient: payload.patient ?? [],
     };
-    if (existing.code===body.code)
-    {
-        body.code=generateCode({ countryCode: payload.country.slice(0,2), kind: "alphanumeric" })
+    if (existing.code === body.code) {
+      body.code = generateCode({ countryCode: payload.country.slice(0, 2), kind: "alphanumeric" })
     }
     const created = await postJSON<Doctor>(`${BASE_URL}/doctors`, body);
     return created;
   }
 );
 
+type DoctorEditable = Partial<Omit<Doctor, "email" | "code" | "patient" | "country" | "city">>;
 
+export const editDoctorProfileByEmail = createAsyncThunk<
+  Doctor,
+  { email: string; updates: DoctorEditable },
+  { rejectValue: string }
+>(
+  "auth/editDoctorProfileByEmail",
+  async ({ email, updates }, { rejectWithValue }) => {
+    try {
+      const needle = email.trim().toLowerCase();
+
+      // 1) find doctor by email
+      const all = await getJSON<Doctor[]>(`${BASE_URL}/doctors`);
+      const doc = all.find(d => (d.email ?? "").trim().toLowerCase() === needle);
+      if (!doc) return rejectWithValue("Doctor not found.");
+
+      // 2) Merge while locking unchangeable fields (email, code, patient, country, city)
+      const merged: Doctor = {
+        ...doc,
+        ...updates,
+        email: doc.email,
+        code: doc.code,          // ← UNCHANGEABLE
+        patient: doc.patient,
+        country: doc.country,
+        city: doc.city,
+      };
+
+      // 3) PUT using your doctor resource key (by code per your API)
+      const updated = await patchJSON<Doctor>(
+        `${BASE_URL}/doctors/${encodeURIComponent(doc.code)}`,
+        merged
+      );
+      return updated;
+    } catch (e: any) {
+      return rejectWithValue(e?.message ?? "Failed to update doctor profile");
+    }
+  }
+);
 
 export const loginPatient = createAsyncThunk<Patient, { email: string; password: string }>(
   "auth/loginPatient",
   async ({ email, password }) => {
-    const patients = await getJSON<Patient[]>(`${BASE_URL}/patients`);   
-    const pat = patients.find((p)=> p.email===email && p.password === password)
+    const patients = await getJSON<Patient[]>(`${BASE_URL}/patients`);
+    const pat = patients.find((p) => p.email === email && p.password === password)
     if (!pat) throw new Error("Patient not found or wrong credentials.");
     return pat;
   }
 );
 
 
-export type RegisterPatientPayload = Omit<Patient, "id"|"drCodes">;
+export type RegisterPatientPayload = Omit<Patient, "id" | "drCodes">;
 
 export const registerPatient = createAsyncThunk<
   Patient,                      // return type
@@ -108,21 +155,21 @@ export const registerPatient = createAsyncThunk<
   "auth/registerPatient",
   async (payload, { rejectWithValue }) => {
     try {
-     
+
       const existing = await getJSON<Patient>(`${BASE_URL}/patients`);
 
-      if (existing.email===payload.email) {
-      return rejectWithValue("Email is already registered.");
-    }
+      if (existing.email === payload.email) {
+        return rejectWithValue("Email is already registered.");
+      }
 
-       if (existing.phone===payload.phone) {
-      return rejectWithValue("Phone is already registered.");
-    }
+      if (existing.phone === payload.phone) {
+        return rejectWithValue("Phone is already registered.");
+      }
 
       const body: Patient = {
         ...payload,
         id: undefined,
-        drCodes:[]
+        drCodes: []
       };
 
       // 4) Create
@@ -134,27 +181,74 @@ export const registerPatient = createAsyncThunk<
   }
 );
 
+// Can edit everything EXCEPT: email, drCodes
+type PatientEditable = Partial<Omit<Patient, "email" | "drCodes">>;
 
+export const editPatientProfileByEmail = createAsyncThunk<
+  Patient,
+  { email: string; updates: PatientEditable },
+  { rejectValue: string }
+>(
+  "auth/editPatientProfileByEmail",
+  async ({ email, updates }, { rejectWithValue }) => {
+    try {
+      const needle = email.trim().toLowerCase();
+
+      // 1) find patient by email
+      const all = await getJSON<Patient[]>(`${BASE_URL}/patients`);
+      const pat = all.find(p => (p.email ?? "").trim().toLowerCase() === needle);
+      if (!pat) return rejectWithValue("Patient not found.");
+
+      // 2) if phone changing, ensure uniqueness among other patients
+      if (updates.phone) {
+        const newPhone = updates.phone.trim();
+        const clash = all.find(p =>
+          (p.email ?? "").trim().toLowerCase() !== needle &&
+          (p.phone ?? "").trim() === newPhone
+        );
+        if (clash) return rejectWithValue("Another patient already uses this phone.");
+      }
+
+      // 3) Merge while locking unchangeable fields
+      const merged: Patient = {
+        ...pat,
+        ...updates,
+        email: pat.email,
+        drCodes: pat.drCodes ?? [],
+      };
+
+      // 4) PUT using id if available; fallback to an email-based route if your API supports it
+      const target = pat.id != null
+        ? `${BASE_URL}/patients/${pat.id}`
+        : `${BASE_URL}/patients/${encodeURIComponent(pat.email)}`;
+
+      const updated = await patchJSON<Patient>(target, merged);
+      return updated;
+    } catch (e: any) {
+      return rejectWithValue(e?.message ?? "Failed to update patient profile");
+    }
+  }
+);
 
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setRole(state, action: PayloadAction<Role>) { 
-        //hna 7an3mal role either doctor or patient in check page 
+    setRole(state, action: PayloadAction<Role>) {
+      //hna 7an3mal role either doctor or patient in check page 
       state.role = action.payload;
       state.userDetails = null;
       state.status = "idle";
       state.error = undefined;
       console.log("role set to :", state.role)
     },
-    setCode(state, action: PayloadAction<string | null>) {  
-        //hna when patient types doctor code 
-      state.code = action.payload;  
+    setCode(state, action: PayloadAction<string | null>) {
+      //hna when patient types doctor code 
+      state.code = action.payload;
     },
-    clearAuth(state) {          
-         // clear user when loggin out 
+    clearAuth(state) {
+      // clear user when loggin out 
       state.role = null;
       state.code = null;
       state.userDetails = null;
@@ -177,13 +271,34 @@ const authSlice = createSlice({
       .addCase(loginPatient.fulfilled, (s, a) => { s.status = "succeeded"; s.userDetails = a.payload; s.role = "patient"; })
       .addCase(loginPatient.rejected, (s, a) => { s.status = "failed"; s.error = a.error.message; })
       //Register Doctor
-      .addCase(registerDoctor.pending,(s)=>{ s.status="loading"; s.error=undefined})
-      .addCase(registerDoctor.fulfilled, (s,a)=>{s.status="succeeded";s.userDetails=a.payload; s.role="medical"})
-      .addCase(registerDoctor.rejected, (s,a)=>{s.status="failed";s.error=a.error.message})
+      .addCase(registerDoctor.pending, (s) => { s.status = "loading"; s.error = undefined })
+      .addCase(registerDoctor.fulfilled, (s, a) => { s.status = "succeeded"; s.userDetails = a.payload; s.role = "medical" })
+      .addCase(registerDoctor.rejected, (s, a) => { s.status = "failed"; s.error = a.error.message })
       //Register Patient
-       .addCase(registerPatient.pending,(s)=>{ s.status="loading"; s.error=undefined})
-      .addCase(registerPatient.fulfilled, (s,a)=>{s.status="succeeded";s.userDetails=a.payload; s.role="medical"})
-      .addCase(registerPatient.rejected, (s,a)=>{s.status="failed";s.error=a.error.message})
+      .addCase(registerPatient.pending, (s) => { s.status = "loading"; s.error = undefined })
+      .addCase(registerPatient.fulfilled, (s, a) => { s.status = "succeeded"; s.userDetails = a.payload; s.role = "medical" })
+      .addCase(registerPatient.rejected, (s, a) => { s.status = "failed"; s.error = a.error.message })
+
+      .addCase(editDoctorProfileByEmail.pending, (s) => { s.status = "loading"; s.error = undefined; })
+      .addCase(editDoctorProfileByEmail.fulfilled, (s, a) => {
+        s.status = "succeeded";
+        // if the logged-in user is this doctor, keep userDetails in sync
+        s.userDetails = a.payload;
+      })
+      .addCase(editDoctorProfileByEmail.rejected, (s, a) => {
+        s.status = "failed";
+        s.error = (a.payload as string) ?? a.error.message;
+      })
+
+      .addCase(editPatientProfileByEmail.pending, (s) => { s.status = "loading"; s.error = undefined; })
+      .addCase(editPatientProfileByEmail.fulfilled, (s, a) => {
+        s.status = "succeeded";
+        s.userDetails = a.payload;
+      })
+      .addCase(editPatientProfileByEmail.rejected, (s, a) => {
+        s.status = "failed";
+        s.error = (a.payload as string) ?? a.error.message;
+      })
   },
 });
 
