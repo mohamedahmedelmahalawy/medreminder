@@ -2,16 +2,18 @@ import { Doctor } from "@/lib/interfaces/Doctor";
 import { Patient } from "@/lib/interfaces/Patient";
 import { Role } from "@/lib/interfaces/Role";
 //   Feha doctor role w el patient role w logged user details
+//   Feha doctor role w el patient role w logged user details
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { generateCode } from "@/app/components/RandomcodeGenerator";
 
-
-const BASE_URL = "https://fast-api-dnk5.vercel.app";   //hna 7ansta5dm url beta3na
+const BASE_URL = "https://fast-api-dnk5.vercel.app"; //hna 7ansta5dm url beta3na
 
 async function getJSON<T>(url: string): Promise<T> {
-  const res = await fetch(url, { headers: { "Content-Type": "application/json" } });
-  if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
-  return res.json();
+	const res = await fetch(url, {
+		headers: { "Content-Type": "application/json" },
+	});
+	if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
+	return res.json();
 }
 export async function postJSON<T>(url: string, body: unknown): Promise<T> {
   const res = await fetch(url, {
@@ -36,35 +38,34 @@ async function patchJSON<T>(url: string, body: unknown): Promise<T> {
 type UserDetails = Doctor | Patient | null;
 
 interface AuthState {
-  role: Role;
-  code: string | null;             // doctor’s code (used later by patient flow)
-  userDetails: UserDetails;        // logged doctor or patient
-  status: "idle" | "loading" | "succeeded" | "failed";
-  error?: string;
+	role: Role;
+	code: string | null; // doctor’s code (used later by patient flow)
+	userDetails: UserDetails; // logged doctor or patient
+	status: "idle" | "loading" | "succeeded" | "failed";
+	error?: string;
 }
 
 const initialState: AuthState = {
-  role: null,
-  code: null,
-  userDetails: null,
-  status: "idle",
+	role: null,
+	code: null,
+	userDetails: null,
+	status: "idle",
 };
 
+
 export const loginDoctor = createAsyncThunk<
-  Doctor,
-  { email: string; password: string }
+	Doctor,
+	{ email: string; password: string }
 >("auth/loginDoctor", async ({ email, password }) => {
-  const doctors = await getJSON<Doctor[]>(`${BASE_URL}/doctors`);
-  const doc = doctors.find(
-    (d) => d.email === email && d.password === password
-  );
-  if (!doc) throw new Error("Invalid email or password.");
-  return doc; // includes patients + cases from your JSON
+	const doctors = await getJSON<Doctor[]>(`${BASE_URL}/doctors`);
+	const doc = doctors.find((d) => d.email === email && d.password === password);
+	if (!doc) throw new Error("Invalid email or password.");
+	return doc; // includes patients + cases from your JSON
 });
 
 export type RegisterDoctorPayload = Omit<Doctor, "id" | "patient" | "code"> & {
-  code?: string;
-  patient?: Doctor["patient"];
+	code?: string;
+	patient?: Doctor["patient"];
 };
 export const registerDoctor = createAsyncThunk<
   Doctor,
