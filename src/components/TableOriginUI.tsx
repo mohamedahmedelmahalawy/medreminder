@@ -228,18 +228,22 @@ export default function TableOriginUI() {
 			console.log(current)
 		}
 		fetchPosts();
-	}, [current]);
+	}, []);
 
 	const handleDeleteRows = async () => {
 		const selectedRows = table.getSelectedRowModel().rows;
 		const updatedData = data.filter((item) => !selectedRows.some((row) => row.original.id === item.id));
 		// const phone = data.filter((item) => !selectedRows.some((row) => row.original.id === item.id));
 		setData(updatedData);
+	   try {
+			for (const row of selectedRows) {
+				await dispatch(removePatient({ doctorCode: "EGP12Hop676", patientPhone: row.original.phone })).unwrap();
+				console.log(row.original.phone)
+			}
+		} catch (error) {
+			console.error('failed to delete patient', error);
+		}
 
-		  const updated = await dispatch(
-        removePatient({ doctorCode: "EGP12Hop676", patientPhone:'+201050607890' })
-      ).unwrap();
-		
 		table.resetRowSelection();
 	};
 

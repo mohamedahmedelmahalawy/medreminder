@@ -27,6 +27,33 @@ async function postJSON<T>(url: string, body: any): Promise<T> {
   return res.json();
 }
 
+async function patchJSON<T>(url: string, body: any): Promise<T> {
+  const res = await fetch(url, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`HTTP ${res.status}: ${text}`);
+  }
+  return res.json();
+}
+
+
+async function deleteJSON<T>(url: string): Promise<T | null> {
+  const res = await fetch(url, { method: "DELETE" });
+  if (res.status === 204) return null; // server didn't return a body
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`HTTP ${res.status}: ${text}`);
+  }
+  // Some servers return empty string on 200—guard that too:
+  const text = await res.text();
+  return text ? (JSON.parse(text) as T) : null;
+}
+
+
 interface DoctorState {
   status: "idle" | "loading" | "succeeded" | "failed";
   error?: string;
@@ -74,14 +101,35 @@ export const addPatient = createAsyncThunk<
 );
 
 /** Remove a patient by patient.phone */
+// export const removePatient = createAsyncThunk<
+//   Doctor,
+//   { doctorCode: string; patientPhone: string } //e.target.phone 
+// >("doctor/removePatient", async ({ doctorCode, patientPhone }) => {
+//   const doc = await fetchDoctorByCode(doctorCode);
+//   const updatedPatients = (doc.patient || []).filter(p => p.phone !== patientPhone);
+// const updated = await postJSON<Doctor>(
+//   `${BASE_URL}/doctors/${encodeURIComponent(doc.code)}`,
+//   { patient: updatedPatients }
+// );
+//   return updated; 
+// });
+
 export const removePatient = createAsyncThunk<
   Doctor,
-  { doctorCode: string; patientPhone: string } //e.target.phone 
+  { doctorCode: string; patientPhone: string }
 >("doctor/removePatient", async ({ doctorCode, patientPhone }) => {
+  // Optional: you can skip this fetch if doctorCode is already the code you need
   const doc = await fetchDoctorByCode(doctorCode);
-  const updatedPatients = (doc.patient || []).filter(p => p.phone !== patientPhone);
-  const updated = await postJSON<Doctor>(`${BASE_URL}/doctors/${doc.code}`, { patient: updatedPatients });
-  return updated; 
+
+  const url = `${BASE_URL}/doctors/${encodeURIComponent(doc.code)}/patients/${encodeURIComponent(
+    (patientPhone ?? "").trim()
+  )}`;
+
+  const maybeUpdated = await deleteJSON<Doctor>(url);
+ 
+  if (maybeUpdated) return maybeUpdated;
+
+  return await fetchDoctorByCode(doctorCode);
 });
 
 /** Add a diagnosis entry to a specific patient's first cases[] */
