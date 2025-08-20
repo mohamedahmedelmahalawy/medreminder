@@ -173,6 +173,11 @@ export const addDiagnosis = createAsyncThunk<
   const updated = await postJSON<Doctor>(`${BASE_URL}/doctors/${doc.code}/patients/${patientPhone}/diagnosis`, { patient: patients });
   
   return updated; 
+
+
+
+
+  
 });
 
 
