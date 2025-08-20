@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import {
 	User,
@@ -15,7 +17,9 @@ import { useEffect } from "react";
 export default function Sidebar() {
 	const pathname = usePathname();
 	const router = useRouter();
-	const role = useSelector((state: RootState) => state.auth.role);
+	const role = JSON.parse(localStorage.getItem("auth") || "{}")?.role;
+
+	
 
 	const sharedTabs = [
 		{
@@ -66,7 +70,6 @@ export default function Sidebar() {
 		}
 	};
 
-	
 	useEffect(() => {
 		if (pathname === "/profile/dashboard" && role !== "medical") {
 			router.replace("/profile");

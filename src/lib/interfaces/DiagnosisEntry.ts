@@ -1,4 +1,4 @@
-export interface DiagnosisEntry {
+export interface  DiagnosisEntry {
   diagnosis: string;
   "medical-report"?: string;        // will be omitted from patient-facing view
   "medical-treatment": string;
@@ -6,3 +6,4 @@ export interface DiagnosisEntry {
   complaint: string;
   prognosis?: string;              // will be omitted from patient-facing view
 }
+  

@@ -106,6 +106,8 @@ import { removePatient } from "@/lib/store/Slices/MedicalSlicer";
 import EditPatientModal from "./EditPatientModal";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
+import { DoctorPatient } from "@/lib/interfaces/DoctorPatient";
+import { DiagnosisEntry } from "@/lib/interfaces/DiagnosisEntry";
 
 // import { Row } from "react-aria-components";
 type Item = {
@@ -716,13 +718,13 @@ export default function TableOriginUI() {
 function RowActions({ row }: { row: Row<Item> }) {
 	const [openDialog, setOpenDialog] = useState(false);
 	const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-	const { register, handleSubmit } = useForm();
+	const { register, handleSubmit } = useForm<DiagnosisEntry>();
 
 	const dispatch = useDispatch<AppDispatch>();
 	const doctor = useSelector((state: RootState) => state.doctor.current);
 
 
-	const code: any =
+	const code: string =
     typeof window !== "undefined"
       ? (() => {
           const raw = localStorage.getItem("auth");
@@ -741,7 +743,7 @@ function RowActions({ row }: { row: Row<Item> }) {
 	const handleEdit = () => {
 		setIsEditModalOpen(true);
 	};
-	const handleSave = async (updatedData: any) => {
+	const handleSave = async (updatedData: DoctorPatient) => {
 		try {
 			// Update the patient data in your backend
 			const result = await dispatch(
@@ -759,20 +761,20 @@ function RowActions({ row }: { row: Row<Item> }) {
 		}
 	};
 
-	const handleDiagnosis = async (data: any) => {
+	const handleDiagnosis = async (data: DiagnosisEntry) => {
 		try {
-			const entry = {
+			const entry : DiagnosisEntry= {
 				diagnosis: data.diagnosis,
 				"medical-treatment": data["medical-treatment"],
 				"medical-report": data["medical-report"],
 				prognosis: data.prognosis,
-				complaint: data.complain, // rename to complaint
+				complaint: data.complaint, // rename to complaint
 				schedule: new Date(data.schedule).toISOString(), // ensure ISO format
 			};
-
-		const us=	await dispatch(addDiagnosis({ doctorCode: code, patientPhone: row.original.phone, entry })).unwrap();
 			
-			console.log(us);
+	await dispatch(addDiagnosis({ doctorCode: code, patientPhone: row.original.phone, entry })).unwrap();
+			
+		
 			
 		setOpenDialog(false);
 			alert("Diagnosis added successfully!");
@@ -781,6 +783,8 @@ function RowActions({ row }: { row: Row<Item> }) {
 			alert("Failed to add diagnosis. Please check your input.");
 		}
 	};
+
+
 	const handleDeleteSingleRow = async () => {
 		try {
 			await dispatch(removePatient({ doctorCode: code, patientPhone: row.original.phone })).unwrap();
@@ -876,7 +880,7 @@ function RowActions({ row }: { row: Row<Item> }) {
 
 							</div>
 							<div className='*:not-first:mt-2'>
-								<Label>Complain</Label>
+								<Label>Complaint</Label>
 
 								<Input {...register("complaint")} type="text" required />
 
