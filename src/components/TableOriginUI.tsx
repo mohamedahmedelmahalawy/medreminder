@@ -166,7 +166,12 @@ const columns: ColumnDef<Item>[] = [
 	{
 		header: "Name",
 		accessorKey: "name",
-		cell: ({ row }) => <div className='font-medium'>{row.getValue("name")}</div>,
+		cell: ({ row }) => <div className='font-medium'>
+			<Link href={`/patients/${row.original.phone}`}>
+			{row.getValue("name")}
+			</Link>
+			
+			</div>,
 		size: 180,
 		filterFn: multiColumnFilterFn,
 		enableHiding: false,
@@ -718,7 +723,7 @@ export default function TableOriginUI() {
 function RowActions({ row }: { row: Row<Item> }) {
 	const [openDialog, setOpenDialog] = useState(false);
 	const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-	const { register, handleSubmit } = useForm<DiagnosisEntry>();
+	const { register, handleSubmit,reset } = useForm<DiagnosisEntry>();
 
 	const dispatch = useDispatch<AppDispatch>();
 	const doctor = useSelector((state: RootState) => state.doctor.current);
@@ -778,6 +783,7 @@ function RowActions({ row }: { row: Row<Item> }) {
 			
 		setOpenDialog(false);
 			alert("Diagnosis added successfully!");
+			reset();
 		} catch (error) {
 			console.error("failed to add diagnosis", error);
 			alert("Failed to add diagnosis. Please check your input.");
