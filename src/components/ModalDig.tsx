@@ -21,6 +21,7 @@ export default function ModalDig() {
 	const id = useId();
 
 	return (
+    
 		<Dialog>
         <DialogTrigger asChild>
           <Button variant="outline">Add Diagnostic</Button>

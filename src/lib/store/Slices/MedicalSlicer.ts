@@ -4,8 +4,8 @@ import type { DiagnosisEntry } from "@/lib/interfaces/DiagnosisEntry";
 import type { DoctorPatient } from "@/lib/interfaces/DoctorPatient";
 import type { Role } from "@/lib/interfaces/Role";
 
-                                  //Hna feha doctore methods zai add patient add diagnosis w later 7anzawod 
-                                //   add doctor and genrate new code in register
+//Hna feha doctore methods zai add patient add diagnosis w later 7anzawod 
+//   add doctor and genrate new code in register
 const BASE_URL = "https://fast-api-dnk5.vercel.app";
 
 async function getJSON<T>(url: string): Promise<T> {
@@ -73,12 +73,12 @@ async function fetchDoctorByCode(code: string): Promise<Doctor> {
 export const addPatient = createAsyncThunk<
   Doctor,
   { doctorCode: string; patient: DoctorPatient }
-   
+
 >(
   "doctor/addPatient",
   async ({ doctorCode, patient }) => {
     const doc = await fetchDoctorByCode(doctorCode);
-// hna bencheck bas
+    // hna bencheck bas
     const phone = (patient.phone ?? "").trim();
     const exists = (doc.patient ?? []).find(
       p => (p.phone ?? "").trim() === phone
@@ -101,7 +101,7 @@ export const addPatient = createAsyncThunk<
 );
 
 /** Remove a patient by patient.phone */
-             //belpost
+//belpost
 // export const removePatient = createAsyncThunk<
 //   Doctor,
 //   { doctorCode: string; patientPhone: string } //e.target.phone 
@@ -114,7 +114,7 @@ export const addPatient = createAsyncThunk<
 // );
 //   return updated; 
 // });
-             //bel
+//bel
 export const removePatient = createAsyncThunk<
   Doctor,
   { doctorCode: string; patientPhone: string }
@@ -128,6 +128,33 @@ export const removePatient = createAsyncThunk<
   return await fetchDoctorByCode(doctorCode);
 });
 
+
+export const updatePatient = createAsyncThunk(
+  "doctor/updatePatient",
+  async ({ doctorCode, patientPhone, updatedData }: {
+    doctorCode: string;
+    patientPhone: string;
+    updatedData: DoctorPatient;
+  }) => {
+    try {
+      // First, fetch the current doctor data
+      const doc = await fetchDoctorByCode(doctorCode);
+      if (!doc) return;
+      // Update the patient data
+      const updated = await patchJSON<Doctor>(
+        `${BASE_URL}/doctors/${doctorCode}/patients/${patientPhone}`,
+        updatedData
+      );
+
+      return updated;
+    } catch (error) {
+      throw error;
+    }
+  }
+);
+
+
+
 /** Add a diagnosis entry to a specific patient's first cases[] */
 export const addDiagnosis = createAsyncThunk<
   Doctor,
@@ -140,9 +167,16 @@ export const addDiagnosis = createAsyncThunk<
     const updatedCases0 = { ...cases0, diagnosis: [...(cases0.diagnosis || []), entry] };
     return { ...p, cases: [updatedCases0] };
   });
-  const updated = await postJSON<Doctor>(`${BASE_URL}/doctors/${doc.code}`, { patient: patients });
-  return updated;
+  
+  console.log(patients);
+  
+  const updated = await postJSON<Doctor>(`${BASE_URL}/doctors/${doc.code}/patients/${patientPhone}/diagnosis`, { patient: patients });
+  
+  return updated; 
 });
+
+
+
 
 /** Remove diagnosis by index for a patient */
 export const removeDiagnosis = createAsyncThunk<
@@ -171,23 +205,37 @@ const doctorSlice = createSlice({
       state.current = action.payload;
     },
   },
-//   optional for ui 
+  //   optional for ui 
   extraReducers: (b) => {
     b.addCase(addPatient.pending, (s) => { s.status = "loading"; s.error = undefined; })
-     .addCase(addPatient.fulfilled, (s, a) => { s.status = "succeeded"; s.current = a.payload; })
-     .addCase(addPatient.rejected, (s, a) => { s.status = "failed"; s.error = a.error.message; })
+      .addCase(addPatient.fulfilled, (s, a) => { s.status = "succeeded"; s.current = a.payload; })
+      .addCase(addPatient.rejected, (s, a) => { s.status = "failed"; s.error = a.error.message; })
 
-     .addCase(removePatient.pending, (s) => { s.status = "loading"; s.error = undefined; })
-     .addCase(removePatient.fulfilled, (s, a) => { s.status = "succeeded"; s.current = a.payload; })
-     .addCase(removePatient.rejected, (s, a) => { s.status = "failed"; s.error = a.error.message; })
+      .addCase(removePatient.pending, (s) => { s.status = "loading"; s.error = undefined; })
+      .addCase(removePatient.fulfilled, (s, a) => { s.status = "succeeded"; s.current = a.payload; })
+      .addCase(removePatient.rejected, (s, a) => { s.status = "failed"; s.error = a.error.message; })
 
-     .addCase(addDiagnosis.pending, (s) => { s.status = "loading"; s.error = undefined; })
-     .addCase(addDiagnosis.fulfilled, (s, a) => { s.status = "succeeded"; s.current = a.payload; })
-     .addCase(addDiagnosis.rejected, (s, a) => { s.status = "failed"; s.error = a.error.message; })
+      .addCase(addDiagnosis.pending, (s) => { s.status = "loading"; s.error = undefined; })
+      .addCase(addDiagnosis.fulfilled, (s, a) => { s.status = "succeeded"; s.current = a.payload; })
+      .addCase(addDiagnosis.rejected, (s, a) => { s.status = "failed"; s.error = a.error.message; })
 
-     .addCase(removeDiagnosis.pending, (s) => { s.status = "loading"; s.error = undefined; })
-     .addCase(removeDiagnosis.fulfilled, (s, a) => { s.status = "succeeded"; s.current = a.payload; })
-     .addCase(removeDiagnosis.rejected, (s, a) => { s.status = "failed"; s.error = a.error.message; });
+      .addCase(removeDiagnosis.pending, (s) => { s.status = "loading"; s.error = undefined; })
+      .addCase(removeDiagnosis.fulfilled, (s, a) => { s.status = "succeeded"; s.current = a.payload; })
+      .addCase(removeDiagnosis.rejected, (s, a) => { s.status = "failed"; s.error = a.error.message; })
+
+      .addCase(updatePatient.pending, (state) => {
+        state.status = "loading";
+        state.error = undefined;
+      })
+      .addCase(updatePatient.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.current = action.payload;
+      })
+      .addCase(updatePatient.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      })
+
   },
 });
 
