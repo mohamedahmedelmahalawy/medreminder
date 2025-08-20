@@ -101,8 +101,13 @@ import { DialogDescription, DialogTitle } from "@radix-ui/react-dialog";
 import { Dialog } from "@/components/ui/dialog";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/lib/store/Slices/Store";
-import { addPatient } from "@/lib/store/Slices/MedicalSlicer";
-import { removePatient } from "@/lib/store/Slices/MedicalSlicer"; 
+import { addDiagnosis, addPatient, updatePatient } from "@/lib/store/Slices/MedicalSlicer";
+import { removePatient } from "@/lib/store/Slices/MedicalSlicer";
+import EditPatientModal from "./EditPatientModal";
+import Link from "next/link";
+import { useForm } from "react-hook-form";
+
+// import { Row } from "react-aria-components";
 type Item = {
 	id?: string; // your patient id in doctor list
 	name: string;
@@ -167,8 +172,10 @@ const columns: ColumnDef<Item>[] = [
 	{
 		header: "Age",
 		accessorKey: "age",
-		cell: ({ row }) => <div className='font-medium'>{row.getValue("age")}</div>,
-		size: 180,
+
+		cell: ({ row }) => <div className="font-medium">{row.getValue("age")}</div>,
+		size: 100,
+
 		filterFn: multiColumnFilterFn,
 		enableHiding: false,
 	},
@@ -190,22 +197,19 @@ const columns: ColumnDef<Item>[] = [
 	{
 		header: "Country",
 		accessorKey: "country",
-		cell: ({ row }) => (
-			<Badge
-				className={cn(
-					row.getValue("country") === "Inactive" &&
-						"bg-muted-foreground/60 text-primary-foreground"
-				)}
-			>
-				{row.getValue("country")}
-			</Badge>
-		),
+
 		size: 100,
-		filterFn: statusFilterFn,
+		// filterFn: statusFilterFn,
 	},
 	{
 		header: "Gender",
 		accessorKey: "gender",
+		cell: ({ row }) => (
+			<Badge className={cn(row.getValue("gender") === "female" && "bg-red-400 text-primary-foreground")}>
+				{String(row.getValue("gender"))[0].toUpperCase()}
+				{String(row.getValue("gender")).slice(1)}
+			</Badge>
+		),
 	},
 	{
 		header: "Profession",
@@ -223,11 +227,29 @@ const columns: ColumnDef<Item>[] = [
 export default function TableOriginUI() {
 	const id = useId();
 
-	const {current}=useSelector((s:RootState)=>s.doctor)
+	const { current } = useSelector((s: RootState) => s.doctor);
+	console.log(current);
 	
-	const dispatch=useDispatch<AppDispatch>();
 
+	 const code: string  =
+    typeof window !== "undefined"
+      ? (() => {
+          const raw = localStorage.getItem("auth");
+          if (!raw) return null;
+          try {
+            const parsed = JSON.parse(raw);
+            // works whether you saved a string or an object { code: "..." }
+            return typeof parsed === "string" ? parsed : parsed?.code ?? null;
+          } catch {
+            // if you stored plain string without JSON.stringify
+            return raw;
+          }
+        })()
+      : null;
 	
+
+	const dispatch = useDispatch<AppDispatch>();
+
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
@@ -243,19 +265,22 @@ export default function TableOriginUI() {
 			desc: false,
 		},
 	]);
-// const doctorCode =               lma nestah3'l bel code login w signup
-//   useAppSelector((s) =>
-//     s.auth.userDetails && "code" in s.auth.userDetails ? s.auth.userDetails.code : null
-//   ) ?? undefined;
+	// const doctorCode =               lma nestah3'l bel code login w signup
+	//   useAppSelector((s) =>
+	//     s.auth.userDetails && "code" in s.auth.userDetails ? s.auth.userDetails.code : null
+	//   ) ?? undefined;
 	const [data, setData] = useState<Item[]>([]);
 	useEffect(() => {
 		async function fetchPosts() {
-			const res = await fetch(
-				"https://fast-api-dnk5.vercel.app/doctors/EGP12Hop676/patients"
-			);
+
+			const res = await fetch(`https://fast-api-dnk5.vercel.app/doctors/${code}/patients`);
+
 			const data = await res.json();
+			console.log(data);
+			
 			setData(data);
-			console.log(current)
+			console.log(current);
+			console.log(code)
 		}
 		fetchPosts();
 	}, [current]);
@@ -265,13 +290,13 @@ export default function TableOriginUI() {
 		const updatedData = data.filter((item) => !selectedRows.some((row) => row.original.id === item.id));
 		// const phone = data.filter((item) => !selectedRows.some((row) => row.original.id === item.id));
 		setData(updatedData);
-	   try {
+		try {
 			for (const row of selectedRows) {
-				await dispatch(removePatient({ doctorCode: "EGP12Hop676", patientPhone: row.original.phone })).unwrap();
-				console.log(row.original.phone)
+				await dispatch(removePatient({ doctorCode:code, patientPhone: row.original.phone })).unwrap();
+				console.log(row.original.phone);
 			}
 		} catch (error) {
-			console.error('failed to delete patient', error);
+			console.error("failed to delete patient", error);
 		}
 
 		table.resetRowSelection();
@@ -446,8 +471,10 @@ export default function TableOriginUI() {
 					{table.getSelectedRowModel().rows.length > 0 && (
 						<AlertDialog>
 							<AlertDialogTrigger asChild>
-								<Button className='ml-auto' variant='destructive'>
-									<TrashIcon className='-ms-1 opacity-60' size={16} aria-hidden='true' />
+
+								<Button className="ml-auto mr-3" variant="destructive">
+									<TrashIcon className="-ms-1 opacity-60" size={16} aria-hidden="true" />
+
 									Delete
 									<span className='bg-background text-muted-foreground/70 -me-1 inline-flex h-5 max-h-full items-center rounded border px-1 font-[inherit] text-[0.625rem] font-medium'>
 										{table.getSelectedRowModel().rows.length}
@@ -491,7 +518,9 @@ export default function TableOriginUI() {
 				<Table className='table-fixed'>
 					<TableHeader>
 						{table.getHeaderGroups().map((headerGroup) => (
-							<TableRow key={headerGroup.id} className='hover:bg-transparent'>
+
+							<TableRow key={headerGroup.id} className="hover:bg-transparent ">
+
 								{headerGroup.headers.map((header) => {
 									return (
 										<TableHead
@@ -550,7 +579,9 @@ export default function TableOriginUI() {
 							table.getRowModel().rows.map((row) => (
 								<TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
 									{row.getVisibleCells().map((cell) => (
-										<TableCell key={cell.id} className='last:py-0'>
+
+										<TableCell key={cell.id} className="last:py-0 cursor-pointer">
+
 											{flexRender(cell.column.columnDef.cell, cell.getContext())}
 										</TableCell>
 									))}
@@ -684,7 +715,83 @@ export default function TableOriginUI() {
 
 function RowActions({ row }: { row: Row<Item> }) {
 	const [openDialog, setOpenDialog] = useState(false);
+	const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+	const { register, handleSubmit } = useForm();
 
+	const dispatch = useDispatch<AppDispatch>();
+	const doctor = useSelector((state: RootState) => state.doctor.current);
+
+
+	const code: any =
+    typeof window !== "undefined"
+      ? (() => {
+          const raw = localStorage.getItem("auth");
+          if (!raw) return null;
+          try {
+            const parsed = JSON.parse(raw);
+            // works whether you saved a string or an object { code: "..." }
+            return typeof parsed === "string" ? parsed : parsed?.code ?? null;
+          } catch {
+            // if you stored plain string without JSON.stringify
+            return raw;
+          }
+        })()
+      : null;
+
+	const handleEdit = () => {
+		setIsEditModalOpen(true);
+	};
+	const handleSave = async (updatedData: any) => {
+		try {
+			// Update the patient data in your backend
+			const result = await dispatch(
+				updatePatient({
+					doctorCode:code ,
+					patientPhone: row.original.phone,
+					updatedData,
+				})
+			).unwrap();
+
+			setIsEditModalOpen(false);
+			alert("Patient updated successfully!");
+		} catch (error) {
+			console.error("Failed to update patient:", error);
+		}
+	};
+
+	const handleDiagnosis = async (data: any) => {
+		try {
+			const entry = {
+				diagnosis: data.diagnosis,
+				"medical-treatment": data["medical-treatment"],
+				"medical-report": data["medical-report"],
+				prognosis: data.prognosis,
+				complaint: data.complain, // rename to complaint
+				schedule: new Date(data.schedule).toISOString(), // ensure ISO format
+			};
+
+		const us=	await dispatch(addDiagnosis({ doctorCode: code, patientPhone: row.original.phone, entry })).unwrap();
+			
+			console.log(us);
+			
+		setOpenDialog(false);
+			alert("Diagnosis added successfully!");
+		} catch (error) {
+			console.error("failed to add diagnosis", error);
+			alert("Failed to add diagnosis. Please check your input.");
+		}
+	};
+	const handleDeleteSingleRow = async () => {
+		try {
+			await dispatch(removePatient({ doctorCode: code, patientPhone: row.original.phone })).unwrap();
+			console.log("delete patient");
+		} catch (error) {
+			console.error("failed to delete patient", error);
+		}
+		console.log(row);
+
+		// dispatch(removePatient({doctorCode:"EGP12Hop676",patientPhone:}))
+	};
 	return (
 		<>
 			<DropdownMenu>
@@ -702,7 +809,9 @@ function RowActions({ row }: { row: Row<Item> }) {
 				</DropdownMenuTrigger>
 				<DropdownMenuContent align='end'>
 					<DropdownMenuGroup>
-						<DropdownMenuItem className='focus:bg-blue-600 focus:text-white'>
+
+						<DropdownMenuItem onSelect={handleEdit} className="focus:bg-blue-600 focus:text-white">
+
 							<span>Edit</span>
 						</DropdownMenuItem>
 						<DropdownMenuItem
@@ -711,13 +820,18 @@ function RowActions({ row }: { row: Row<Item> }) {
 						>
 							Add Diagnostic
 						</DropdownMenuItem>
-						<DropdownMenuItem className='focus:bg-red-600 focus:text-white'>
+
+						<DropdownMenuItem className="focus:bg-amber-950 focus:text-white">
+							<Link href={`/patient-details/${row.original.phone}`}>Show Details</Link>
+						</DropdownMenuItem>
+						<DropdownMenuItem onSelect={handleDeleteSingleRow} className="focus:bg-red-600 focus:text-white">
+
 							<span>Delete Patient</span>
 						</DropdownMenuItem>
 					</DropdownMenuGroup>
 				</DropdownMenuContent>
 			</DropdownMenu>
-
+			{/* Diagnostic Modal */}
 			<Dialog open={openDialog} onOpenChange={setOpenDialog}>
 				<DialogContent className='w-full max-w-[90vw] sm:max-w-[625px] lg:max-w-[700px] '>
 					<div className='flex flex-col items-center justify-center gap-2'>
@@ -735,31 +849,43 @@ function RowActions({ row }: { row: Row<Item> }) {
 						</DialogHeader>
 					</div>
 
-					<form className='space-y-5'>
-						<div className='space-y-4'>
-							<div className='*:not-first:mt-2'>
+
+					<form onSubmit={handleSubmit(handleDiagnosis)} className="space-y-5">
+						<div className="space-y-4">
+							<div className="*:not-first:mt-2">
 								<Label>Diagnostic Name</Label>
-								<Input type='text' required />
+								<Input {...register("diagnosis")} type="text" required />
+
 							</div>
 							<div className='*:not-first:mt-2'>
 								<Label>Medical Treatment</Label>
-								<Input type='text' required />
+
+								<Input {...register("medical-treatment")} type="text" required />
+
 							</div>
 							<div className='*:not-first:mt-2'>
 								<Label>Medical Report</Label>
-								<Input type='text' required />
+
+								<Input {...register("medical-report")} type="text" required />
+
 							</div>
 							<div className='*:not-first:mt-2'>
 								<Label>Prognosis Treatment</Label>
-								<Input type='text' required />
+
+								<Input {...register("prognosis")} type="text" required />
+
 							</div>
 							<div className='*:not-first:mt-2'>
 								<Label>Complain</Label>
-								<Input type='text' required />
+
+								<Input {...register("complaint")} type="text" required />
+
 							</div>
 							<div className='*:not-first:mt-2'>
 								<Label>Schedule</Label>
-								<Input type='date' required />
+
+								<Input {...register("schedule")} type="date" required />
+
 							</div>
 						</div>
 						<Button type='submit' className='w-full rounded-2xl'>
@@ -768,6 +894,13 @@ function RowActions({ row }: { row: Row<Item> }) {
 					</form>
 				</DialogContent>
 			</Dialog>
+
+			<EditPatientModal
+				isOpen={isEditModalOpen}
+				onClose={() => setIsEditModalOpen(false)}
+				patientData={row.original}
+				onSave={handleSave}
+			/>
 		</>
 	);
 }

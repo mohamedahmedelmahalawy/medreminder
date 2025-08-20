@@ -24,24 +24,25 @@ import { AppDispatch } from "@/lib/store/Slices/Store";
 import { addPatient } from "@/lib/store/Slices/MedicalSlicer";
 import { DoctorPatient } from "@/lib/interfaces/DoctorPatient";
 interface ModalProps {
-	name: string;
+	name?: string;
+	
 }
 
-type FormVals = {
-  name: string;
-  phone: string;
-  country: string;
-  gender: "male" | "female";
-  profession: string;
-  age: number;
-  dateOfAdmission: string | Date; 
+export type FormVals = {
+	name: string;
+	phone: string;
+	country: string;
+	gender: "male" | "female";
+	profession: string;
+	age: number;
+	dateOfAdmission: string | Date;
 };
 
 export default function Modal({ name }: ModalProps) {
 	const id = useId();
 	const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 	const [selectedGender, setSelectedGender] = useState<string>("");
-	const dispatch = useDispatch<AppDispatch>()
+	const dispatch = useDispatch<AppDispatch>();
 
 	const {
 		register,
@@ -53,45 +54,43 @@ export default function Modal({ name }: ModalProps) {
 		formState: { errors },
 	} = useForm<FormVals>();
 
-	  const onSubmit = async (data: FormVals) => {
-    try {
-      const phone = String(data.phone).trim();
-      const isoDate =
-        typeof data.dateOfAdmission === "string"
-          ? new Date(data.dateOfAdmission)
-          : data.dateOfAdmission
+	const onSubmit = async (data: FormVals) => {
+		try {
+			
+			 
+				const phone = String(data.phone).trim();
+				const isoDate =
+					typeof data.dateOfAdmission === "string" ? new Date(data.dateOfAdmission) : data.dateOfAdmission;
 
-      const patient: DoctorPatient = {
-        id: crypto.randomUUID(),
-        name: data.name.trim(),
-        phone:data.phone,
-        country: data.country,
-        gender: data.gender,
-        profession: data.profession,
-        age: Number(data.age),
-		dateOfAdmission:
-		  typeof data.dateOfAdmission === "string"
-			? data.dateOfAdmission
-			: data.dateOfAdmission?.toISOString(),
-        cases: [{diagnosis: [] }],
-      };
+				const patient: DoctorPatient = {
+					id: crypto.randomUUID(),
+					name: data.name.trim(),
+					phone: data.phone,
+					country: data.country,
+					gender: data.gender,
+					profession: data.profession,
+					age: Number(data.age),
+					dateOfAdmission:
+						typeof data.dateOfAdmission === "string" ? data.dateOfAdmission : data.dateOfAdmission?.toISOString(),
+					cases: [{ diagnosis: [] }],
+				};
 
-      const updated = await dispatch(
-        addPatient({ doctorCode: "EGP12Hop676", patient })
-      ).unwrap();
+				const updated = await dispatch(addPatient({  patient })).unwrap();
 
-      console.log("Updated doctor:", updated);
-      alert("Patient added ✅");
-      reset();
-    } catch (err: any) {
-      alert(err?.message ?? "Failed to add patient");
-    }
-  };
+				console.log("Updated doctor:", updated);
+				alert("Patient added ✅");
+			
+			reset();
+		} catch (err: unknown) {
+			if(err instanceof Error) alert(err?.message ?? "Failed to add patient");
+			else alert("Failed");
+		}
+	};
 	return (
 		<Dialog>
 			<DialogTrigger asChild>
-				<Button variant="outline" className="w-full">
-					<PlusIcon className="-ms-1 opacity-60" size={16} aria-hidden="true" />
+				<Button variant="outline">
+					<PlusIcon className="-ms-1 opacity-60" size={20} aria-hidden="true" />
 					{name}
 				</Button>
 			</DialogTrigger>
@@ -141,12 +140,16 @@ export default function Modal({ name }: ModalProps) {
 								rules={{ required: "date is required" }}
 								render={({ field }) => (
 									<DatePickerComp
-										value={typeof field.value === "string" ? (field.value ? new Date(field.value) : undefined) : field.value}
+										value={
+											typeof field.value === "string" ? (field.value ? new Date(field.value) : undefined) : field.value
+										}
 										onChange={field.onChange}
 									/>
 								)}
 							/>
-							{errors.dateOfAdmission && <span className="text-destructive">{String(errors.dateOfAdmission.message)}</span>}
+							{errors.dateOfAdmission && (
+								<span className="text-destructive">{String(errors.dateOfAdmission.message)}</span>
+							)}
 						</div>
 						<div className="*:not-first:mt-2">
 							{/* <Input
@@ -170,6 +173,7 @@ export default function Modal({ name }: ModalProps) {
 								value={watch("phone") || ""}
 								onChange={(val: string) => setValue("phone", val)}
 								placeholder="Enter your phone number"
+								
 								className="mt-1 block w-full rounded-md border px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
 							/>
 							{errors.phone && <p className="text-red-500 text-sm">{String(errors.phone.message)}</p>}
