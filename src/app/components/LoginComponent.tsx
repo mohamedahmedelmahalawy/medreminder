@@ -76,17 +76,17 @@ function LoginComponent() {
 	};
 
 	return (
-		<div className="min-h-screen flex flex-col md:flex-row font-sans">
-			{/* Left Section */}
-			<div className="md:w-2/5 relative">
+		<div className='min-h-screen flex flex-col md:flex-row font-sans'>
+			{/* Left Section (Image, smaller width) */}
+			<div className='md:w-4/10 relative'>
 				<div
 					className={`absolute inset-0 transform transition-all duration-700 ease-out ${imgVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"
 						}`}
 				>
 					<img
-						src="/LoginPics.jpeg"
-						alt="Doctor and patient"
-						className="w-full h-full object-cover"
+						src='/login.webp'
+						alt='Doctor and patient'
+						className='w-full h-full object-cover'
 					/>
 					<h2 className="absolute inset-0 flex items-center justify-center text-3xl md:text-4xl font-extrabold text-white text-center px-6 drop-shadow-lg leading-tight">
 						Connecting Doctors and Patients Seamlessly.
@@ -97,10 +97,12 @@ function LoginComponent() {
 				</div>
 			</div>
 
-			{/* Right Section (Form) */}
-			<div className="md:w-3/5 w-full p-8 md:p-16 flex flex-col justify-center items-center bg-white">
-				<h1 className="text-3xl md:text-4xl font-bold mb-2 text-gray-800">Sign In</h1>
-				<p className="text-gray-500 mb-8 text-base font-normal">
+			{/* Right Section (Form, larger width) */}
+			<div className='md:w-6/10 w-full p-8 md:p-16 flex flex-col justify-center items-center bg-white'>
+				<h1 className='text-3xl md:text-4xl font-bold mb-2 text-gray-800'>
+					Sign In
+				</h1>
+				<p className='text-gray-500 mb-8 text-base font-normal'>
 					Please enter your credentials to log in.
 				</p>
 
@@ -117,8 +119,8 @@ function LoginComponent() {
 								required: "Email is required",
 								pattern: { value: /^\S+@\S+$/i, message: "Invalid email format" },
 							})}
-							placeholder="Enter your email"
-							className="w-full rounded-md p-3 text-sm text-gray-800 border focus:outline-none focus:ring-2 focus:ring-purple-500"
+							placeholder='Enter your email'
+							className='w-full rounded-md p-3 text-sm text-gray-800 border focus:outline-none focus:ring-2 focus:ring-blue-500'
 						/>
 						{errors.email && (
 							<p className="text-red-500 text-xs mt-1">{errors.email.message}</p>
@@ -137,8 +139,8 @@ function LoginComponent() {
 								required: "Password is required",
 								minLength: { value: 6, message: "Password must be at least 6 characters" },
 							})}
-							placeholder="Password"
-							className="w-full rounded-md p-3 text-sm text-gray-800 border focus:outline-none focus:ring-2 focus:ring-purple-500"
+							placeholder='Password'
+							className='w-full rounded-md p-3 text-sm text-gray-800 border focus:outline-none focus:ring-2 focus:ring-blue-500'
 						/>
 						{errors.password && (
 							<p className="text-red-500 text-xs mt-1">{errors.password.message}</p>
@@ -150,7 +152,7 @@ function LoginComponent() {
 						<button
 							type="submit"
 							disabled={isSubmitting}
-							className="bg-purple-600 text-white w-full rounded-lg px-6 py-3 font-semibold text-sm hover:bg-purple-700 transition disabled:bg-purple-400"
+							className='bg-blue-600 text-white w-full rounded-lg px-6 py-3 font-semibold text-sm hover:bg-blue-700 transition disabled:bg-blue-400'
 						>
 							{isSubmitting ? "Logging in..." : "Login"}
 						</button>
@@ -158,11 +160,14 @@ function LoginComponent() {
 				</form>
 
 				<p className="text-sm mt-6 text-gray-500">
-					Don't have an account?{" "}
-					<Link href="/signup" className="text-purple-600 font-medium hover:underline">
-						Sign Up
-					</Link>
-				</p>
+  Don't have an account?{" "}
+  <Link
+    href="/signup"
+    className="text-blue-600 font-medium hover:underline"
+  >
+    Sign Up
+  </Link>
+</p>
 			</div>
 		</div>
 	);
