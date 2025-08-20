@@ -15,6 +15,7 @@ import { Dispatch } from "@reduxjs/toolkit";
 import { registerDoctor, RegisterDoctorPayload } from "@/lib/store/Slices/Auth";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/lib/store/Slices/Store";
+import dregister from "/public/deregister.jpg";
 
 type Option = { id: number; name: string };
 
@@ -102,7 +103,7 @@ export default function DoctorRegistration() {
       {/* Left Side */}
       <div className="hidden md:flex md:w-4/10 bg text-white relative">
         <Image
-          src="/deregister.jpg"
+          src={dregister}
           alt="Doctor Register"
           fill
           className="object-cover"
