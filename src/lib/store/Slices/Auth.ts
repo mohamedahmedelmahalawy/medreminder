@@ -97,19 +97,19 @@ export const registerDoctor = createAsyncThunk<
 
 type DoctorEditable = Partial<Omit<Doctor, "email" | "code" | "patient" | "country" | "city">>;
 
-export const editDoctorProfileByEmail = createAsyncThunk<
+export const editDoctorProfileByCode = createAsyncThunk<
   Doctor,
-  { email: string; updates: DoctorEditable },
+  { code: string; updates: DoctorEditable },
   { rejectValue: string }
 >(
   "auth/editDoctorProfileByEmail",
-  async ({ email, updates }, { rejectWithValue }) => {
+  async ({ code, updates }, { rejectWithValue }) => {
     try {
-      const needle = email.trim().toLowerCase();
+      const needle = code
 
       // 1) find doctor by email
       const all = await getJSON<Doctor[]>(`${BASE_URL}/doctors`);
-      const doc = all.find(d => (d.email ?? "").trim().toLowerCase() === needle);
+      const doc = all.find(d => (d.code === needle));
       if (!doc) return rejectWithValue("Doctor not found.");
 
       // 2) Merge while locking unchangeable fields (email, code, patient, country, city)
@@ -280,14 +280,14 @@ const authSlice = createSlice({
       .addCase(registerPatient.fulfilled, (s, a) => { s.status = "succeeded"; s.userDetails = a.payload; s.role = "medical" })
       .addCase(registerPatient.rejected, (s, a) => { s.status = "failed"; s.error = a.error.message })
 
-      .addCase(editDoctorProfileByEmail.pending, (s) => { s.status = "loading"; s.error = undefined; })
-      .addCase(editDoctorProfileByEmail.fulfilled, (s, a) => {
+      .addCase(editDoctorProfileByCode.pending, (s) => { s.status = "loading"; s.error = undefined; })
+      .addCase(editDoctorProfileByCode.fulfilled, (s, a) => {
         s.status = "succeeded";
         // if the logged-in user is this doctor, keep userDetails in sync
         s.userDetails = a.payload;
         s.code=a.payload.code
       })
-      .addCase(editDoctorProfileByEmail.rejected, (s, a) => {
+      .addCase(editDoctorProfileByCode.rejected, (s, a) => {
         s.status = "failed";
         s.error = (a.payload as string) ?? a.error.message;
       })
