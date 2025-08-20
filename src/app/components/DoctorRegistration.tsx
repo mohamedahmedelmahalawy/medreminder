@@ -54,7 +54,7 @@ const Button: React.FC<ButtonProps> = ({ label, className, type = "submit", ...p
   <button
     type={type}
     className={clsx(
-      "w-full rounded-lg bg-gradient-to-r from-purple-600 to-purple-800 px-4 py-3 text-white font-semibold shadow-lg hover:shadow-purple-400/50 transition duration-300",
+      "w-full rounded-lg bg-gradient-to-r from-blue-600 to-blue-800 px-4 py-3 text-white font-semibold shadow-lg hover:shadow-blue-400/50 transition duration-300",
       className
     )}
     {...props}
@@ -100,7 +100,7 @@ export default function DoctorRegistration() {
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
       {/* Left Side */}
-      <div className="hidden md:flex md:w-1/3 bg-purple-800 text-white relative">
+      <div className="hidden md:flex md:w-4/10 bg text-white relative">
         <Image
           src="/deregister.jpg"
           alt="Doctor Register"
@@ -108,16 +108,16 @@ export default function DoctorRegistration() {
           className="object-cover"
           priority
         />
-        <div className="absolute inset-0 bg-purple-900/70 flex flex-col justify-center items-center p-6 text-center">
-          <p className="text-xl font-medium leading-relaxed">
+        <div className="absolute inset-0 bg-blue-900/70 flex flex-col justify-center items-center p-6 text-center">
+          <h2 className="absolute inset-0 flex items-center justify-center text-3xl md:text-4xl font-extrabold text-white text-center px-6 drop-shadow-lg leading-tight">
             Helping You Reach, Treat, <br /> and Inspire Your Patients
-          </p>
+          </h2>
         </div>
       </div>
 
       {/* Right Side (larger) */}
-      <div className="flex-1 md:w-2/3 flex justify-center items-center p-6 sm:p-10 bg-gray-50">
-        <div className="w-full max-w-2xl bg-white shadow-xl rounded-2xl p-8">
+      <div className="flex-1 md:w-6/10 flex justify-center items-center p-6 sm:p-10 bg-gray-50">
+        <div className="w-full max-w-2xl rounded-2xl p-8">
           <h2 className="text-3xl font-bold text-gray-800 mb-6">
             Doctor Registration
           </h2>
@@ -129,7 +129,7 @@ export default function DoctorRegistration() {
                 {...register("name", { required: "Full Name is required" })}
                 type="text"
                 placeholder="Enter your Name"
-                className="mt-1 block w-full rounded-md border px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="mt-1 block w-full rounded-md border px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
             </div>
@@ -139,9 +139,9 @@ export default function DoctorRegistration() {
               <label className="block text-sm font-medium text-gray-700">Age</label>
               <input
                 {...register("Age", { required: "Age is required" })}
-                type="number"
+                // type="number"
                 placeholder="Enter your Age"
-                className="mt-1 block w-full rounded-md border px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="mt-1 block w-full rounded-md border px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               {errors.Age && <p className="text-red-500 text-sm">{errors.Age.message}</p>}
             </div>
@@ -152,7 +152,7 @@ export default function DoctorRegistration() {
               <EmailInput
                 {...register("email", { required: "Email is required" })}
                 placeholder="Enter your email"
-                className="mt-1 block w-full rounded-md border px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="mt-1 block w-full rounded-md border px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
             </div>
@@ -181,7 +181,7 @@ export default function DoctorRegistration() {
               value={watch("phone") || ""}
               onChange={(val: string) => setValue("phone", val)}
               placeholder="Enter your phone number"
-              className="mt-1 block w-full rounded-md border px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="mt-1 block w-full rounded-md border px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             {errors.phone && (
               <p className="text-red-500 text-sm">{errors.phone.message}</p>
@@ -201,7 +201,7 @@ export default function DoctorRegistration() {
                   {...register("specialty")}
                   type="text"
                   placeholder="Enter your Speciality"
-                  className="mt-2 block w-full rounded-md border px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  className="mt-2 block w-full rounded-md border px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
             </div>
@@ -239,7 +239,7 @@ export default function DoctorRegistration() {
 
           <p className="text-sm text-center mt-6">
             Have an account?{" "}
-            <Link href="/login" className="text-purple-600 font-semibold hover:underline">
+            <Link href="/login" className="text-blue-600 font-semibold hover:underline">
               Sign In
             </Link>
           </p>

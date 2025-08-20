@@ -72,7 +72,7 @@ export default function PatientRegistration() {
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
       {/* Left side with image */}
-      <div className="hidden md:flex md:w-1/3 relative overflow-hidden">
+      <div className="hidden md:flex md:w-4/10 relative overflow-hidden">
         <Image
           src="/Register.jpg"
           alt="Doctor helping patient"
@@ -81,16 +81,16 @@ export default function PatientRegistration() {
           className="object-cover"
         />
         <div className="absolute inset-0 bg-blue-900/70 flex items-center justify-center p-6 text-center">
-          <p className="text-white text-xl font-medium leading-relaxed max-w-md">
+          <h2 className="absolute inset-0 flex items-center justify-center text-3xl md:text-4xl font-extrabold text-white text-center px-6 drop-shadow-lg leading-tight">
             Caring for patients with compassion — <br /> register now and
             connect easily with your healthcare team.
-          </p>
+          </h2>
         </div>
       </div>
 
       {/* Right side with form */}
-      <div className="flex-1 md:w-2/3 flex justify-center items-center p-6 sm:p-10 bg-gray-50">
-        <div className="w-full max-w-2xl bg-white shadow-xl rounded-2xl p-8">
+      <div className="flex-1 md:w-6/10 flex justify-center items-center p-6 sm:p-10 bg-gray-50">
+        <div className="w-full max-w-2xl  rounded-2xl p-8">
           <h2 className="text-3xl font-bold mb-6 text-gray-800 text-center">
             Patient Registration
           </h2>
@@ -114,7 +114,7 @@ export default function PatientRegistration() {
             <div>
               <input
                 {...register("age", { required: "Age is required" })}
-                type="number"
+                // type="number"
                 placeholder="Age"
                 className="w-full rounded-md border px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
