@@ -75,7 +75,7 @@ export default function Modal({ name }: ModalProps) {
 					cases: [{ diagnosis: [] }],
 				};
 
-				const updated = await dispatch(addPatient({ doctorCode: "EGP12Hop676", patient })).unwrap();
+				const updated = await dispatch(addPatient({  patient })).unwrap();
 
 				console.log("Updated doctor:", updated);
 				alert("Patient added ✅");
