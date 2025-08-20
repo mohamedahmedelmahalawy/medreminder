@@ -5,6 +5,9 @@ import IntroStats from "./components/IntroStats";
 import MedicationManagement from "./components/MedicationManagement";
 import AskedQuestions from "@/components/AskedQuestions";
 import FeaturesSection from "./components/FeaturesSection";
+import MedicalSlider from "./components/MedicalSlider";
+import SpecialistsSlider from "./components/SpecialistsSlider";
+import MedicalNetwork from "./components/MedicalNetwork";
 
 // import RegisterPage from "@/app/(routes)/signup/page";
 // import LoginPage from "@/app/(routes)/login/page";
@@ -14,7 +17,7 @@ export default function Home() {
   return (
     <>
       <main>
-        <section className="mx-auto px-8 py-18 md:py-60 min-h-screen overflow-hidden text-white">
+        <section className="mx-auto px-8 py-18 md:py-24 min-h-screen overflow-hidden text-white">
           <BackGroundVideo />
           <div className="flex flex-col items-center gap-4 mb-10 text-center">
             <h1
@@ -23,7 +26,6 @@ export default function Home() {
             >
               Connecting Medical <br /> Staff and Patients
             </h1>
-
             <p className="inline-block w-2/3 text-2xl animate-enter-pulse-3_5s md:1/3">
               One Powerful App for Every Step of Care
             </p>
@@ -37,6 +39,8 @@ export default function Home() {
         </section>
 
         <IntroStats />
+        <MedicalNetwork />
+        <SpecialistsSlider />
         <section className="mx-auto px-4 py-18 max-w-screen-xl">
           <div className="relative rounded-3xl aspect-[21/9] overflow-hidden">
             <Image
@@ -50,6 +54,7 @@ export default function Home() {
           </div>
         </section>
         <MedicationManagement />
+        <MedicalSlider />
         <FeaturesSection />
         <section className="mx-auto py-18 max-w-[1280px]">
           <AskedQuestions />
