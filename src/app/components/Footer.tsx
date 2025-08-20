@@ -1,5 +1,7 @@
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
+import medlogo from "/public/Medlogo.png";
 
 function Footer() {
   const year = new Date().getFullYear();
@@ -9,7 +11,7 @@ function Footer() {
         <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-10">
           <div className="flex flex-col space-y-5 max-w-xs">
             <Link href="/" className="flex items-center gap-3">
-              <img src="/Medlogo.png" alt="MedReminder Logo" className="h-12 w-12 rounded-xl" />
+              <Image src={medlogo} alt="MedReminder Logo" className="h-12 w-12 rounded-xl" />
               <span className="text-xl font-semibold tracking-wide text-white">MedReminder</span>
             </Link>
             <p className="text-gray-200 leading-relaxed">

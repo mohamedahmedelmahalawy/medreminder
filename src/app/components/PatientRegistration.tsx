@@ -13,6 +13,7 @@ import SelectInput from "@/components/SelectInput";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/lib/store/Slices/Store";
 import { registerPatient, RegisterPatientPayload } from "@/lib/store/Slices/Auth";
+import dregister from "/public/dregister.jpg";
 
 type PatientFormData = {
   name: string;
@@ -74,7 +75,7 @@ export default function PatientRegistration() {
       {/* Left side with image */}
       <div className="hidden md:flex md:w-4/10 relative overflow-hidden">
         <Image
-          src="/Register.jpg"
+          src={dregister}
           alt="Doctor helping patient"
           fill
           priority

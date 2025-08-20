@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React, { useState, useEffect } from 'react';
 import { Menu, X, ChevronDown } from 'lucide-react';
+import medlogo from '/public/Medlogo.png';
 
 function Navbar() {
   const [isClicked, setIsClicked] = useState("Home");
@@ -53,7 +54,7 @@ function Navbar() {
         <Link href="/" onClick={() => setIsClicked("")}>
           <Image
             className="cursor-pointer w-16 sm:w-20 md:w-24 h-auto"
-            src="/Medlogo.png"
+            src={medlogo}
             alt="MedReminder logo"
             width={100}
             height={90}

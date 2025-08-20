@@ -6,6 +6,8 @@ import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { loginDoctor, loginPatient } from "@/lib/store/Slices/Auth";
 import type { AppDispatch, RootState } from "@/lib/store/Slices/Store";
+import Image from "next/image";
+import login from "/public/login.webp";
 
 type LoginFormData = { email: string; password: string };
 
@@ -83,8 +85,8 @@ function LoginComponent() {
 					className={`absolute inset-0 transform transition-all duration-700 ease-out ${imgVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"
 						}`}
 				>
-					<img
-						src='/login.webp'
+					<Image
+						src={login}
 						alt='Doctor and patient'
 						className='w-full h-full object-cover'
 					/>
