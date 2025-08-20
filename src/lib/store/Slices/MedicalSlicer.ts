@@ -141,61 +141,87 @@ export const removePatient = createAsyncThunk<
 //edit patient
 type PatientEditable = Partial<Omit<DoctorPatient, "cases">>; // allow phone edits
 
-export const editPatient = createAsyncThunk<
-    Doctor,
-    { doctorCode: string; currentPhone: string; updates: PatientEditable },
-    { rejectValue: string }
->(
-    "doctor/editPatient",
-    async ({ doctorCode, currentPhone, updates }, { rejectWithValue }) => {
-        try {
-            const doc = await fetchDoctorByCode(doctorCode);
+// export const editPatient = createAsyncThunk<
+//     Doctor,
+//     { doctorCode: string; currentPhone: string; updates: PatientEditable },
+//     { rejectValue: string }
+// >(
+//     "doctor/editPatient",
+//     async ({ doctorCode, currentPhone, updates }, { rejectWithValue }) => {
+//         try {
+//             const doc = await fetchDoctorByCode(doctorCode);
 
-            const cur = currentPhone.trim();
-            const idx = (doc.patient ?? []).findIndex(
-                p => (p.phone ?? "").trim() === cur
-            );
-            if (idx === -1) return rejectWithValue("Patient not found for this doctor.");
+//             const cur = currentPhone.trim();
+//             const idx = (doc.patient ?? []).findIndex(
+//                 p => (p.phone ?? "").trim() === cur
+//             );
+//             if (idx === -1) return rejectWithValue("Patient not found for this doctor.");
 
-            const existing = doc.patient![idx];
-            const requestedPhone = (updates.phone ?? existing.phone ?? "").trim();
+//             const existing = doc.patient![idx];
+//             const requestedPhone = (updates.phone ?? existing.phone ?? "").trim();
 
-            // If phone is changing, ensure no duplicate with another patient
-            if (requestedPhone !== cur) {
-                const clash = (doc.patient ?? []).find(
-                    p => (p.phone ?? "").trim() === requestedPhone
-                );
-                if (clash) return rejectWithValue("Another patient already has this phone.");
-            }
+//             // If phone is changing, ensure no duplicate with another patient
+//             if (requestedPhone !== cur) {
+//                 const clash = (doc.patient ?? []).find(
+//                     p => (p.phone ?? "").trim() === requestedPhone
+//                 );
+//                 if (clash) return rejectWithValue("Another patient already has this phone.");
+//             }
 
-            // Merge updates; keep cases but fix their ids to match the (possibly) new phone
-            const fixedCases = (existing.cases ?? []).map(c => ({
-                ...c,
-                id: requestedPhone, // keep cases id aligned with phone
-            }));
+//             // Merge updates; keep cases but fix their ids to match the (possibly) new phone
+//             const fixedCases = (existing.cases ?? []).map(c => ({
+//                 ...c,
+//                 id: requestedPhone, // keep cases id aligned with phone
+//             }));
 
-            const merged: DoctorPatient = {
-                ...existing,
-                ...updates,
-                phone: requestedPhone,
-                cases: fixedCases,
-            };
+//             const merged: DoctorPatient = {
+//                 ...existing,
+//                 ...updates,
+//                 phone: requestedPhone,
+//                 cases: fixedCases,
+//             };
 
-            // PUT the single patient to /doctors/{code}/patients/{currentPhone}
+//             // PUT the single patient to /doctors/{code}/patients/{currentPhone}
 
-            //             const patients = [...(doc.patient ?? [])];
-            // patients[idx] = merged;
-            // const updated = await postJSON<Doctor>(`${BASE_URL}/doctors/${doc.code}`, { patient: patients });
-            // return updated;
-            const updated = await patchJSON<Doctor>(
-                `${BASE_URL}/doctors/${encodeURIComponent(doc.code)}/patients/${encodeURIComponent(cur)}`,
-                merged
-            );
-            return updated;
-        } catch (e: any) {
-            return rejectWithValue(e?.message ?? "Failed to edit patient");
-        }
+//             //             const patients = [...(doc.patient ?? [])];
+//             // patients[idx] = merged;
+//             // const updated = await postJSON<Doctor>(`${BASE_URL}/doctors/${doc.code}`, { patient: patients });
+//             // return updated;
+//             const updated = await patchJSON<Doctor>(
+//                 `${BASE_URL}/doctors/${encodeURIComponent(doc.code)}/patients/${encodeURIComponent(cur)}`,
+//                 merged
+//             );
+//             return updated;
+//         } catch (e: any) {
+//             return rejectWithValue(e?.message ?? "Failed to edit patient");
+//         }
+//     }
+// );
+
+
+
+export const updatePatient = createAsyncThunk(
+  "doctor/updatePatient",
+  async ({ doctorCode, patientPhone, updatedData }: {
+    doctorCode: string;
+    patientPhone: string;
+    updatedData: DoctorPatient;
+  }) => {
+    try {
+      // First, fetch the current doctor data
+      const doc = await fetchDoctorByCode(doctorCode);
+      if (!doc) return;
+      // Update the patient data
+      const updated = await patchJSON<Doctor>(
+        `${BASE_URL}/doctors/${doctorCode}/patients/${patientPhone}`,
+        updatedData
+      );
+
+      return updated;
+    } catch (error) {
+      throw error;
     }
+  }
 );
 
 export const getDiagnoses = createAsyncThunk<
@@ -280,45 +306,10 @@ const doctorSlice = createSlice({
             .addCase(removeDiagnosis.fulfilled, (s, a) => { s.status = "succeeded"; s.current = a.payload; })
             .addCase(removeDiagnosis.rejected, (s, a) => { s.status = "failed"; s.error = a.error.message; })
 
-            .addCase(editPatient.pending, (s) => { s.status = "loading"; s.error = undefined; })
-            .addCase(editPatient.fulfilled, (s, a) => { s.status = "succeeded"; s.current = a.payload; })
-            .addCase(editPatient.rejected, (s, a) => { s.status = "failed"; s.error = (a.payload as string) ?? a.error.message; })
-    },
-
-  },
-  //   optional for ui 
-  extraReducers: (b) => {
-    b.addCase(addPatient.pending, (s) => { s.status = "loading"; s.error = undefined; })
-      .addCase(addPatient.fulfilled, (s, a) => { s.status = "succeeded"; s.current = a.payload; })
-      .addCase(addPatient.rejected, (s, a) => { s.status = "failed"; s.error = a.error.message; })
-
-      .addCase(removePatient.pending, (s) => { s.status = "loading"; s.error = undefined; })
-      .addCase(removePatient.fulfilled, (s, a) => { s.status = "succeeded"; s.current = a.payload; })
-      .addCase(removePatient.rejected, (s, a) => { s.status = "failed"; s.error = a.error.message; })
-
-      .addCase(addDiagnosis.pending, (s) => { s.status = "loading"; s.error = undefined; })
-      .addCase(addDiagnosis.fulfilled, (s, a) => { s.status = "succeeded"; s.current = a.payload; })
-      .addCase(addDiagnosis.rejected, (s, a) => { s.status = "failed"; s.error = a.error.message; })
-
-      .addCase(removeDiagnosis.pending, (s) => { s.status = "loading"; s.error = undefined; })
-      .addCase(removeDiagnosis.fulfilled, (s, a) => { s.status = "succeeded"; s.current = a.payload; })
-      .addCase(removeDiagnosis.rejected, (s, a) => { s.status = "failed"; s.error = a.error.message; })
-
-      .addCase(updatePatient.pending, (state) => {
-        state.status = "loading";
-        state.error = undefined;
-      })
-      .addCase(updatePatient.fulfilled, (state, action) => {
-        state.status = "succeeded";
-        state.current = action.payload;
-      })
-      .addCase(updatePatient.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.error.message;
-      })
-
-  },
-
+            .addCase(updatePatient.pending, (s) => { s.status = "loading"; s.error = undefined; })
+            .addCase(updatePatient.fulfilled, (s, a) => { s.status = "succeeded"; s.current = a.payload; })
+            .addCase(updatePatient.rejected, (s, a) => { s.status = "failed"; s.error = (a.payload as string) ?? a.error.message; })
+    }
 });
 
 export const { setCurrentDoctor } = doctorSlice.actions;
