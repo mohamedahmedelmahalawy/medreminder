@@ -43,9 +43,7 @@ function LoginComponent() {
 							userDetails: doctor,
 						})
 					);
-					console.log("all data", userDetails)
-					console.log("Dr Code", code)
-					console.log("role", role)
+			
 
 				}
 
