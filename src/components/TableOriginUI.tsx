@@ -106,6 +106,7 @@ import { removePatient } from "@/lib/store/Slices/MedicalSlicer";
 import EditPatientModal from "./EditPatientModal";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
+
 // import { Row } from "react-aria-components";
 type Item = {
 	id?: string; // your patient id in doctor list
@@ -228,6 +229,23 @@ export default function TableOriginUI() {
 
 	const { current } = useSelector((s: RootState) => s.doctor);
 
+	 const code: string | null =
+    typeof window !== "undefined"
+      ? (() => {
+          const raw = localStorage.getItem("auth");
+          if (!raw) return null;
+          try {
+            const parsed = JSON.parse(raw);
+            // works whether you saved a string or an object { code: "..." }
+            return typeof parsed === "string" ? parsed : parsed?.code ?? null;
+          } catch {
+            // if you stored plain string without JSON.stringify
+            return raw;
+          }
+        })()
+      : null;
+	console.log(code)
+
 	const dispatch = useDispatch<AppDispatch>();
 
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -253,14 +271,15 @@ export default function TableOriginUI() {
 	useEffect(() => {
 		async function fetchPosts() {
 
-			const res = await fetch("https://fast-api-dnk5.vercel.app/doctors/EGP12Hop676/patients");
+			const res = await fetch(`https://fast-api-dnk5.vercel.app/doctors/${code}/patients`);
 
 			const data = await res.json();
 			setData(data);
 			console.log(current);
+			console.log(code)
 		}
 		fetchPosts();
-	}, [current]);
+	}, []);
 
 	const handleDeleteRows = async () => {
 		const selectedRows = table.getSelectedRowModel().rows;
@@ -269,7 +288,7 @@ export default function TableOriginUI() {
 		setData(updatedData);
 		try {
 			for (const row of selectedRows) {
-				await dispatch(removePatient({ doctorCode: "EGP12Hop676", patientPhone: row.original.phone })).unwrap();
+				await dispatch(removePatient({ doctorCode:code, patientPhone: row.original.phone })).unwrap();
 				console.log(row.original.phone);
 			}
 		} catch (error) {

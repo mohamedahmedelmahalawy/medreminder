@@ -62,7 +62,7 @@ interface DoctorState {
 const initialState: DoctorState = { status: "idle" };
 
 // hna lma el patient yedawr 3la el code beta3 el doctor
-async function fetchDoctorByCode(code: string): Promise<Doctor> {
+async function fetchDoctorByCode(code: any): Promise<Doctor> {
     const docs = await getJSON<Doctor[]>(`${BASE_URL}/doctors?code=${encodeURIComponent(code)}`);
     const doc = docs[0];
     if (!doc) throw new Error("Doctor not found.");
@@ -73,7 +73,7 @@ async function fetchDoctorByCode(code: string): Promise<Doctor> {
 export const addPatient = createAsyncThunk<
 
   Doctor,
-  { doctorCode: string; patient: DoctorPatient }
+  { doctorCode: string|null; patient: DoctorPatient }
 
 >(
   "doctor/addPatient",
@@ -93,14 +93,6 @@ export const addPatient = createAsyncThunk<
       throw new Error("This phone exists");
     }
 
-
-        if (exists) {
-            if (typeof window !== "undefined") {
-                alert("This phone exists");
-            }
-            // stop the flow so nothing is added
-            throw new Error("This phone exists");
-        }
 
         const updated = await postJSON<Doctor>(
             `${BASE_URL}/doctors/${encodeURIComponent(doc.code)}/patients`,
@@ -127,7 +119,7 @@ export const addPatient = createAsyncThunk<
 //bel
 export const removePatient = createAsyncThunk<
     Doctor,
-    { doctorCode: string; patientPhone: string }
+    { doctorCode: string|null; patientPhone: string }
 >("doctor/removePatient", async ({ doctorCode, patientPhone }) => {
     // Optional: you can skip this fetch if doctorCode is already the code you need
     const doc = await fetchDoctorByCode(doctorCode);
