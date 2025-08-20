@@ -71,18 +71,28 @@ async function fetchDoctorByCode(code: string): Promise<Doctor> {
 
 /** dashboard nezawd patient */
 export const addPatient = createAsyncThunk<
-    Doctor,
-    { doctorCode: string; patient: DoctorPatient }
+
+  Doctor,
+  { doctorCode: string; patient: DoctorPatient }
 
 >(
-    "doctor/addPatient",
-    async ({ doctorCode, patient }) => {
-        const doc = await fetchDoctorByCode(doctorCode);
-        // hna bencheck bas
-        const phone = (patient.phone ?? "").trim();
-        const exists = (doc.patient ?? []).find(
-            p => (p.phone ?? "").trim() === phone
-        );
+  "doctor/addPatient",
+  async ({ doctorCode, patient }) => {
+    const doc = await fetchDoctorByCode(doctorCode);
+    // hna bencheck bas
+    const phone = (patient.phone ?? "").trim();
+    const exists = (doc.patient ?? []).find(
+      p => (p.phone ?? "").trim() === phone
+    );
+
+    if (exists) {
+      if (typeof window !== "undefined") {
+        alert("This phone exists");
+      }
+      // stop the flow so nothing is added
+      throw new Error("This phone exists");
+    }
+
 
         if (exists) {
             if (typeof window !== "undefined") {
@@ -202,6 +212,7 @@ export const getDiagnoses = createAsyncThunk<
     }
 });
 
+
 /** Add diagnosis (POST /doctors/{code}/patients/{phone}/diagnosis) */
 export const addDiagnosis = createAsyncThunk<
     Doctor, 
@@ -225,6 +236,7 @@ export const addDiagnosis = createAsyncThunk<
 });
 
 /** Remove diagnosis (DELETE …/diagnosis?index=N) */
+
 export const removeDiagnosis = createAsyncThunk<
     Doctor,
     { doctorCode: string; patientPhone: string; index: number },
@@ -272,6 +284,41 @@ const doctorSlice = createSlice({
             .addCase(editPatient.fulfilled, (s, a) => { s.status = "succeeded"; s.current = a.payload; })
             .addCase(editPatient.rejected, (s, a) => { s.status = "failed"; s.error = (a.payload as string) ?? a.error.message; })
     },
+
+  },
+  //   optional for ui 
+  extraReducers: (b) => {
+    b.addCase(addPatient.pending, (s) => { s.status = "loading"; s.error = undefined; })
+      .addCase(addPatient.fulfilled, (s, a) => { s.status = "succeeded"; s.current = a.payload; })
+      .addCase(addPatient.rejected, (s, a) => { s.status = "failed"; s.error = a.error.message; })
+
+      .addCase(removePatient.pending, (s) => { s.status = "loading"; s.error = undefined; })
+      .addCase(removePatient.fulfilled, (s, a) => { s.status = "succeeded"; s.current = a.payload; })
+      .addCase(removePatient.rejected, (s, a) => { s.status = "failed"; s.error = a.error.message; })
+
+      .addCase(addDiagnosis.pending, (s) => { s.status = "loading"; s.error = undefined; })
+      .addCase(addDiagnosis.fulfilled, (s, a) => { s.status = "succeeded"; s.current = a.payload; })
+      .addCase(addDiagnosis.rejected, (s, a) => { s.status = "failed"; s.error = a.error.message; })
+
+      .addCase(removeDiagnosis.pending, (s) => { s.status = "loading"; s.error = undefined; })
+      .addCase(removeDiagnosis.fulfilled, (s, a) => { s.status = "succeeded"; s.current = a.payload; })
+      .addCase(removeDiagnosis.rejected, (s, a) => { s.status = "failed"; s.error = a.error.message; })
+
+      .addCase(updatePatient.pending, (state) => {
+        state.status = "loading";
+        state.error = undefined;
+      })
+      .addCase(updatePatient.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.current = action.payload;
+      })
+      .addCase(updatePatient.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      })
+
+  },
+
 });
 
 export const { setCurrentDoctor } = doctorSlice.actions;
