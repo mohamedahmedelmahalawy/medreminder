@@ -54,22 +54,6 @@ export default function Modal({ name }: ModalProps) {
 		formState: { errors },
 	} = useForm<FormVals>();
 
-					 const code: string | null =
-    typeof window !== "undefined"
-      ? (() => {
-          const raw = localStorage.getItem("auth");
-          if (!raw) return null;
-          try {
-            const parsed = JSON.parse(raw);
-            // works whether you saved a string or an object { code: "..." }
-            return typeof parsed === "string" ? parsed : parsed?.code ?? null;
-          } catch {
-            // if you stored plain string without JSON.stringify
-            return raw;
-          }
-        })()
-      : null;
-
 	const onSubmit = async (data: FormVals) => {
 		try {
 			
@@ -91,10 +75,7 @@ export default function Modal({ name }: ModalProps) {
 					cases: [{ diagnosis: [] }],
 				};
 
-
-	
-
-				const updated = await dispatch(addPatient({ doctorCode:code, patient })).unwrap();
+				const updated = await dispatch(addPatient({  patient })).unwrap();
 
 				console.log("Updated doctor:", updated);
 				alert("Patient added ✅");

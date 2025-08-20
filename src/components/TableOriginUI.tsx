@@ -228,8 +228,10 @@ export default function TableOriginUI() {
 	const id = useId();
 
 	const { current } = useSelector((s: RootState) => s.doctor);
+	console.log(current);
+	
 
-	 const code: string | null =
+	 const code: string  =
     typeof window !== "undefined"
       ? (() => {
           const raw = localStorage.getItem("auth");
@@ -244,7 +246,7 @@ export default function TableOriginUI() {
           }
         })()
       : null;
-	console.log(code)
+	
 
 	const dispatch = useDispatch<AppDispatch>();
 
@@ -274,12 +276,14 @@ export default function TableOriginUI() {
 			const res = await fetch(`https://fast-api-dnk5.vercel.app/doctors/${code}/patients`);
 
 			const data = await res.json();
+			console.log(data);
+			
 			setData(data);
 			console.log(current);
 			console.log(code)
 		}
 		fetchPosts();
-	}, []);
+	}, [current]);
 
 	const handleDeleteRows = async () => {
 		const selectedRows = table.getSelectedRowModel().rows;
@@ -717,6 +721,23 @@ function RowActions({ row }: { row: Row<Item> }) {
 	const dispatch = useDispatch<AppDispatch>();
 	const doctor = useSelector((state: RootState) => state.doctor.current);
 
+
+	const code: any =
+    typeof window !== "undefined"
+      ? (() => {
+          const raw = localStorage.getItem("auth");
+          if (!raw) return null;
+          try {
+            const parsed = JSON.parse(raw);
+            // works whether you saved a string or an object { code: "..." }
+            return typeof parsed === "string" ? parsed : parsed?.code ?? null;
+          } catch {
+            // if you stored plain string without JSON.stringify
+            return raw;
+          }
+        })()
+      : null;
+
 	const handleEdit = () => {
 		setIsEditModalOpen(true);
 	};
@@ -725,7 +746,7 @@ function RowActions({ row }: { row: Row<Item> }) {
 			// Update the patient data in your backend
 			const result = await dispatch(
 				updatePatient({
-					doctorCode: "EGP12Hop676",
+					doctorCode:code ,
 					patientPhone: row.original.phone,
 					updatedData,
 				})
@@ -749,7 +770,7 @@ function RowActions({ row }: { row: Row<Item> }) {
 				schedule: new Date(data.schedule).toISOString(), // ensure ISO format
 			};
 
-		const us=	await dispatch(addDiagnosis({ doctorCode: "EGP12Hop676", patientPhone: row.original.phone, entry })).unwrap();
+		const us=	await dispatch(addDiagnosis({ doctorCode: code, patientPhone: row.original.phone, entry })).unwrap();
 			
 			console.log(us);
 			
@@ -762,7 +783,7 @@ function RowActions({ row }: { row: Row<Item> }) {
 	};
 	const handleDeleteSingleRow = async () => {
 		try {
-			await dispatch(removePatient({ doctorCode: "EGP12Hop676", patientPhone: row.original.phone })).unwrap();
+			await dispatch(removePatient({ doctorCode: code, patientPhone: row.original.phone })).unwrap();
 			console.log("delete patient");
 		} catch (error) {
 			console.error("failed to delete patient", error);
