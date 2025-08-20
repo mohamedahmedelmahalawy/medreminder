@@ -44,24 +44,26 @@ const medicalManagementPosts: MedicalManagementPost[] = [
   },
 ];
 
-function Features() {
+function FeaturesSection() {
   return (
-    <main className="mx-auto pt-8 max-w-[1280px]">
-      <section className="flex flex-col justify-center gap-5 pb-7 w-full">
-        <h2 className="mb-5 font-semibold text-[#42307D] text-5xl text-center animate-pulse">
-          Application Features
-        </h2>
-        <p className="mb-4 text-center">
-          How Medical crew and patient stay in sync?
-        </p>
-        <ul className="gap-8 grid grid-cols-1 md:grid-cols-2 mx-auto w-full">
+    <main className="mx-auto py-18 pt-8 max-w-[1280px]">
+      <section className="flex flex-col justify-center items-center gap-5 pb-7 w-full">
+        <div className="flex flex-col gap-5">
+          <h2 className="font-extrabold text-[#42307D] text-5xl text-center animate-pulse">
+            Application Features
+          </h2>
+          <p className="mb-8 text-center">
+            How Medical crew and patient stay in sync?
+          </p>
+        </div>
+        <ul className="justify-items-center gap-8 grid grid-cols-1 md:grid-cols-2 mx-auto w-full max-w-[1280px]">
           {medicalManagementPosts?.map((post) => {
             return <MedicalManagementCard key={post.id} {...post} />;
           })}
         </ul>
       </section>
       <section className="flex flex-col justify-center gap-5 pb-7 w-full">
-        <ul className="gap-8 grid grid-cols-1 md:grid-cols-2 mx-auto w-full">
+        <ul className="justify-items-center gap-8 grid grid-cols-1 md:grid-cols-2 mx-auto w-full max-w-[1280px]">
           {posts?.map((post) => {
             return <PostCard key={post.id} {...post} />;
           })}
@@ -71,4 +73,4 @@ function Features() {
   );
 }
 
-export default Features;
+export default FeaturesSection;

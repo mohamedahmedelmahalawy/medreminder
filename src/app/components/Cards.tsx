@@ -1,7 +1,7 @@
 const FEATURES = [
   {
     title: "Administration Roles",
-    text: "For all Medical profession to oragnize their work.",
+    text: "For all Medical profession to organize their work.",
   },
   {
     title: "Patient Notifications",
@@ -15,22 +15,19 @@ const FEATURES = [
 
 export default function FeatureStrip() {
   return (
-    <section className="relative">
-      <div className="relative mx-auto max-w-screen-2xl px-4 py-12">
-        <div
-          className="grid grid-cols-1 md:grid-cols-3 text-white
-                      gap-4 "
-        >
+    <div className="flex items-center">
+      <div className="mx-auto px-4 py-12 max-w-screen-2xl">
+        <div className="justify-items-center gap-8 grid grid-cols-1 md:grid-cols-3 text-white">
           {FEATURES.map((f) => (
             <div
               key={f.title}
-              className="min-h-[180px] flex items-center justify-center text-center
-                         px-8 py-10 bg-white/10 backdrop-blur-sm
-                         shadow-[inset_0_0_0_1px_rgba(255,255,255,.15)] ]"
+              className="flex justify-center items-center bg-white/10 shadow-[inset_0_0_0_1px_rgba(255,255,255,.15)] backdrop-blur-sm px-8 py-10 w-full min-h-[180px] text-center"
             >
               <div>
-                <h3 className="text-xl md:text-2xl font-semibold">{f.title}</h3>
-                <p className="mt-3 text-[17px] text-shadow-2x md:text[12px] text-white/90 leading-relaxed">
+                <h3 className="font-semibold md:text-[28px] text-xl">
+                  {f.title}
+                </h3>
+                <p className="text-shadow-2x mt-3 text-[16px] text-white/90 md:text-[18px] lg:text-[20px] leading-relaxed">
                   {f.text}
                 </p>
               </div>
@@ -38,6 +35,6 @@ export default function FeatureStrip() {
           ))}
         </div>
       </div>
-    </section>
+    </div>
   );
 }
