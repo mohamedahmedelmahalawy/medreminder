@@ -69,7 +69,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
 import {
   Pagination,
   PaginationContent,
@@ -95,7 +94,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
 import Modal from "./Modal";
 import ModalDig from "./ModalDig";
 import { DialogContent, DialogHeader } from "./ui/dialog";
@@ -165,13 +163,14 @@ const columns: ColumnDef<Item>[] = [
         aria-label="Select row"
       />
     ),
-    size: 28,
+    size: 20,
     enableSorting: false,
     enableHiding: false,
   },
   {
     header: "Name",
     accessorKey: "name",
+
     cell: ({ row }) => (
       <div className="font-medium">
         <Link href={`/patients/${row.original.phone}`}>
@@ -179,6 +178,7 @@ const columns: ColumnDef<Item>[] = [
         </Link>
       </div>
     ),
+
     size: 180,
     filterFn: multiColumnFilterFn,
     enableHiding: false,
@@ -188,7 +188,7 @@ const columns: ColumnDef<Item>[] = [
     accessorKey: "age",
 
     cell: ({ row }) => <div className="font-medium">{row.getValue("age")}</div>,
-    size: 100,
+    size: 70,
 
     filterFn: multiColumnFilterFn,
     enableHiding: false,
@@ -245,6 +245,7 @@ const columns: ColumnDef<Item>[] = [
 
 export default function TableOriginUI() {
   const id = useId();
+  const [viewOpen, setViewOpen] = useState(false);
 
   const { current } = useSelector((s: RootState) => s.doctor);
   console.log(current);
@@ -427,11 +428,10 @@ export default function TableOriginUI() {
             )}
           </div>
           {/* Filter by status */}
-          <Popover>
+          <Popover modal={false}>
             <PopoverTrigger asChild>
               {/* <Button variant="outline">
 								<FilterIcon className="opacity-60 -ms-1" size={16} aria-hidden="true" />
-
 								Status
 								{selectedStatuses.length > 0 && (
 									<span className="inline-flex items-center bg-background -me-1 px-1 border rounded h-5 max-h-full font-[inherit] font-medium text-[0.625rem] text-muted-foreground/70">
@@ -443,7 +443,6 @@ export default function TableOriginUI() {
             <PopoverContent className="p-3 w-auto min-w-36" align="start">
               {/* <div className="space-y-3">
 								<div className="font-medium text-muted-foreground text-xs">Filters</div>
-
 								<div className="space-y-3">
 									{uniqueStatusValues.map((value, i) => (
 										<div key={value} className="flex items-center gap-2">
@@ -485,12 +484,12 @@ export default function TableOriginUI() {
               onPointerDownOutside={() => setViewOpen(false)}
               // optional: also close on ESC
               onEscapeKeyDown={() => setViewOpen(false)}
-              // optional: close on hover-out (use a tiny delay to avoid flicker)
+              // optional: close on hover-out (use a tiny delay to av`oid flicker)
               onMouseLeave={() => {
                 const t = setTimeout(() => setViewOpen(false), 100);
                 // cancel if they come back quickly
                 const cancel = () => clearTimeout(t);
-                // @ts-ignore
+
                 this?.addEventListener?.("mouseenter", cancel, { once: true });
               }}
             >
@@ -880,7 +879,7 @@ function RowActions({ row }: { row: Row<Item> }) {
   };
   return (
     <>
-      <DropdownMenu>
+      <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
           <div className="flex justify-end">
             <Button
@@ -923,6 +922,7 @@ function RowActions({ row }: { row: Row<Item> }) {
         </DropdownMenuContent>
       </DropdownMenu>
       {/* Diagnostic Modal */}
+
       <Dialog open={openDialog} onOpenChange={setOpenDialog}>
         <DialogContent className="w-full max-w-[90vw] sm:max-w-[625px] lg:max-w-[700px]">
           <div className="flex flex-col justify-center items-center gap-2">
