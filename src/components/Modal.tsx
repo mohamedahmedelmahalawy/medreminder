@@ -23,9 +23,9 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/lib/store/Slices/Store";
 import { addPatient } from "@/lib/store/Slices/MedicalSlicer";
 import { DoctorPatient } from "@/lib/interfaces/DoctorPatient";
+import CountryInput from "./CountryInput";
 interface ModalProps {
 	name?: string;
-	
 }
 
 export type FormVals = {
@@ -42,6 +42,7 @@ export default function Modal({ name }: ModalProps) {
 	const id = useId();
 	const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 	const [selectedGender, setSelectedGender] = useState<string>("");
+	const [closeModal, setCloseModal] = useState(false);
 	const dispatch = useDispatch<AppDispatch>();
 
 	const {
@@ -56,38 +57,35 @@ export default function Modal({ name }: ModalProps) {
 
 	const onSubmit = async (data: FormVals) => {
 		try {
+			console.log(data);
+
+			const patient: DoctorPatient = {
+				id: crypto.randomUUID(),
+				name: data.name.trim(),
+				phone: data.phone,
+				country: data.country,
+				gender: data.gender,
+				profession: data.profession,
+				age: Number(data.age),
+				dateOfAdmission:
+					typeof data.dateOfAdmission === "string" ? data.dateOfAdmission : data.dateOfAdmission?.toISOString(),
+				cases: [{ diagnosis: [] }],
+			};
+			console.log(patient);
 			
-			 
-				const phone = String(data.phone).trim();
-				const isoDate =
-					typeof data.dateOfAdmission === "string" ? new Date(data.dateOfAdmission) : data.dateOfAdmission;
+			const updated = await dispatch(addPatient({ patient })).unwrap();
 
-				const patient: DoctorPatient = {
-					id: crypto.randomUUID(),
-					name: data.name.trim(),
-					phone: data.phone,
-					country: data.country,
-					gender: data.gender,
-					profession: data.profession,
-					age: Number(data.age),
-					dateOfAdmission:
-						typeof data.dateOfAdmission === "string" ? data.dateOfAdmission : data.dateOfAdmission?.toISOString(),
-					cases: [{ diagnosis: [] }],
-				};
-
-				const updated = await dispatch(addPatient({  patient })).unwrap();
-
-				console.log("Updated doctor:", updated);
-				alert("Patient added ✅");
-			
+			console.log("Updated doctor:", updated);
+			alert("Patient added ✅");
+			setCloseModal(false);
 			reset();
 		} catch (err: unknown) {
-			if(err instanceof Error) alert(err?.message ?? "Failed to add patient");
+			if (err instanceof Error) alert(err?.message ?? "Failed to add patient");
 			else alert("Failed");
 		}
 	};
 	return (
-		<Dialog>
+		<Dialog open={closeModal} onOpenChange={setCloseModal}>
 			<DialogTrigger asChild>
 				<Button variant="outline">
 					<PlusIcon className="-ms-1 opacity-60" size={20} aria-hidden="true" />
@@ -152,35 +150,46 @@ export default function Modal({ name }: ModalProps) {
 							)}
 						</div>
 						<div className="*:not-first:mt-2">
-							{/* <Input
-								placeholder="Telephone"
-								id={`${id}-telephone`}
-								{...register("telephone", {
+							<Controller
+								name="phone"
+								control={control}
+								rules={{
 									required: {
 										value: true,
-										message: "Telephone is required",
+										message: "Phone is required",
 									},
-									pattern: {
-										value: /^\d{11}$/,
-										message: "Telephone must be 11 digits",
-									},
-								})}
-								type="tel"
-							/> */}
-
-							<PhoneInputOrigin
-								name="phone"
-								value={watch("phone") || ""}
-								onChange={(val: string) => setValue("phone", val)}
-								placeholder="Enter your phone number"
-								
-								className="mt-1 block w-full rounded-md border px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+									// pattern: {
+									// 	value: /^\d{11}$/,
+									// 	message: "Telephone must be 11 digits",
+									// },
+								}}
+								render={({ field }) => (
+									<PhoneInputOrigin
+										name="phone"
+										value={field.value || ""}
+										onChange={field.onChange}
+										placeholder="Enter your phone number"
+										className="mt-1 block w-full rounded-md border px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+									/>
+								)}
 							/>
 							{errors.phone && <p className="text-red-500 text-sm">{String(errors.phone.message)}</p>}
 						</div>
 
 						<div className="*:not-first:mt-2">
-							<Input
+							<Controller
+								name="country"
+								control={control}
+								rules={{
+									required: {
+										value: true,
+										message: "Country is required",
+									},
+								}}
+								render={({ field }) => <CountryInput name="country" value={field.value} onChange={field.onChange} />}
+							/>
+
+							{/* <Input
 								placeholder="Country"
 								id={`${id}-country`}
 								{...register("country", {
@@ -190,7 +199,7 @@ export default function Modal({ name }: ModalProps) {
 									},
 								})}
 								type="text"
-							/>
+							/> */}
 							{errors.country && <span className="text-destructive">{String(errors.country.message)}</span>}
 						</div>
 						<div className="*:not-first:mt-2">
