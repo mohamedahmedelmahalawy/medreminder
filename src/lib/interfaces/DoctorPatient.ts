@@ -4,7 +4,7 @@ import { Patient } from "./Patient";
 import { Role } from "./Role";
 
 export interface DoctorPatient {
-	id?: string; // your patient id in doctor list
+	id?: string;
 	name: string;
 	phone: string;
 	country?: string;
@@ -14,10 +14,9 @@ export interface DoctorPatient {
 	Age?: number;
 	dateOfAdmission?: string;
 	cases?: CaseRecord[];
-	title: string;
+	title?: string;
 	specialty?: string;
-	location?: string;
-	email: string;
+	email?: string;
 	code?: string;
 	city?: string;
 	bio?: string;

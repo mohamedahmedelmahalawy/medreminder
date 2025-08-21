@@ -1,5 +1,6 @@
 import { AxiosInterceptor } from "@/interceptor/interceptor";
 import { DoctorPatient } from "@/lib/interfaces/DoctorPatient";
+import { log } from "console";
 
 // export async function getProfile(): Promise<DoctorPatient> {
 // 	const auth = JSON.parse(localStorage.getItem("auth") || "{}");
@@ -42,13 +43,24 @@ export async function getProfile(
 
 export async function getPatients(
 	auth: DoctorPatient
-): Promise<DoctorPatient | null> {
+): Promise<DoctorPatient[] | null> {
 	try {
 		const url = `/doctors/${auth.code}/patients`;
 		const res = await AxiosInterceptor.get(url);
+		console.log(res.data);
 		return res.data;
 	} catch (error) {
 		console.error("Error fetching patients:", error);
 		return null;
 	}
 }
+
+export const formatDate = (dateString: string) => {
+	return new Date(dateString).toLocaleDateString("en-US", {
+		year: "numeric",
+		month: "short",
+		day: "numeric",
+		hour: "2-digit",
+		minute: "2-digit",
+	});
+};
