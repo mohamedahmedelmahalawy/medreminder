@@ -277,11 +277,11 @@ export const addDiagnosis = createAsyncThunk<
 >("doctor/addDiagnosis", async ({ doctorCode, patientPhone, entry }, { rejectWithValue }) => {
   try {
 
-    const payload: DiagnosisEntry = { ...entry, schedule: new Date(entry.schedule).toISOString() };
+    // const payload: DiagnosisEntry = { ...entry, schedule: new Date(entry.schedule).toISOString() };
 
     await postJSON<void>(
-      `${BASE_URL}/doctors/${encodeURIComponent(doctorCode)}/patients/${encodeURIComponent(patientPhone)}/diagnosis`,
-      payload
+      `${BASE_URL}/doctors/${encodeURIComponent(doctorCode)}/patients/${patientPhone}/diagnosis`,
+      entry
     );
 
 

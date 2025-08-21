@@ -40,9 +40,9 @@ const items = [
 
 export default function AskedQuestions() {
   return (
-    <div className="space-y-4 mx-auto max-w-[1280px]">
+    <div className="space-y-4 mx-auto pb-16 max-w-[1280px]">
       <div className="flex flex-col gap-5">
-        <h2 className="font-extrabold text-[#42307D] text-5xl text-center animate-pulse">
+        <h2 className="font-extrabold text-[#000D44] text-5xl text-center animate-pulse">
           Frequently asked questions
         </h2>
         <h2 className="mb-8 text-[17px] text-center">
@@ -59,7 +59,7 @@ export default function AskedQuestions() {
           <AccordionItem
             value={item.id}
             key={item.id}
-            className="px-5 py-2 border-2 rounded-lg borde-gray-200"
+            className="px-5 py-2 border-[#0609181f] border-2 rounded-lg"
           >
             <AccordionPrimitive.Header className="flex">
               <AccordionPrimitive.Trigger className="flex flex-1 justify-between items-center [&[data-state=open]>svg>path:last-child]:opacity-0 py-2 focus-visible:border-ring rounded-md outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 font-semibold text-[15px] text-left leading-6 [&[data-state=open]>svg]:rotate-180 [&[data-state=open]>svg>path:last-child]:rotate-90 [&>svg>path:last-child]:origin-center transition-all [&>svg>path:last-child]:transition-all [&>svg>path:last-child]:duration-200">
@@ -76,7 +76,7 @@ export default function AskedQuestions() {
                 />
               </AccordionPrimitive.Trigger>
             </AccordionPrimitive.Header>
-            <AccordionContent className="pb-2 text-muted-foreground">
+            <AccordionContent className="pb-2 text-[#000D44]">
               {item.content}
             </AccordionContent>
           </AccordionItem>

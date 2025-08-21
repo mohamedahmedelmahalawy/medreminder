@@ -20,7 +20,7 @@ export default function RootLayout({
       <body className="bg-gray-50">
         <ClientProvider>
           <Navbar />
-          <div className="pt-23.5 pb-7">{children}</div>
+          <div className="pt-23.5 ">{children}</div>
           <Footer />
         </ClientProvider>
       </body>

@@ -24,7 +24,7 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="flex justify-center items-center bg-gradient-to-br from-purple-100 via-white to-purple-50 min-h-screen">
+    <div className="flex justify-center items-center bg-gradient-to-br from-blue-100 via-white to-blue-50 min-h-screen">
       <div className="flex md:flex-row flex-col bg-white shadow-2xl border border-gray-200 rounded-2xl w-full max-w-5xl overflow-hidden">
         {/* Left side */}
         <div className="relative w-full md:w-1/2 h-72 md:h-auto">
@@ -35,11 +35,11 @@ export default function RegisterPage() {
             className="object-cover"
             priority
           />
-          <div className="absolute inset-0 flex justify-center items-center bg-purple-800/80 p-6">
+          <div className="absolute inset-0 flex justify-center items-center bg-blue-800/80 p-6">
             <p className="font-semibold text-white text-xl md:text-2xl text-center leading-relaxed">
               &rdquo;For the heroes in white coats and the patients they care
               for — <br />
-              <span className="font-bold text-purple-200">
+              <span className="font-bold text-blue-200">
                 MedReminder
               </span>{" "}
               makes communication effortless and care stronger.&rdquo;
@@ -55,14 +55,14 @@ export default function RegisterPage() {
 
           <button
             onClick={() => setSignupRole("medical")}
-            className="bg-gradient-to-r from-purple-700 to-purple-900 shadow-lg hover:shadow-purple-400/50 mb-5 py-4 rounded-xl w-56 font-semibold text-white text-lg text-center hover:scale-105 transition duration-300 ease-in-out transform"
+            className="bg-gradient-to-r from-blue-700 to-blue-900 shadow-lg hover:shadow-blue-400/50 mb-5 py-4 rounded-xl w-56 font-semibold text-white text-lg text-center hover:scale-105 transition duration-300 ease-in-out transform cursor-pointer"
           >
             Medical Crew
           </button>
 
           <button
             onClick={() => setSignupRole("patient")}
-            className="bg-gradient-to-r from-purple-700 to-purple-900 shadow-lg hover:shadow-purple-400/50 py-4 rounded-xl w-56 font-semibold text-white text-lg text-center hover:scale-105 transition duration-300 ease-in-out transform"
+            className="bg-gradient-to-r from-blue-700 to-blue-900 shadow-lg hover:shadow-blue-400/50 py-4 rounded-xl w-56 font-semibold text-white text-lg text-center hover:scale-105 transition duration-300 ease-in-out transform cursor-pointer"
           >
             Patient
           </button>
@@ -71,7 +71,7 @@ export default function RegisterPage() {
             Already registered?{" "}
             <a
               href="/login"
-              className="font-semibold text-purple-700 hover:underline"
+              className="font-semibold text-blue-700 hover:underline"
             >
               Sign in here
             </a>
