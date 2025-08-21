@@ -2,70 +2,70 @@
 
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import {
-	ColumnDef,
-	ColumnFiltersState,
-	FilterFn,
-	flexRender,
-	getCoreRowModel,
-	getFacetedUniqueValues,
-	getFilteredRowModel,
-	getPaginationRowModel,
-	getSortedRowModel,
-	PaginationState,
-	Row,
-	SortingState,
-	useReactTable,
-	VisibilityState,
+  ColumnDef,
+  ColumnFiltersState,
+  FilterFn,
+  flexRender,
+  getCoreRowModel,
+  getFacetedUniqueValues,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  PaginationState,
+  Row,
+  SortingState,
+  useReactTable,
+  VisibilityState,
 } from "@tanstack/react-table";
 import { BriefcaseMedical } from "lucide-react";
 
 import {
-	ChevronDownIcon,
-	ChevronFirstIcon,
-	ChevronLastIcon,
-	ChevronLeftIcon,
-	ChevronRightIcon,
-	ChevronUpIcon,
-	CircleAlertIcon,
-	CircleXIcon,
-	Columns3Icon,
-	EllipsisIcon,
-	FilterIcon,
-	ListFilterIcon,
-	PlusIcon,
-	TrashIcon,
-	WalletIcon,
+  ChevronDownIcon,
+  ChevronFirstIcon,
+  ChevronLastIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  ChevronUpIcon,
+  CircleAlertIcon,
+  CircleXIcon,
+  Columns3Icon,
+  EllipsisIcon,
+  FilterIcon,
+  ListFilterIcon,
+  PlusIcon,
+  TrashIcon,
+  WalletIcon,
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import {
-	AlertDialog,
-	AlertDialogAction,
-	AlertDialogCancel,
-	AlertDialogContent,
-	AlertDialogDescription,
-	AlertDialogFooter,
-	AlertDialogHeader,
-	AlertDialogTitle,
-	AlertDialogTrigger,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
-	DropdownMenu,
-	DropdownMenuCheckboxItem,
-	DropdownMenuContent,
-	DropdownMenuGroup,
-	DropdownMenuItem,
-	DropdownMenuLabel,
-	DropdownMenuPortal,
-	DropdownMenuSeparator,
-	DropdownMenuShortcut,
-	DropdownMenuSub,
-	DropdownMenuSubContent,
-	DropdownMenuSubTrigger,
-	DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuPortal,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -115,14 +115,14 @@ import { DiagnosisEntry } from "@/lib/interfaces/DiagnosisEntry";
 
 // import { Row } from "react-aria-components";
 type Item = {
-	id?: string; // your patient id in doctor list
-	name: string;
-	phone: string;
-	country?: string;
-	gender?: string;
-	profession?: string;
-	age?: number;
-	dateOfAdmission?: string;
+  id?: string; // your patient id in doctor list
+  name: string;
+  phone: string;
+  country?: string;
+  gender?: string;
+  profession?: string;
+  age?: number;
+  dateOfAdmission?: string;
 };
 
 // Custom filter function for multi-column searching
@@ -177,13 +177,13 @@ const columns: ColumnDef<Item>[] = [
 			</div>
 		),
 
-		size: 180,
-		filterFn: multiColumnFilterFn,
-		enableHiding: false,
-	},
-	{
-		header: "Age",
-		accessorKey: "age",
+    size: 180,
+    filterFn: multiColumnFilterFn,
+    enableHiding: false,
+  },
+  {
+    header: "Age",
+    accessorKey: "age",
 
 		cell: ({ row }) => <div className='font-medium'>{row.getValue("age")}</div>,
 		size: 70,
@@ -241,8 +241,8 @@ const columns: ColumnDef<Item>[] = [
 ];
 
 export default function TableOriginUI() {
-	const id = useId();
-	const [viewOpen, setViewOpen] = useState(false);
+  const id = useId();
+  const [viewOpen, setViewOpen] = useState(false);
 
 	const { current } = useSelector((s: RootState) => s.doctor);
 	console.log(current);
@@ -265,14 +265,14 @@ export default function TableOriginUI() {
 
 	const dispatch = useDispatch<AppDispatch>();
 
-	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
-	const [pagination, setPagination] = useState<PaginationState>({
-		pageIndex: 0,
-		pageSize: 10,
-	});
-	const inputRef = useRef<HTMLInputElement>(null);
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 10,
+  });
+  const inputRef = useRef<HTMLInputElement>(null);
 
 	const [sorting, setSorting] = useState<SortingState>([
 		{
@@ -291,15 +291,15 @@ export default function TableOriginUI() {
 				`https://fast-api-dnk5.vercel.app/doctors/${code}/patients`
 			);
 
-			const data = await res.json();
-			console.log(data);
+      const data = await res.json();
+      console.log(data);
 
-			setData(data);
-			console.log(current);
-			console.log(code);
-		}
-		fetchPosts();
-	}, [current]);
+      setData(data);
+      console.log(current);
+      console.log(code);
+    }
+    fetchPosts();
+  }, [current]);
 
 	const handleDeleteRows = async () => {
 		const selectedRows = table.getSelectedRowModel().rows;
@@ -319,68 +319,68 @@ export default function TableOriginUI() {
 			console.error("failed to delete patient", error);
 		}
 
-		table.resetRowSelection();
-	};
+    table.resetRowSelection();
+  };
 
-	const table = useReactTable({
-		data,
-		columns,
-		getCoreRowModel: getCoreRowModel(),
-		getSortedRowModel: getSortedRowModel(),
-		onSortingChange: setSorting,
-		enableSortingRemoval: false,
-		getPaginationRowModel: getPaginationRowModel(),
-		onPaginationChange: setPagination,
-		onColumnFiltersChange: setColumnFilters,
-		onColumnVisibilityChange: setColumnVisibility,
-		getFilteredRowModel: getFilteredRowModel(),
-		getFacetedUniqueValues: getFacetedUniqueValues(),
-		state: {
-			sorting,
-			pagination,
-			columnFilters,
-			columnVisibility,
-		},
-	});
+  const table = useReactTable({
+    data,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    onSortingChange: setSorting,
+    enableSortingRemoval: false,
+    getPaginationRowModel: getPaginationRowModel(),
+    onPaginationChange: setPagination,
+    onColumnFiltersChange: setColumnFilters,
+    onColumnVisibilityChange: setColumnVisibility,
+    getFilteredRowModel: getFilteredRowModel(),
+    getFacetedUniqueValues: getFacetedUniqueValues(),
+    state: {
+      sorting,
+      pagination,
+      columnFilters,
+      columnVisibility,
+    },
+  });
 
-	// Get unique status values
-	// const uniqueStatusValues = useMemo(() => {
-	// 	const statusColumn = table.getColumn("status");
+  // Get unique status values
+  // const uniqueStatusValues = useMemo(() => {
+  // 	const statusColumn = table.getColumn("status");
 
-	// 	if (!statusColumn) return [];
+  // 	if (!statusColumn) return [];
 
-	// 	const values = Array.from(statusColumn.getFacetedUniqueValues().keys());
+  // 	const values = Array.from(statusColumn.getFacetedUniqueValues().keys());
 
-	// 	return values.sort();
-	// }, [table.getColumn("status")?.getFacetedUniqueValues()]);
+  // 	return values.sort();
+  // }, [table.getColumn("status")?.getFacetedUniqueValues()]);
 
-	// // Get counts for each status
-	// const statusCounts = useMemo(() => {
-	// 	const statusColumn = table.getColumn("status");
-	// 	if (!statusColumn) return new Map();
-	// 	return statusColumn.getFacetedUniqueValues();
-	// }, [table.getColumn("status")?.getFacetedUniqueValues()]);
+  // // Get counts for each status
+  // const statusCounts = useMemo(() => {
+  // 	const statusColumn = table.getColumn("status");
+  // 	if (!statusColumn) return new Map();
+  // 	return statusColumn.getFacetedUniqueValues();
+  // }, [table.getColumn("status")?.getFacetedUniqueValues()]);
 
-	// const selectedStatuses = useMemo(() => {
-	// 	const filterValue = table.getColumn("status")?.getFilterValue() as string[];
-	// 	return filterValue ?? [];
-	// }, [table.getColumn("status")?.getFilterValue()]);
+  // const selectedStatuses = useMemo(() => {
+  // 	const filterValue = table.getColumn("status")?.getFilterValue() as string[];
+  // 	return filterValue ?? [];
+  // }, [table.getColumn("status")?.getFilterValue()]);
 
-	// const handleStatusChange = (checked: boolean, value: string) => {
-	// 	const filterValue = table.getColumn("status")?.getFilterValue() as string[];
-	// 	const newFilterValue = filterValue ? [...filterValue] : [];
+  // const handleStatusChange = (checked: boolean, value: string) => {
+  // 	const filterValue = table.getColumn("status")?.getFilterValue() as string[];
+  // 	const newFilterValue = filterValue ? [...filterValue] : [];
 
-	// 	if (checked) {
-	// 		newFilterValue.push(value);
-	// 	} else {
-	// 		const index = newFilterValue.indexOf(value);
-	// 		if (index > -1) {
-	// 			newFilterValue.splice(index, 1);
-	// 		}
-	// 	}
+  // 	if (checked) {
+  // 		newFilterValue.push(value);
+  // 	} else {
+  // 		const index = newFilterValue.indexOf(value);
+  // 		if (index > -1) {
+  // 			newFilterValue.splice(index, 1);
+  // 		}
+  // 	}
 
-	// 	table.getColumn("status")?.setFilterValue(newFilterValue.length ? newFilterValue : undefined);
-	// };
+  // 	table.getColumn("status")?.setFilterValue(newFilterValue.length ? newFilterValue : undefined);
+  // };
 
 	return (
 		<div className='space-y-4'>
@@ -427,7 +427,7 @@ export default function TableOriginUI() {
 								<FilterIcon className="-ms-1 opacity-60" size={16} aria-hidden="true" />
 								Status
 								{selectedStatuses.length > 0 && (
-									<span className="bg-background text-muted-foreground/70 -me-1 inline-flex h-5 max-h-full items-center rounded border px-1 font-[inherit] text-[0.625rem] font-medium">
+									<span className="inline-flex items-center bg-background -me-1 px-1 border rounded h-5 max-h-full font-[inherit] font-medium text-[0.625rem] text-muted-foreground/70">
 										{selectedStatuses.length}
 									</span>
 								)}
@@ -444,8 +444,8 @@ export default function TableOriginUI() {
 												checked={selectedStatuses.includes(value)}
 												onCheckedChange={(checked: boolean) => handleStatusChange(checked, value)}
 											/>
-											<Label htmlFor={`${id}-${i}`} className="flex grow justify-between gap-2 font-normal">
-												{value} <span className="text-muted-foreground ms-2 text-xs">{statusCounts.get(value)}</span>
+											<Label htmlFor={`${id}-${i}`} className="flex justify-between gap-2 font-normal grow">
+												{value} <span className="ms-2 text-muted-foreground text-xs">{statusCounts.get(value)}</span>
 											</Label>
 										</div>
 									))}
@@ -750,12 +750,12 @@ export default function TableOriginUI() {
 }
 
 function RowActions({ row }: { row: Row<Item> }) {
-	const [openDialog, setOpenDialog] = useState(false);
-	const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-	const { register, handleSubmit, reset } = useForm<DiagnosisEntry>();
+  const [openDialog, setOpenDialog] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const { register, handleSubmit, reset } = useForm<DiagnosisEntry>();
 
-	const dispatch = useDispatch<AppDispatch>();
-	const doctor = useSelector((state: RootState) => state.doctor.current);
+  const dispatch = useDispatch<AppDispatch>();
+  const doctor = useSelector((state: RootState) => state.doctor.current);
 
 	const code: string =
 		typeof window !== "undefined"
@@ -773,50 +773,50 @@ function RowActions({ row }: { row: Row<Item> }) {
 			  })()
 			: null;
 
-	const handleEdit = () => {
-		setIsEditModalOpen(true);
-	};
-	const handleSave = async (updatedData: DoctorPatient) => {
-		try {
-			// Update the patient data in your backend
-			const result = await dispatch(
-				updatePatient({
-					doctorCode: code,
-					patientPhone: row.original.phone,
-					updatedData,
-				})
-			).unwrap();
+  const handleEdit = () => {
+    setIsEditModalOpen(true);
+  };
+  const handleSave = async (updatedData: DoctorPatient) => {
+    try {
+      // Update the patient data in your backend
+      const result = await dispatch(
+        updatePatient({
+          doctorCode: code,
+          patientPhone: row.original.phone,
+          updatedData,
+        })
+      ).unwrap();
 
-			setIsEditModalOpen(false);
-			alert("Patient updated successfully!");
-		} catch (error) {
-			console.error("Failed to update patient:", error);
-		}
-	};
+      setIsEditModalOpen(false);
+      alert("Patient updated successfully!");
+    } catch (error) {
+      console.error("Failed to update patient:", error);
+    }
+  };
 
-	const handleDiagnosis = async (data: DiagnosisEntry) => {
-		try {
-			const entry: DiagnosisEntry = {
-				diagnosis: data.diagnosis,
-				"medical-treatment": data["medical-treatment"],
-				"medical-report": data["medical-report"],
-				prognosis: data.prognosis,
-				complaint: data.complaint, // rename to complaint
-				schedule: new Date(data.schedule).toISOString(), // ensure ISO format
-			};
+  const handleDiagnosis = async (data: DiagnosisEntry) => {
+    try {
+      const entry: DiagnosisEntry = {
+        diagnosis: data.diagnosis,
+        "medical-treatment": data["medical-treatment"],
+        "medical-report": data["medical-report"],
+        prognosis: data.prognosis,
+        complaint: data.complaint, // rename to complaint
+        schedule: new Date(data.schedule).toISOString(), // ensure ISO format
+      };
 
 			await dispatch(
 				addDiagnosis({ doctorCode: code, patientPhone: row.original.phone, entry })
 			).unwrap();
 
-			setOpenDialog(false);
-			alert("Diagnosis added successfully!");
-			reset();
-		} catch (error) {
-			console.error("failed to add diagnosis", error);
-			alert("Failed to add diagnosis. Please check your input.");
-		}
-	};
+      setOpenDialog(false);
+      alert("Diagnosis added successfully!");
+      reset();
+    } catch (error) {
+      console.error("failed to add diagnosis", error);
+      alert("Failed to add diagnosis. Please check your input.");
+    }
+  };
 
 	const handleDeleteSingleRow = async () => {
 		try {
@@ -931,12 +931,12 @@ function RowActions({ row }: { row: Row<Item> }) {
 				</DialogContent>
 			</Dialog>
 
-			<EditPatientModal
-				isOpen={isEditModalOpen}
-				onClose={() => setIsEditModalOpen(false)}
-				patientData={row.original}
-				onSave={handleSave}
-			/>
-		</>
-	);
+      <EditPatientModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        patientData={row.original}
+        onSave={handleSave}
+      />
+    </>
+  );
 }

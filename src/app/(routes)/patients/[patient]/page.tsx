@@ -22,6 +22,10 @@ export function buildDiagnosisUrl(doctor_code: string, patient_phone: string) {
 
 export default function PatientDiagnosisPage() {
   const routeParams = useParams();
+  
+  console.log(routeParams);
+  
+  
   const doctor_code = Array.isArray(routeParams?.doctor_code)
     ? routeParams?.doctor_code[0]
     : (routeParams?.doctor_code as string | undefined);
@@ -29,6 +33,9 @@ export default function PatientDiagnosisPage() {
     ? routeParams?.patient_phone[0]
     : (routeParams?.patient_phone as string | undefined);
 
+
+    console.log(doctor_code);
+    
   const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([]);
   const [patientName, setPatientName] = useState<string>('');
   const [loading, setLoading] = useState(false);
