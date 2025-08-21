@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { loginDoctor, loginPatient } from "@/lib/store/Slices/Auth";
 import type { AppDispatch, RootState } from "@/lib/store/Slices/Store";
 import Image from "next/image";
-
+import { useRouter } from "next/navigation";
 // import login from "/public/login.webp";
 
 
@@ -18,6 +18,8 @@ function LoginComponent() {
 	const role = useSelector((state: RootState) => state.auth.role);
 	const userDetails = useSelector((state: RootState) => state.auth.userDetails);
 	const code = useSelector((state: RootState) => state.auth.code);
+	const status = useSelector((state: RootState) => state.auth.status);
+	const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
 
 	const {
 		register,
@@ -31,42 +33,36 @@ function LoginComponent() {
 		return () => clearTimeout(timer);
 	}, []);
 
+	  const router = useRouter();   
+
 	const onSubmit = async (data: LoginFormData) => {
 		try {
 			if (role === "medical") {
 				const doctor = await dispatch(loginDoctor({ email: data.email, password: data.password })).unwrap();
-
 				if (typeof window !== "undefined") {
-					localStorage.setItem(
-						"auth",
-						JSON.stringify({
-							role: "medical",
-							code: doctor.code,
-							userDetails: doctor,
-						})
-					);
+					localStorage.setItem("auth", JSON.stringify({
+						role: "medical",
+						code: doctor.code,
+						userDetails: doctor,
+						status: "succeeded",
+						isLoggedIn: true,
+					}));
 				}
-
 				alert("Login successful!");
-				// router.push("/doctor/dashboard");
+				   router.push("/"); 
 			} else if (role === "patient") {
 				const patient = await dispatch(loginPatient({ email: data.email, password: data.password })).unwrap();
-
 				if (typeof window !== "undefined") {
-					localStorage.setItem(
-						"auth",
-						JSON.stringify({
-							role: "patient",
-							code: null, // patients don't have a doctor code
-							userDetails: patient, // full patient object
-						})
-					);
+					localStorage.setItem("auth", JSON.stringify({
+						role: "patient",
+						code: null,
+						userDetails: patient,
+						status: "succeeded",
+						isLoggedIn: true,
+					}));
 				}
-
 				alert("Login successful!");
-				// router.push("/patient/dashboard");
-			} else {
-				alert("Please select a role first.");
+				   router.push("/"); 
 			}
 		} catch (err: any) {
 			alert(err?.message ?? "Login failed");
@@ -78,10 +74,9 @@ function LoginComponent() {
 			{/* Left Section (Image, smaller width) */}
 			<div className="md:w-4/10 relative">
 				<div
-					className={`absolute inset-0 transform transition-all duration-700 ease-out ${
-						imgVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"
+					className={`absolute inset-0 transform transition-all duration-700 ease-out ${imgVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"
 
-					}`}
+						}`}
 				>
 					<Image
 						src='/login.webp'
