@@ -774,7 +774,7 @@ function RowActions({ row }: { row: Row<Item> }) {
 						</DropdownMenuItem>
 
 						<DropdownMenuItem className="focus:bg-amber-950 focus:text-white">
-							<Link href={`/patient-details/${row.original.phone}`}>Show Details</Link>
+							<Link href={`/patients/${row.original.phone}`}>Show Details</Link>
 						</DropdownMenuItem>
 						<DropdownMenuItem onSelect={handleDeleteSingleRow} className="focus:bg-red-600 focus:text-white">
 							<span>Delete Patient</span>
