@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import DoctorRegistration from "@/app/components/DoctorRegistration";
 import PatientRegistration from "@/app/components/PatientRegistration";
@@ -14,12 +14,18 @@ export default function RegisterPage() {
   );
   const dispatch = useDispatch();
 
+
+
+   useEffect(() => {
+    if (signupRole) {
+      dispatch(setRole(signupRole));
+    }
+  }, [signupRole, dispatch]);
+
   if (signupRole === "medical") {
-    dispatch(setRole(signupRole));
     return <DoctorRegistration />;
   }
   if (signupRole === "patient") {
-    dispatch(setRole(signupRole));
     return <PatientRegistration />;
   }
 
