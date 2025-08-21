@@ -9,11 +9,11 @@ import { generateCode } from "@/app/components/RandomcodeGenerator";
 const BASE_URL = "https://fast-api-dnk5.vercel.app"; //hna 7ansta5dm url beta3na
 
 async function getJSON<T>(url: string): Promise<T> {
-	const res = await fetch(url, {
-		headers: { "Content-Type": "application/json" },
-	});
-	if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
-	return res.json();
+  const res = await fetch(url, {
+    headers: { "Content-Type": "application/json" },
+  });
+  if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
+  return res.json();
 }
 export async function postJSON<T>(url: string, body: unknown): Promise<T> {
   const res = await fetch(url, {
@@ -38,34 +38,37 @@ async function patchJSON<T>(url: string, body: unknown): Promise<T> {
 type UserDetails = Doctor | Patient | null;
 
 interface AuthState {
-	role: Role;
-	code: string | null; // doctor’s code (used later by patient flow)
-	userDetails: UserDetails; // logged doctor or patient
-	status: "idle" | "loading" | "succeeded" | "failed";
-	error?: string;
+  role: Role;
+  code: string | null; // doctor’s code (used later by patient flow)
+  userDetails: UserDetails; // logged doctor or patient
+  status: "idle" | "loading" | "succeeded" | "failed";
+  error?: string;
+  isLoggedIn: boolean
+
 }
 
 const initialState: AuthState = {
-	role: null,
-	code: null,
-	userDetails: null,
-	status: "idle",
+  role: null,
+  code: null,
+  userDetails: null,
+  status: "idle",
+  isLoggedIn: false
 };
 
 
 export const loginDoctor = createAsyncThunk<
-	Doctor,
-	{ email: string; password: string }
+  Doctor,
+  { email: string; password: string }
 >("auth/loginDoctor", async ({ email, password }) => {
-	const doctors = await getJSON<Doctor[]>(`${BASE_URL}/doctors`);
-	const doc = doctors.find((d) => d.email === email && d.password === password);
-	if (!doc) throw new Error("Invalid email or password.");
-	return doc; // includes patients + cases from your JSON
+  const doctors = await getJSON<Doctor[]>(`${BASE_URL}/doctors`);
+  const doc = doctors.find((d) => d.email === email && d.password === password);
+  if (!doc) throw new Error("Invalid email or password.");
+  return doc; // includes patients + cases from your JSON
 });
 
 export type RegisterDoctorPayload = Omit<Doctor, "id" | "patient" | "code"> & {
-	code?: string;
-	patient?: Doctor["patient"];
+  code?: string;
+  patient?: Doctor["patient"];
 };
 export const registerDoctor = createAsyncThunk<
   Doctor,
@@ -97,19 +100,19 @@ export const registerDoctor = createAsyncThunk<
 
 type DoctorEditable = Partial<Omit<Doctor, "email" | "code" | "patient" | "country" | "city">>;
 
-export const editDoctorProfileByEmail = createAsyncThunk<
+export const editDoctorProfileByCode = createAsyncThunk<
   Doctor,
-  { email: string; updates: DoctorEditable },
+  { code: string; updates: DoctorEditable },
   { rejectValue: string }
 >(
   "auth/editDoctorProfileByEmail",
-  async ({ email, updates }, { rejectWithValue }) => {
+  async ({ code, updates }, { rejectWithValue }) => {
     try {
-      const needle = email.trim().toLowerCase();
+      const needle = code
 
       // 1) find doctor by email
       const all = await getJSON<Doctor[]>(`${BASE_URL}/doctors`);
-      const doc = all.find(d => (d.email ?? "").trim().toLowerCase() === needle);
+      const doc = all.find(d => (d.code === needle));
       if (!doc) return rejectWithValue("Doctor not found.");
 
       // 2) Merge while locking unchangeable fields (email, code, patient, country, city)
@@ -249,12 +252,12 @@ const authSlice = createSlice({
       state.code = action.payload;
     },
     clearAuth(state) {
-      // clear user when loggin out 
       state.role = null;
       state.code = null;
       state.userDetails = null;
       state.status = "idle";
       state.error = undefined;
+      state.isLoggedIn = false;
     },
     setUserDetails(state, action: PayloadAction<UserDetails>) {
       state.userDetails = action.payload;
@@ -264,30 +267,30 @@ const authSlice = createSlice({
   extraReducers: (builder) => {
     builder
       // doctor
-      .addCase(loginDoctor.pending, (s) => { s.status = "loading"; s.error = undefined; })
-      .addCase(loginDoctor.fulfilled, (s, a) => { s.status = "succeeded"; s.userDetails = a.payload; s.role = "medical";s.code=a.payload.code;  })
-      .addCase(loginDoctor.rejected, (s, a) => { s.status = "failed"; s.error = a.error.message; })
+      .addCase(loginDoctor.pending, (s) => { s.status = "loading"; s.error = undefined; s.isLoggedIn = false; })
+      .addCase(loginDoctor.fulfilled, (s, a) => { s.status = "succeeded"; s.userDetails = a.payload; s.role = "medical"; s.code = a.payload.code; s.isLoggedIn = true; })
+      .addCase(loginDoctor.rejected, (s, a) => { s.status = "failed"; s.error = a.error.message; s.isLoggedIn = false; })
       // patient
-      .addCase(loginPatient.pending, (s) => { s.status = "loading"; s.error = undefined; })
-      .addCase(loginPatient.fulfilled, (s, a) => { s.status = "succeeded"; s.userDetails = a.payload; s.role = "patient"; })
-      .addCase(loginPatient.rejected, (s, a) => { s.status = "failed"; s.error = a.error.message; })
+      .addCase(loginPatient.pending, (s) => { s.status = "loading"; s.error = undefined; s.isLoggedIn = false; })
+      .addCase(loginPatient.fulfilled, (s, a) => { s.status = "succeeded"; s.userDetails = a.payload; s.role = "patient"; s.isLoggedIn = true; })
+      .addCase(loginPatient.rejected, (s, a) => { s.status = "failed"; s.error = a.error.message; s.isLoggedIn = false; })
       //Register Doctor
       .addCase(registerDoctor.pending, (s) => { s.status = "loading"; s.error = undefined })
-      .addCase(registerDoctor.fulfilled, (s, a) => { s.status = "succeeded"; s.userDetails = a.payload; s.role = "medical" ;s.code=a.payload.code})
+      .addCase(registerDoctor.fulfilled, (s, a) => { s.status = "succeeded"; s.userDetails = a.payload; s.role = "medical"; s.code = a.payload.code })
       .addCase(registerDoctor.rejected, (s, a) => { s.status = "failed"; s.error = a.error.message })
       //Register Patient
       .addCase(registerPatient.pending, (s) => { s.status = "loading"; s.error = undefined })
-      .addCase(registerPatient.fulfilled, (s, a) => { s.status = "succeeded"; s.userDetails = a.payload; s.role = "medical" })
+      .addCase(registerPatient.fulfilled, (s, a) => { s.status = "succeeded"; s.userDetails = a.payload; s.role = "patient" })
       .addCase(registerPatient.rejected, (s, a) => { s.status = "failed"; s.error = a.error.message })
 
-      .addCase(editDoctorProfileByEmail.pending, (s) => { s.status = "loading"; s.error = undefined; })
-      .addCase(editDoctorProfileByEmail.fulfilled, (s, a) => {
+      .addCase(editDoctorProfileByCode.pending, (s) => { s.status = "loading"; s.error = undefined; })
+      .addCase(editDoctorProfileByCode.fulfilled, (s, a) => {
         s.status = "succeeded";
         // if the logged-in user is this doctor, keep userDetails in sync
         s.userDetails = a.payload;
-        s.code=a.payload.code
+        s.code = a.payload.code
       })
-      .addCase(editDoctorProfileByEmail.rejected, (s, a) => {
+      .addCase(editDoctorProfileByCode.rejected, (s, a) => {
         s.status = "failed";
         s.error = (a.payload as string) ?? a.error.message;
       })

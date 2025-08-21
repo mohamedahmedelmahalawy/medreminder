@@ -130,18 +130,21 @@ const columns: ColumnDef<Item>[] = [
 				aria-label="Select row"
 			/>
 		),
-		size: 28,
+		size: 20,
 		enableSorting: false,
 		enableHiding: false,
 	},
 	{
 		header: "Name",
 		accessorKey: "name",
-		cell: ({ row }) => (
-			<div className="font-medium">
-				<Link href={`/patients/${row.original.phone}`}>{row.getValue("name")}</Link>
-			</div>
-		),
+
+		cell: ({ row }) => <div className='font-medium'>
+			<Link href={`/patients/${row.original.phone}`}>
+				{row.getValue("name")}
+			</Link>
+
+		</div>,
+
 		size: 180,
 		filterFn: multiColumnFilterFn,
 		enableHiding: false,
@@ -151,7 +154,7 @@ const columns: ColumnDef<Item>[] = [
 		accessorKey: "age",
 
 		cell: ({ row }) => <div className="font-medium">{row.getValue("age")}</div>,
-		size: 100,
+		size: 70,
 
 		filterFn: multiColumnFilterFn,
 		enableHiding: false,
@@ -203,25 +206,30 @@ const columns: ColumnDef<Item>[] = [
 
 export default function TableOriginUI() {
 	const id = useId();
+	const [viewOpen, setViewOpen] = useState(false);
 
 	const { current } = useSelector((s: RootState) => s.doctor);
 	console.log(current);
 
+
+
 	const code: string =
 		typeof window !== "undefined"
 			? (() => {
-					const raw = localStorage.getItem("auth");
-					if (!raw) return null;
-					try {
-						const parsed = JSON.parse(raw);
-						// works whether you saved a string or an object { code: "..." }
-						return typeof parsed === "string" ? parsed : parsed?.code ?? null;
-					} catch {
-						// if you stored plain string without JSON.stringify
-						return raw;
-					}
-			  })()
+				const raw = localStorage.getItem("auth");
+				if (!raw) return null;
+				try {
+					const parsed = JSON.parse(raw);
+					// works whether you saved a string or an object { code: "..." }
+					return typeof parsed === "string" ? parsed : parsed?.code ?? null;
+				} catch {
+					// if you stored plain string without JSON.stringify
+					return raw;
+				}
+			})()
 			: null;
+
+
 
 	const dispatch = useDispatch<AppDispatch>();
 
@@ -371,7 +379,7 @@ export default function TableOriginUI() {
 						)}
 					</div>
 					{/* Filter by status */}
-					<Popover>
+					<Popover modal={false}>
 						<PopoverTrigger asChild>
 							{/* <Button variant="outline">
 								<FilterIcon className="-ms-1 opacity-60" size={16} aria-hidden="true" />
@@ -404,14 +412,29 @@ export default function TableOriginUI() {
 						</PopoverContent>
 					</Popover>
 					{/* Toggle columns visibility */}
-					<DropdownMenu>
+					<DropdownMenu open={viewOpen} onOpenChange={setViewOpen} modal={false}>
 						<DropdownMenuTrigger asChild>
 							<Button variant="outline">
 								<Columns3Icon className="-ms-1 opacity-60" size={16} aria-hidden="true" />
 								View
 							</Button>
 						</DropdownMenuTrigger>
-						<DropdownMenuContent align="end">
+
+						<DropdownMenuContent align='end'
+							onFocusOutside={() => setViewOpen(false)}
+							// close on any pointer down outside (mouse/touch)
+							onPointerDownOutside={() => setViewOpen(false)}
+							// optional: also close on ESC
+							onEscapeKeyDown={() => setViewOpen(false)}
+							// optional: close on hover-out (use a tiny delay to avoid flicker)
+							onMouseLeave={() => {
+								const t = setTimeout(() => setViewOpen(false), 100);
+								// cancel if they come back quickly
+								const cancel = () => clearTimeout(t);
+								// @ts-ignore
+								this?.addEventListener?.("mouseenter", cancel, { once: true });
+							}}>
+
 							<DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
 							{table
 								.getAllColumns()
@@ -486,7 +509,7 @@ export default function TableOriginUI() {
 												<div
 													className={cn(
 														header.column.getCanSort() &&
-															"flex h-full cursor-pointer items-center justify-between gap-2 select-none"
+														"flex h-full cursor-pointer items-center justify-between gap-2 select-none"
 													)}
 													onClick={header.column.getToggleSortingHandler()}
 													onKeyDown={(e) => {
@@ -546,9 +569,12 @@ export default function TableOriginUI() {
 						value={table.getState().pagination.pageSize.toString()}
 						onValueChange={(value) => {
 							table.setPageSize(Number(value));
-						}}>
-						<SelectTrigger id={id} className="w-fit whitespace-nowrap">
-							<SelectValue placeholder="Select number of results" />
+
+						}}
+					>
+						<SelectTrigger id={id}  className='w-fit whitespace-nowrap'>
+							<SelectValue placeholder='Select number of results' />
+
 						</SelectTrigger>
 						<SelectContent
 							onCloseAutoFocus={(e) => e.preventDefault()}
@@ -570,8 +596,11 @@ export default function TableOriginUI() {
 							{table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1}-
 							{Math.min(
 								Math.max(
-									table.getState().pagination.pageIndex * table.getState().pagination.pageSize +
-										table.getState().pagination.pageSize,
+
+									table.getState().pagination.pageIndex *
+									table.getState().pagination.pageSize +
+									table.getState().pagination.pageSize,
+
 									0
 								),
 								table.getRowCount()
@@ -652,17 +681,19 @@ function RowActions({ row }: { row: Row<Item> }) {
 	const code: string =
 		typeof window !== "undefined"
 			? (() => {
-					const raw = localStorage.getItem("auth");
-					if (!raw) return null;
-					try {
-						const parsed = JSON.parse(raw);
-						// works whether you saved a string or an object { code: "..." }
-						return typeof parsed === "string" ? parsed : parsed?.code ?? null;
-					} catch {
-						// if you stored plain string without JSON.stringify
-						return raw;
-					}
-			  })()
+
+				const raw = localStorage.getItem("auth");
+				if (!raw) return null;
+				try {
+					const parsed = JSON.parse(raw);
+					// works whether you saved a string or an object { code: "..." }
+					return typeof parsed === "string" ? parsed : parsed?.code ?? null;
+				} catch {
+					// if you stored plain string without JSON.stringify
+					return raw;
+				}
+			})()
+
 			: null;
 
 	const handleEdit = () => {
@@ -698,6 +729,10 @@ function RowActions({ row }: { row: Row<Item> }) {
 			};
 
 			await dispatch(addDiagnosis({ doctorCode: code, patientPhone: row.original.phone, entry })).unwrap();
+
+
+
+
 
 			setOpenDialog(false);
 			alert("Diagnosis added successfully!");
@@ -748,11 +783,16 @@ function RowActions({ row }: { row: Row<Item> }) {
 				</DropdownMenuContent>
 			</DropdownMenu>
 			{/* Diagnostic Modal */}
-			<Dialog open={openDialog} onOpenChange={setOpenDialog}>
-				<DialogContent className="w-full max-w-[90vw] sm:max-w-[625px] lg:max-w-[700px] ">
-					<div className="flex flex-col items-center justify-center gap-2">
-						<div className="flex size-11 shrink-0 items-center justify-center rounded-full border" aria-hidden="true">
-							<BriefcaseMedical className="opacity-80" size={20} />
+
+			<Dialog open={openDialog} onOpenChange={setOpenDialog} modal={false}>
+				<DialogContent className='w-full max-w-[90vw] sm:max-w-[625px] lg:max-w-[700px] '>
+					<div className='flex flex-col items-center justify-center gap-2'>
+						<div
+							className='flex size-11 shrink-0 items-center justify-center rounded-full border'
+							aria-hidden='true'
+						>
+							<BriefcaseMedical className='opacity-80' size={20} />
+
 						</div>
 						<DialogHeader>
 							<DialogTitle className="text-center">Add Diagnostic</DialogTitle>
