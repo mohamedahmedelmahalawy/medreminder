@@ -159,7 +159,7 @@ const columns: ColumnDef<Item>[] = [
 				aria-label='Select row'
 			/>
 		),
-		size: 28,
+		size: 20,
 		enableSorting: false,
 		enableHiding: false,
 	},
@@ -168,10 +168,10 @@ const columns: ColumnDef<Item>[] = [
 		accessorKey: "name",
 		cell: ({ row }) => <div className='font-medium'>
 			<Link href={`/patients/${row.original.phone}`}>
-			{row.getValue("name")}
+				{row.getValue("name")}
 			</Link>
-			
-			</div>,
+
+		</div>,
 		size: 180,
 		filterFn: multiColumnFilterFn,
 		enableHiding: false,
@@ -181,7 +181,7 @@ const columns: ColumnDef<Item>[] = [
 		accessorKey: "age",
 
 		cell: ({ row }) => <div className="font-medium">{row.getValue("age")}</div>,
-		size: 100,
+		size: 70,
 
 		filterFn: multiColumnFilterFn,
 		enableHiding: false,
@@ -233,27 +233,28 @@ const columns: ColumnDef<Item>[] = [
 
 export default function TableOriginUI() {
 	const id = useId();
+	const [viewOpen, setViewOpen] = useState(false);
 
 	const { current } = useSelector((s: RootState) => s.doctor);
 	console.log(current);
-	
 
-	 const code: string  =
-    typeof window !== "undefined"
-      ? (() => {
-          const raw = localStorage.getItem("auth");
-          if (!raw) return null;
-          try {
-            const parsed = JSON.parse(raw);
-            // works whether you saved a string or an object { code: "..." }
-            return typeof parsed === "string" ? parsed : parsed?.code ?? null;
-          } catch {
-            // if you stored plain string without JSON.stringify
-            return raw;
-          }
-        })()
-      : null;
-	
+
+	const code: string =
+		typeof window !== "undefined"
+			? (() => {
+				const raw = localStorage.getItem("auth");
+				if (!raw) return null;
+				try {
+					const parsed = JSON.parse(raw);
+					// works whether you saved a string or an object { code: "..." }
+					return typeof parsed === "string" ? parsed : parsed?.code ?? null;
+				} catch {
+					// if you stored plain string without JSON.stringify
+					return raw;
+				}
+			})()
+			: null;
+
 
 	const dispatch = useDispatch<AppDispatch>();
 
@@ -284,7 +285,7 @@ export default function TableOriginUI() {
 
 			const data = await res.json();
 			console.log(data);
-			
+
 			setData(data);
 			console.log(current);
 			console.log(code)
@@ -299,7 +300,7 @@ export default function TableOriginUI() {
 		setData(updatedData);
 		try {
 			for (const row of selectedRows) {
-				await dispatch(removePatient({ doctorCode:code, patientPhone: row.original.phone })).unwrap();
+				await dispatch(removePatient({ doctorCode: code, patientPhone: row.original.phone })).unwrap();
 				console.log(row.original.phone);
 			}
 		} catch (error) {
@@ -408,7 +409,7 @@ export default function TableOriginUI() {
 						)}
 					</div>
 					{/* Filter by status */}
-					<Popover>
+					<Popover modal={false}>
 						<PopoverTrigger asChild>
 							{/* <Button variant="outline">
 								<FilterIcon className="-ms-1 opacity-60" size={16} aria-hidden="true" />
@@ -441,7 +442,7 @@ export default function TableOriginUI() {
 						</PopoverContent>
 					</Popover>
 					{/* Toggle columns visibility */}
-					<DropdownMenu>
+					<DropdownMenu open={viewOpen} onOpenChange={setViewOpen} modal={false}>
 						<DropdownMenuTrigger asChild>
 							<Button variant='outline'>
 								<Columns3Icon
@@ -452,7 +453,20 @@ export default function TableOriginUI() {
 								View
 							</Button>
 						</DropdownMenuTrigger>
-						<DropdownMenuContent align='end'>
+						<DropdownMenuContent align='end'
+							onFocusOutside={() => setViewOpen(false)}
+							// close on any pointer down outside (mouse/touch)
+							onPointerDownOutside={() => setViewOpen(false)}
+							// optional: also close on ESC
+							onEscapeKeyDown={() => setViewOpen(false)}
+							// optional: close on hover-out (use a tiny delay to avoid flicker)
+							onMouseLeave={() => {
+								const t = setTimeout(() => setViewOpen(false), 100);
+								// cancel if they come back quickly
+								const cancel = () => clearTimeout(t);
+								// @ts-ignore
+								this?.addEventListener?.("mouseenter", cancel, { once: true });
+							}}>
 							<DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
 							{table
 								.getAllColumns()
@@ -539,7 +553,7 @@ export default function TableOriginUI() {
 												<div
 													className={cn(
 														header.column.getCanSort() &&
-															"flex h-full cursor-pointer items-center justify-between gap-2 select-none"
+														"flex h-full cursor-pointer items-center justify-between gap-2 select-none"
 													)}
 													onClick={header.column.getToggleSortingHandler()}
 													onKeyDown={(e) => {
@@ -618,7 +632,7 @@ export default function TableOriginUI() {
 							table.setPageSize(Number(value));
 						}}
 					>
-						<SelectTrigger id={id} className='w-fit whitespace-nowrap'>
+						<SelectTrigger id={id}  className='w-fit whitespace-nowrap'>
 							<SelectValue placeholder='Select number of results' />
 						</SelectTrigger>
 						<SelectContent className='[&_*[role=option]]:ps-2 [&_*[role=option]]:pe-8 [&_*[role=option]>span]:start-auto [&_*[role=option]>span]:end-2'>
@@ -644,8 +658,8 @@ export default function TableOriginUI() {
 							{Math.min(
 								Math.max(
 									table.getState().pagination.pageIndex *
-										table.getState().pagination.pageSize +
-										table.getState().pagination.pageSize,
+									table.getState().pagination.pageSize +
+									table.getState().pagination.pageSize,
 									0
 								),
 								table.getRowCount()
@@ -723,27 +737,27 @@ export default function TableOriginUI() {
 function RowActions({ row }: { row: Row<Item> }) {
 	const [openDialog, setOpenDialog] = useState(false);
 	const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-	const { register, handleSubmit,reset } = useForm<DiagnosisEntry>();
+	const { register, handleSubmit, reset } = useForm<DiagnosisEntry>();
 
 	const dispatch = useDispatch<AppDispatch>();
 	const doctor = useSelector((state: RootState) => state.doctor.current);
 
 
 	const code: string =
-    typeof window !== "undefined"
-      ? (() => {
-          const raw = localStorage.getItem("auth");
-          if (!raw) return null;
-          try {
-            const parsed = JSON.parse(raw);
-            // works whether you saved a string or an object { code: "..." }
-            return typeof parsed === "string" ? parsed : parsed?.code ?? null;
-          } catch {
-            // if you stored plain string without JSON.stringify
-            return raw;
-          }
-        })()
-      : null;
+		typeof window !== "undefined"
+			? (() => {
+				const raw = localStorage.getItem("auth");
+				if (!raw) return null;
+				try {
+					const parsed = JSON.parse(raw);
+					// works whether you saved a string or an object { code: "..." }
+					return typeof parsed === "string" ? parsed : parsed?.code ?? null;
+				} catch {
+					// if you stored plain string without JSON.stringify
+					return raw;
+				}
+			})()
+			: null;
 
 	const handleEdit = () => {
 		setIsEditModalOpen(true);
@@ -753,7 +767,7 @@ function RowActions({ row }: { row: Row<Item> }) {
 			// Update the patient data in your backend
 			const result = await dispatch(
 				updatePatient({
-					doctorCode:code ,
+					doctorCode: code,
 					patientPhone: row.original.phone,
 					updatedData,
 				})
@@ -768,7 +782,7 @@ function RowActions({ row }: { row: Row<Item> }) {
 
 	const handleDiagnosis = async (data: DiagnosisEntry) => {
 		try {
-			const entry : DiagnosisEntry= {
+			const entry: DiagnosisEntry = {
 				diagnosis: data.diagnosis,
 				"medical-treatment": data["medical-treatment"],
 				"medical-report": data["medical-report"],
@@ -776,12 +790,12 @@ function RowActions({ row }: { row: Row<Item> }) {
 				complaint: data.complaint, // rename to complaint
 				schedule: new Date(data.schedule).toISOString(), // ensure ISO format
 			};
-			
-	await dispatch(addDiagnosis({ doctorCode: code, patientPhone: row.original.phone, entry })).unwrap();
-			
-		
-			
-		setOpenDialog(false);
+
+			await dispatch(addDiagnosis({ doctorCode: code, patientPhone: row.original.phone, entry })).unwrap();
+
+
+
+			setOpenDialog(false);
 			alert("Diagnosis added successfully!");
 			reset();
 		} catch (error) {
@@ -804,7 +818,7 @@ function RowActions({ row }: { row: Row<Item> }) {
 	};
 	return (
 		<>
-			<DropdownMenu>
+			<DropdownMenu modal={false}>
 				<DropdownMenuTrigger asChild>
 					<div className='flex justify-end'>
 						<Button
@@ -842,7 +856,7 @@ function RowActions({ row }: { row: Row<Item> }) {
 				</DropdownMenuContent>
 			</DropdownMenu>
 			{/* Diagnostic Modal */}
-			<Dialog open={openDialog} onOpenChange={setOpenDialog}>
+			<Dialog open={openDialog} onOpenChange={setOpenDialog} modal={false}>
 				<DialogContent className='w-full max-w-[90vw] sm:max-w-[625px] lg:max-w-[700px] '>
 					<div className='flex flex-col items-center justify-center gap-2'>
 						<div

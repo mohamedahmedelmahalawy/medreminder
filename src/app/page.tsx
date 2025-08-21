@@ -19,7 +19,7 @@ export default function Home() {
       <main>
         <section className="mx-auto px-8 py-18 md:py-24 min-h-screen overflow-hidden text-white">
           <BackGroundVideo />
-          <div className="flex flex-col items-center gap-4 mb-10 text-center">
+          <div className="flex flex-col items-center gap-4 mb-4 text-center">
             <h1
               style={{ ["--n" as string]: "32ch" }}
               className="inline-block overflow-hidden font-mono font-semibold text-[48px] md:text-[64px] align-baseline leading-tight whitespace-nowrap animate-[type-hold_23s_steps(32,end)_infinite] /* 23s total = ~3s typing + 20s hold; no caret/border */"

@@ -1,7 +1,7 @@
 // app/components/IntroStats.tsx
 export default function IntroStats() {
   return (
-    <section aria-labelledby="intro-stats" className="bg-white py-16">
+    <section aria-labelledby="intro-stats" className="bg-white py-4">
       <div className="mx-auto px-4 py-20 max-w-screen-xl">
         <div className="items-start gap-x-16 gap-y-10 grid grid-cols-1 lg:grid-cols-2">
           <div>

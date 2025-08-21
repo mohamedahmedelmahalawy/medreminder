@@ -16,7 +16,7 @@ const FEATURES = [
 export default function FeatureStrip() {
   return (
     <div className="flex items-center">
-      <div className="mx-auto px-4 py-12 max-w-screen-2xl">
+      <div className="mx-auto px-4 py-4 max-w-screen-2xl">
         <div className="justify-items-center gap-8 grid grid-cols-1 md:grid-cols-3 text-white">
           {FEATURES.map((f) => (
             <div
