@@ -17,10 +17,12 @@ export default function page() {
 					<div className="w-1/4">
 						{/* <SearchInput /> */}
 					</div> 
+
 					{/* <div className="flex flex-row gap-5">
 						<CalenderENInput />
 						<FilterInput />
 					</div> */}
+
 				</div>
 				<div className="mt-10 ">
 					<TableOriginUI />

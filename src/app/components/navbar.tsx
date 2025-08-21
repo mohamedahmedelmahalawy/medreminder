@@ -96,9 +96,11 @@ const handleLogout = () => {
 	const navItems = ["Home", "Features", "Contact Us"];
 
 	return (
+
 		<div className="fixed top-0 left-0 w-full bg-[#000D44] z-20 shadow-md mb-20">
 			<div className="max-w-screen-xl mx-auto flex items-center justify-between px-4 sm:px-6 md:px-8 py-3 md:py-0">
 				<Link href="/" onClick={() => setIsClicked("")}>
+
 					<Image
 						className="cursor-pointer w-16 sm:w-20 md:w-24 h-auto"
 						src="/Medlogo.png"
