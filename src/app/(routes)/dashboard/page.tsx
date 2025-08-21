@@ -18,8 +18,8 @@ export default function page() {
 						{/* <SearchInput /> */}
 					</div> 
 					<div className="flex flex-row gap-5">
+						{/* <FilterInput /> */}
 						<CalenderENInput />
-						<FilterInput />
 					</div>
 				</div>
 				<div className="mt-10">
