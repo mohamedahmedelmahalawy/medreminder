@@ -14,10 +14,10 @@ export interface DoctorPatient {
 	Age?: number;
 	dateOfAdmission?: string;
 	cases?: CaseRecord[];
-	title: string;
+	title?: string;
 	specialty?: string;
 	location?: string;
-	email: string;
+	email?: string;
 	code?: string;
 	city?: string;
 	bio?: string;

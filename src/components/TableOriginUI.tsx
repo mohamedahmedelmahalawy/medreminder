@@ -426,12 +426,12 @@ export default function TableOriginUI() {
 							onPointerDownOutside={() => setViewOpen(false)}
 							// optional: also close on ESC
 							onEscapeKeyDown={() => setViewOpen(false)}
-							// optional: close on hover-out (use a tiny delay to avoid flicker)
+							// optional: close on hover-out (use a tiny delay to av`oid flicker)
 							onMouseLeave={() => {
 								const t = setTimeout(() => setViewOpen(false), 100);
 								// cancel if they come back quickly
 								const cancel = () => clearTimeout(t);
-								// @ts-ignore
+								
 								this?.addEventListener?.("mouseenter", cancel, { once: true });
 							}}>
 
@@ -565,7 +565,7 @@ export default function TableOriginUI() {
 						Rows per page
 					</Label>
 					<Select
-					modal={false}
+					
 						value={table.getState().pagination.pageSize.toString()}
 						onValueChange={(value) => {
 							table.setPageSize(Number(value));
@@ -784,7 +784,7 @@ function RowActions({ row }: { row: Row<Item> }) {
 			</DropdownMenu>
 			{/* Diagnostic Modal */}
 
-			<Dialog open={openDialog} onOpenChange={setOpenDialog} modal={false}>
+			<Dialog open={openDialog} onOpenChange={setOpenDialog} >
 				<DialogContent className='w-full max-w-[90vw] sm:max-w-[625px] lg:max-w-[700px] '>
 					<div className='flex flex-col items-center justify-center gap-2'>
 						<div
