@@ -69,31 +69,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-} from "@/components/ui/pagination";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+
+import { Pagination, PaginationContent, PaginationItem } from "@/components/ui/pagination";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+
 import Modal from "./Modal";
 import ModalDig from "./ModalDig";
 import { DialogContent, DialogHeader } from "./ui/dialog";
@@ -127,6 +108,7 @@ type Item = {
 
 // Custom filter function for multi-column searching
 const multiColumnFilterFn: FilterFn<Item> = (row, columnId, filterValue) => {
+
   const searchableRowContent =
     `${row.original.name} ${row.original.phone}`.toLowerCase();
   const searchTerm = (filterValue ?? "").toLowerCase();
@@ -429,6 +411,7 @@ export default function TableOriginUI() {
             <PopoverTrigger asChild>
               {/* <Button variant="outline">
 								<FilterIcon className="opacity-60 -ms-1" size={16} aria-hidden="true" />
+
 								Status
 								{selectedStatuses.length > 0 && (
 									<span className="inline-flex items-center bg-background -me-1 px-1 border rounded h-5 max-h-full font-[inherit] font-medium text-[0.625rem] text-muted-foreground/70">
@@ -436,10 +419,12 @@ export default function TableOriginUI() {
 									</span>
 								)}
 							</Button> */}
+
             </PopoverTrigger>
             <PopoverContent className="p-3 w-auto min-w-36" align="start">
               {/* <div className="space-y-3">
 								<div className="font-medium text-muted-foreground text-xs">Filters</div>
+
 								<div className="space-y-3">
 									{uniqueStatusValues.map((value, i) => (
 										<div key={value} className="flex items-center gap-2">
@@ -455,6 +440,7 @@ export default function TableOriginUI() {
 									))}
 								</div>
 							</div> */}
+
             </PopoverContent>
           </Popover>
           {/* Toggle columns visibility */}
@@ -961,4 +947,5 @@ function RowActions({ row }: { row: Row<Item> }) {
       />
     </>
   );
+
 }

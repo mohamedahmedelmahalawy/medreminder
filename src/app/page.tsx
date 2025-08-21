@@ -9,17 +9,14 @@ import MedicalSlider from "./components/MedicalSlider";
 import SpecialistsSlider from "./components/SpecialistsSlider";
 import MedicalNetwork from "./components/MedicalNetwork";
 
-// import RegisterPage from "@/app/(routes)/signup/page";
-// import LoginPage from "@/app/(routes)/login/page";
-// import SignUpPage from "@/app/(routes)/signup/page";
-
 export default function Home() {
+
   return (
     <>
       <main>
         <section className="mx-auto px-8 py-18 md:py-24 min-h-screen overflow-hidden text-white">
           <BackGroundVideo />
-          <div className="flex flex-col items-center gap-4 mb-10 text-center">
+          <div className="flex flex-col items-center gap-4 mb-4 text-center">
             <h1
               style={{ ["--n" as string]: "32ch" }}
               className="inline-block overflow-hidden font-mono font-semibold text-[48px] md:text-[64px] align-baseline leading-tight whitespace-nowrap animate-[type-hold_23s_steps(32,end)_infinite] /* 23s total = ~3s typing + 20s hold; no caret/border */"
@@ -38,28 +35,29 @@ export default function Home() {
           </div>
         </section>
 
-        <IntroStats />
-        <MedicalNetwork />
-        <SpecialistsSlider />
-        <section className="mx-auto px-4 py-18 max-w-screen-xl">
-          <div className="relative rounded-3xl aspect-[21/9] overflow-hidden">
-            <Image
-              src="https://images.unsplash.com/photo-1666887360680-9dc27a1d2753?auto=format&fit=crop&w=2000&q=80"
-              alt="a doctor checking a patient's blood pressure"
-              fill
-              priority
-              sizes="(min-width: 1280px) 1152px, 100vw"
-              className="object-cover"
-            />
-          </div>
-        </section>
-        <MedicationManagement />
-        <MedicalSlider />
-        <FeaturesSection />
-        <section className="mx-auto py-18 max-w-[1280px]">
-          <AskedQuestions />
-        </section>
-      </main>
-    </>
-  );
+
+				<IntroStats />
+				<MedicalNetwork />
+				<SpecialistsSlider />
+				<section className='mx-auto px-4 py-18 max-w-screen-xl'>
+					<div className='relative rounded-3xl aspect-[21/9] overflow-hidden'>
+						<Image
+							src='https://images.unsplash.com/photo-1666887360680-9dc27a1d2753?auto=format&fit=crop&w=2000&q=80'
+							alt="a doctor checking a patient's blood pressure"
+							fill
+							priority
+							sizes='(min-width: 1280px) 1152px, 100vw'
+							className='object-cover'
+						/>
+					</div>
+				</section>
+				<MedicationManagement />
+				<MedicalSlider />
+				<FeaturesSection />
+				<section className='mx-auto py-18 max-w-[1280px]'>
+					<AskedQuestions />
+				</section>
+			</main>
+		</>
+	);
 }

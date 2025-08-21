@@ -85,14 +85,14 @@ export default function Modal({ name }: ModalProps) {
 		}
 	};
 	return (
-		<Dialog open={closeModal} onOpenChange={setCloseModal}>
+		<Dialog    open={closeModal} onOpenChange={setCloseModal}>
 			<DialogTrigger asChild>
 				<Button variant="outline">
 					<PlusIcon className="-ms-1 opacity-60" size={20} aria-hidden="true" />
 					{name}
 				</Button>
 			</DialogTrigger>
-			<DialogContent className="w-full max-w-[90vw] sm:max-w-[625px] lg:max-w-[700px]">
+			<DialogContent  className="w-full max-w-[90vw] sm:max-w-[625px] lg:max-w-[700px]">
 				<div className="flex flex-col items-center gap-2">
 					<div className="flex size-11 shrink-0 items-center justify-center rounded-full border" aria-hidden="true">
 						<svg

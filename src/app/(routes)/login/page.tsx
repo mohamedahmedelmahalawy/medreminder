@@ -15,10 +15,16 @@ export default function LoginPage() {
   );
   const dispatch = useDispatch();
 
-  if (showLogin === "medical" || showLogin === "patient") {
-    dispatch(setRole(showLogin));
+ useEffect(() => {
+    if (showLogin) {
+      dispatch(setRole(showLogin));
+    }
+  }, [showLogin, dispatch]);
+
+  if (showLogin) {
     return <LoginComponent />;
   }
+
 
   return (
     <div className="flex justify-center items-center bg-gradient-to-br from-blue-100 via-white to-blue-50 min-h-screen">

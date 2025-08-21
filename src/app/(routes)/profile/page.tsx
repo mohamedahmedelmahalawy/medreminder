@@ -1,238 +1,232 @@
-"use client";
+import MedicalProfile from "@/app/components/MedicalProfile";
+import { Activity, Stethoscope, TrendingUp, Shield } from "lucide-react";
 
-import { Bell, Search, Settings, User } from "lucide-react";
-import React from "react";
-import { Doctor } from "@/lib/interfaces/Doctor";
-import { Patient } from "@/lib/interfaces/Patient";
-import { RootState } from "@/lib/store/Slices/Store";
-import { useSelector } from "react-redux";
+interface Patient {
+	id: string;
+	name: string;
+	dateOfAdmission: string;
+	phone: string;
+	country: string;
+	gender: string;
+	profession: string;
+	age: number;
+	cases: Case[];
+}
 
-const ProfilePage = () => {
-  const role = useSelector((s: RootState) => s.auth.role);
-  const user = useSelector((s: RootState) => s.auth.userDetails);
-  const doctor = role === "medical" && user ? (user as Doctor) : null;
-  const patient = role === "patient" && user ? (user as Patient) : null;
+interface Case {
+	diagnosis: Diagnosis[];
+}
 
-  return (
-    <>
-      <header className="bg-white shadow-sm border-b border-gray-200 px-6 py-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900 capitalize">
-              Profile
-            </h1>
-            <p className="text-gray-600">
-              {user ? (
-                <>
-                  Welcome back, {role === "medical" ? "Dr. " : ""}
-                  {(doctor?.name || patient?.name) ?? "User"}
-                </>
-              ) : (
-                <>Welcome back</>
-              )}
-            </p>
-          </div>
-          <div className="flex items-center space-x-4">
-            <button className="p-2 text-gray-400 hover:text-gray-600 transition-colors">
-              <Search className="w-5 h-5" />
-            </button>
-            <button className="p-2 text-gray-400 hover:text-gray-600 transition-colors relative">
-              <Bell className="w-5 h-5" />
-              <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
-            </button>
-            <button className="p-2 text-gray-400 hover:text-gray-600 transition-colors">
-              <Settings className="w-5 h-5" />
-            </button>
-          </div>
-        </div>
-      </header>
-      <main className="flex-1 p-6 overflow-auto">
-        <div className="space-y-6">
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200">
-            <div className="p-6 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900">
-                Profile Information
-              </h3>
-            </div>
-            <div className="p-6">
-              {/* Avatar + Info */}
-              <div className="flex items-center space-x-6 mb-8">
-                <div className="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center">
-                  <User className="w-12 h-12 text-gray-500" />
-                </div>
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-900">
-                    {user ? (
-                      <>
-                        {role === "medical" ? "Dr. " : ""}
-                        {(doctor?.name || patient?.name) ?? "Unnamed"}
-                      </>
-                    ) : (
-                      <>Guest</>
-                    )}
-                  </h2>
-                  <p className="text-gray-600">
-                    {role === "medical" && doctor
-                      ? doctor.specialty || doctor.profession || "Medical"
-                      : patient
-                      ? "Patient"
-                      : ""}
-                  </p>
-                  <button className="mt-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                    Change Photo
-                  </button>
-                </div>
-              </div>
+interface Diagnosis {
+	diagnosis: string;
+	prognosis: string;
+	"medical-report": string;
+	"medical-treatment": string;
+	schedule: string;
+	complaint: string;
+}
 
-              {/* Form */}
-              {doctor ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Full Name
-                    </label>
-                    <input
-                      type="text"
-                      defaultValue={doctor.name}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Email
-                    </label>
-                    <input
-                      type="email"
-                      defaultValue={doctor.email}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Phone
-                    </label>
-                    <input
-                      type="tel"
-                      defaultValue={doctor.phone}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Specialization
-                    </label>
-                    <input
-                      type="text"
-                      defaultValue={doctor.specialty || doctor.profession || ""}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Doctor Code
-                    </label>
-                    <input
-                      type="text"
-                      defaultValue={doctor.code}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      readOnly
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Country
-                    </label>
-                    <input
-                      type="text"
-                      defaultValue={doctor.country}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      readOnly
-                    />
-                  </div>
-                </div>
-              ) : patient ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Full Name
-                    </label>
-                    <input
-                      type="text"
-                      defaultValue={patient.name}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Email
-                    </label>
-                    <input
-                      type="email"
-                      defaultValue={patient.email}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Phone
-                    </label>
-                    <input
-                      type="tel"
-                      defaultValue={patient.phone}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Age
-                    </label>
-                    <input
-                      type="number"
-                      defaultValue={patient.age ?? undefined}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Country
-                    </label>
-                    <input
-                      type="text"
-                      defaultValue={patient.country ?? ""}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Doctor Codes
-                    </label>
-                    <input
-                      type="text"
-                      defaultValue={(patient.drCodes || []).join(", ")}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      readOnly
-                    />
-                  </div>
-                </div>
-              ) : (
-                <div className="text-gray-600">No user is logged in.</div>
-              )}
+export interface Experience {
+	title: string;
+	institution: string;
+	period: string;
+	description: string[];
+	specializations: string[];
+}
 
-              {/* Actions */}
-              <div className="mt-8 flex justify-end space-x-4">
-                <button className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
-                  Cancel
-                </button>
-                <button className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                  Save Changes
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </main>
-    </>
-  );
-};
+export interface Service {
+	name: string;
+	description: string;
+	icon: React.ReactNode;
+}
 
-export default ProfilePage;
+export default async function ProfilePage() {
+	const services: Service[] = [
+		{
+			name: "General Medicine",
+			description: "Comprehensive primary care and health assessments",
+			icon: <Stethoscope className='w-8 h-8 text-blue-600' />,
+		},
+		{
+			name: "Data-Driven Diagnostics",
+			description: "Advanced diagnostic analysis using data science methodologies",
+			icon: <TrendingUp className='w-8 h-8 text-green-600' />,
+		},
+		{
+			name: "Chronic Disease Management",
+			description:
+				"Specialized care for diabetes, hypertension, and respiratory conditions",
+			icon: <Activity className='w-8 h-8 text-red-500' />,
+		},
+		{
+			name: "Digital Health Solutions",
+			description:
+				"Technology-enhanced healthcare monitoring and treatment planning",
+			icon: <Shield className='w-8 h-8 text-purple-600' />,
+		},
+	];
+
+	const patients: Patient[] = [
+		{
+			id: "141516",
+			name: "Mazen Ahmed",
+			dateOfAdmission: "2025-08-20T10:30:00Z",
+			phone: "+201205621566",
+			country: "Egypt",
+			gender: "male",
+			profession: "frontend",
+			age: 23,
+			cases: [
+				{
+					diagnosis: [
+						{
+							diagnosis: "Type 2 Diabetes Mellitus",
+							prognosis:
+								"With adherence to medication, lifestyle modifications, and regular follow-ups, the patient can maintain good glycemic control and prevent long-term complications.",
+							"medical-report":
+								"Patient exhibits elevated fasting blood glucose levels over the past 3 months. HbA1c is 7.5%. No signs of diabetic retinopathy. Blood pressure is within normal range.",
+							"medical-treatment":
+								"Metformin 500mg twice daily, dietary modifications, regular exercise, and quarterly check-ups.",
+							schedule: "2025-08-20T10:30:00Z",
+							complaint: "Frequent urination, increased thirst, and fatigue.",
+						},
+						{
+							diagnosis: "Acute Bronchitis",
+							prognosis:
+								"Condition is self-limiting in most cases and expected to improve within 1–3 weeks with treatment and rest. Low risk of complications if managed appropriately.",
+							"medical-report":
+								"Patient presents with persistent cough for the past 10 days, mild fever (37.8°C), and chest congestion. No signs of pneumonia on chest X-ray. Oxygen saturation at 98%.",
+							"medical-treatment":
+								"Prescribed Amoxicillin 500mg three times daily for 7 days, increased fluid intake, and rest.",
+							schedule: "2025-08-22T09:15:00Z",
+							complaint:
+								"Persistent cough, mild fever, and difficulty breathing during physical activity.",
+						},
+					],
+				},
+			],
+		},
+		{
+			id: "141512",
+			name: "Mohammed el mahlway",
+			dateOfAdmission: "2025-08-20T10:30:00Z",
+			phone: "+201205621562",
+			country: "France",
+			gender: "male",
+			profession: "backend",
+			age: 22,
+			cases: [
+				{
+					diagnosis: [
+						{
+							diagnosis: "Type 2 Diabetes Mellitus",
+							prognosis:
+								"With adherence to medication, lifestyle modifications, and regular follow-ups, the patient can maintain good glycemic control and prevent long-term complications.",
+							"medical-report":
+								"Patient exhibits elevated fasting blood glucose levels over the past 3 months. HbA1c is 7.5%. No signs of diabetic retinopathy. Blood pressure is within normal range.",
+							"medical-treatment":
+								"Metformin 500mg twice daily, dietary modifications, regular exercise, and quarterly check-ups.",
+							schedule: "2025-08-20T10:30:00Z",
+							complaint: "Frequent urination, increased thirst, and fatigue.",
+						},
+						{
+							diagnosis: "Acute Bronchitis",
+							prognosis:
+								"Condition is self-limiting in most cases and expected to improve within 1–3 weeks with treatment and rest. Low risk of complications if managed appropriately.",
+							"medical-report":
+								"Patient presents with persistent cough for the past 10 days, mild fever (37.8°C), and chest congestion. No signs of pneumonia on chest X-ray. Oxygen saturation at 98%.",
+							"medical-treatment":
+								"Prescribed Amoxicillin 500mg three times daily for 7 days, increased fluid intake, and rest.",
+							schedule: "2025-08-22T09:15:00Z",
+							complaint:
+								"Persistent cough, mild fever, and difficulty breathing during physical activity.",
+						},
+					],
+				},
+			],
+		},
+		{
+			id: "142516",
+			name: "Fawaz abo talia",
+			dateOfAdmission: "2025-08-20T10:30:00Z",
+			phone: "+201205621566",
+			country: "Egypt",
+			gender: "male",
+			profession: "frontend",
+			age: 23,
+			cases: [
+				{
+					diagnosis: [
+						{
+							diagnosis: "Type 2 Diabetes Mellitus",
+							prognosis:
+								"With adherence to medication, lifestyle modifications, and regular follow-ups, the patient can maintain good glycemic control and prevent long-term complications.",
+							"medical-report":
+								"Patient exhibits elevated fasting blood glucose levels over the past 3 months. HbA1c is 7.5%. No signs of diabetic retinopathy. Blood pressure is within normal range.",
+							"medical-treatment":
+								"Metformin 500mg twice daily, dietary modifications, regular exercise, and quarterly check-ups.",
+							schedule: "2025-08-20T10:30:00Z",
+							complaint: "Frequent urination, increased thirst, and fatigue.",
+						},
+						{
+							diagnosis: "Acute Bronchitis",
+							prognosis:
+								"Condition is self-limiting in most cases and expected to improve within 1–3 weeks with treatment and rest. Low risk of complications if managed appropriately.",
+							"medical-report":
+								"Patient presents with persistent cough for the past 10 days, mild fever (37.8°C), and chest congestion. No signs of pneumonia on chest X-ray. Oxygen saturation at 98%.",
+							"medical-treatment":
+								"Prescribed Amoxicillin 500mg three times daily for 7 days, increased fluid intake, and rest.",
+							schedule: "2025-08-22T09:15:00Z",
+							complaint:
+								"Persistent cough, mild fever, and difficulty breathing during physical activity.",
+						},
+					],
+				},
+			],
+		},
+	];
+
+	const experiences: Experience[] = [
+		{
+			title: "Medical Doctor & Data Scientist",
+			institution: "Healthcare Technology Solutions",
+			period: "2023 - Present",
+			description: [
+				"Integrating data science methodologies with clinical practice",
+				"Developing predictive models for patient diagnosis and treatment outcomes",
+				"Managing comprehensive patient care with focus on chronic disease management",
+				"Implementing digital health solutions to improve patient monitoring",
+			],
+			specializations: [
+				"Data Science",
+				"Digital Health",
+				"Chronic Disease Management",
+				"Predictive Analytics",
+			],
+		},
+		{
+			title: "Software Engineer",
+			institution: "Medical Technology Company",
+			period: "2022 - 2023",
+			description: [
+				"Developed healthcare management systems and patient tracking applications",
+				"Created data visualization tools for medical professionals",
+				"Implemented machine learning algorithms for medical data analysis",
+				"Collaborated with medical teams to digitize healthcare processes",
+			],
+			specializations: [
+				"Healthcare Software",
+				"Machine Learning",
+				"Medical Data Analysis",
+			],
+		},
+	];
+
+	return (
+		<MedicalProfile
+			patients={patients}
+			experiences={experiences}
+			services={services}
+		/>
+	);
+}
