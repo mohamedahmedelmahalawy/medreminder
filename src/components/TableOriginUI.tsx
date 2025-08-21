@@ -565,7 +565,6 @@ export default function TableOriginUI() {
 						Rows per page
 					</Label>
 					<Select
-					modal={false}
 						value={table.getState().pagination.pageSize.toString()}
 						onValueChange={(value) => {
 							table.setPageSize(Number(value));
