@@ -22,7 +22,7 @@ export function buildDiagnosisUrl(doctor_code: string, patient_phone: string) {
 
 export default function PatientDiagnosisPage() {
   const routeParams = useParams();
-  
+
   console.log(routeParams);
   
   
@@ -33,9 +33,8 @@ export default function PatientDiagnosisPage() {
     ? routeParams?.patient_phone[0]
     : (routeParams?.patient_phone as string | undefined);
 
+  console.log(doctor_code);
 
-    console.log(doctor_code);
-    
   const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([]);
   const [patientName, setPatientName] = useState<string>('');
   const [loading, setLoading] = useState(false);
@@ -128,15 +127,15 @@ export default function PatientDiagnosisPage() {
 
   if (!canQuery) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 p-8">
-        <div className="max-w-3xl mx-auto">
-          <div className="shadow-xl border border-blue-200 rounded-2xl overflow-hidden">
-            <div className="bg-blue-600 text-white px-6 py-4">
-              <h2 className="text-xl font-bold">Patient Diagnoses</h2>
+      <div className='min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 p-8'>
+        <div className='max-w-3xl mx-auto'>
+          <div className='shadow-xl border border-blue-200 rounded-2xl overflow-hidden'>
+            <div className='bg-blue-600 text-white px-6 py-4'>
+              <h2 className='text-xl font-bold'>Patient Diagnoses</h2>
             </div>
-            <div className="p-6 space-y-4">
-              <p className="text-blue-800">Missing or invalid route params.</p>
-              <code className="block bg-blue-100 text-blue-900 p-3 rounded-lg">
+            <div className='p-6 space-y-4'>
+              <p className='text-blue-800'>Missing or invalid route params.</p>
+              <code className='block bg-blue-100 text-blue-900 p-3 rounded-lg'>
                 app/doctors/[doctor_code]/patients/[patient_phone]/diagnosis/page.tsx
               </code>
             </div>
@@ -147,46 +146,65 @@ export default function PatientDiagnosisPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 p-8">
-      <div className="max-w-3xl mx-auto">
-        <div className="shadow-xl border border-blue-200 rounded-2xl overflow-hidden">
-          <div className="bg-blue-600 text-white px-6 py-4">
-            <h2 className="text-xl font-bold">Patient Diagnoses</h2>
-            {patientName && <p className="text-sm text-blue-100">Patient: {patientName}</p>}
+    <div className='min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 p-8'>
+      <div className='max-w-3xl mx-auto'>
+        <div className='shadow-xl border border-blue-200 rounded-2xl overflow-hidden'>
+          <div className='bg-blue-600 text-white px-6 py-4'>
+            <h2 className='text-xl font-bold'>Patient Diagnoses</h2>
+            {patientName && (
+              <p className='text-sm text-blue-100'>Patient: {patientName}</p>
+            )}
           </div>
 
-          <div className="p-6 space-y-6">
+          <div className='p-6 space-y-6'>
             {error && (
-              <div className="rounded-lg border border-blue-300 bg-blue-50 p-3 text-blue-900">
+              <div className='rounded-lg border border-blue-300 bg-blue-50 p-3 text-blue-900'>
                 {error}
               </div>
             )}
 
             {loading && (
-              <div className="flex items-center gap-3 text-blue-800">
-                <span className="inline-block h-5 w-5 rounded-full border-2 border-blue-600 border-t-transparent animate-spin" />
+              <div className='flex items-center gap-3 text-blue-800'>
+                <span className='inline-block h-5 w-5 rounded-full border-2 border-blue-600 border-t-transparent animate-spin' />
                 Loading diagnoses...
               </div>
             )}
 
-            <div className="space-y-3">
+            <div className='space-y-3'>
               {!loading && diagnoses.length === 0 ? (
-                <p className="text-blue-700 text-center">No diagnoses found.</p>
+                <p className='text-blue-700 text-center'>No diagnoses found.</p>
               ) : (
                 diagnoses.map((diag, idx) => (
                   <div
                     key={idx}
-                    className="bg-blue-50 border border-blue-200 p-4 rounded-lg shadow-sm space-y-2"
+                    className='bg-blue-50 border border-blue-200 p-4 rounded-lg shadow-sm space-y-2'
                   >
-                    <h3 className="text-lg font-bold text-blue-900">{diag.diagnosis}</h3>
-                    <p className="text-sm text-blue-700"><span className="font-semibold">Complaint:</span> {diag.complaint}</p>
-                    <p className="text-sm text-blue-700"><span className="font-semibold">Prognosis:</span> {diag.prognosis}</p>
-                    <p className="text-sm text-blue-700"><span className="font-semibold">Report:</span> {diag['medical-report']}</p>
-                    <p className="text-sm text-blue-700"><span className="font-semibold">Treatment:</span> {diag['medical-treatment']}</p>
-                    <p className="text-xs text-blue-600"><span className="font-semibold">Scheduled:</span> {new Date(diag.schedule).toLocaleString()}</p>
+                    <h3 className='text-lg font-bold text-blue-900'>
+                      {diag.diagnosis}
+                    </h3>
+                    <p className='text-sm text-blue-700'>
+                      <span className='font-semibold'>Complaint:</span>{' '}
+                      {diag.complaint}
+                    </p>
+                    <p className='text-sm text-blue-700'>
+                      <span className='font-semibold'>Prognosis:</span>{' '}
+                      {diag.prognosis}
+                    </p>
+                    <p className='text-sm text-blue-700'>
+                      <span className='font-semibold'>Report:</span>{' '}
+                      {diag['medical-report']}
+                    </p>
+                    <p className='text-sm text-blue-700'>
+                      <span className='font-semibold'>Treatment:</span>{' '}
+                      {diag['medical-treatment']}
+                    </p>
+                    <p className='text-xs text-blue-600'>
+                      <span className='font-semibold'>Scheduled:</span>{' '}
+                      {new Date(diag.schedule).toLocaleString()}
+                    </p>
                     <button
                       onClick={() => deleteDiagnosis(diag.id)}
-                      className="mt-2 px-3 py-1 bg-red-600 text-white rounded-lg hover:bg-red-700"
+                      className='mt-2 px-3 py-1 bg-red-600 text-white rounded-lg hover:bg-red-700'
                     >
                       Delete
                     </button>
@@ -195,51 +213,83 @@ export default function PatientDiagnosisPage() {
               )}
             </div>
 
-            <div className="border-t border-blue-200 pt-4">
-              <h3 className="text-lg font-semibold text-blue-900 mb-2">Add New Diagnosis</h3>
-              <div className="grid gap-2">
+            <div className='border-t border-blue-200 pt-4'>
+              <h3 className='text-lg font-semibold text-blue-900 mb-2'>
+                Add New Diagnosis
+              </h3>
+              <div className='grid gap-2'>
                 <input
-                  type="text"
-                  placeholder="Diagnosis"
+                  type='text'
+                  placeholder='Diagnosis'
                   value={newDiagnosis.diagnosis}
-                  onChange={(e) => setNewDiagnosis({ ...newDiagnosis, diagnosis: e.target.value })}
-                  className="p-2 border border-blue-300 rounded-lg"
+                  onChange={(e) =>
+                    setNewDiagnosis({
+                      ...newDiagnosis,
+                      diagnosis: e.target.value,
+                    })
+                  }
+                  className='p-2 border border-blue-300 rounded-lg'
                 />
                 <input
-                  type="text"
-                  placeholder="Prognosis"
+                  type='text'
+                  placeholder='Prognosis'
                   value={newDiagnosis.prognosis}
-                  onChange={(e) => setNewDiagnosis({ ...newDiagnosis, prognosis: e.target.value })}
-                  className="p-2 border border-blue-300 rounded-lg"
+                  onChange={(e) =>
+                    setNewDiagnosis({
+                      ...newDiagnosis,
+                      prognosis: e.target.value,
+                    })
+                  }
+                  className='p-2 border border-blue-300 rounded-lg'
                 />
                 <input
-                  type="text"
-                  placeholder="Complaint"
+                  type='text'
+                  placeholder='Complaint'
                   value={newDiagnosis.complaint}
-                  onChange={(e) => setNewDiagnosis({ ...newDiagnosis, complaint: e.target.value })}
-                  className="p-2 border border-blue-300 rounded-lg"
+                  onChange={(e) =>
+                    setNewDiagnosis({
+                      ...newDiagnosis,
+                      complaint: e.target.value,
+                    })
+                  }
+                  className='p-2 border border-blue-300 rounded-lg'
                 />
                 <textarea
-                  placeholder="Medical Report"
+                  placeholder='Medical Report'
                   value={newDiagnosis['medical-report']}
-                  onChange={(e) => setNewDiagnosis({ ...newDiagnosis, ['medical-report']: e.target.value })}
-                  className="p-2 border border-blue-300 rounded-lg"
+                  onChange={(e) =>
+                    setNewDiagnosis({
+                      ...newDiagnosis,
+                      ['medical-report']: e.target.value,
+                    })
+                  }
+                  className='p-2 border border-blue-300 rounded-lg'
                 />
                 <textarea
-                  placeholder="Medical Treatment"
+                  placeholder='Medical Treatment'
                   value={newDiagnosis['medical-treatment']}
-                  onChange={(e) => setNewDiagnosis({ ...newDiagnosis, ['medical-treatment']: e.target.value })}
-                  className="p-2 border border-blue-300 rounded-lg"
+                  onChange={(e) =>
+                    setNewDiagnosis({
+                      ...newDiagnosis,
+                      ['medical-treatment']: e.target.value,
+                    })
+                  }
+                  className='p-2 border border-blue-300 rounded-lg'
                 />
                 <input
-                  type="datetime-local"
+                  type='datetime-local'
                   value={newDiagnosis.schedule}
-                  onChange={(e) => setNewDiagnosis({ ...newDiagnosis, schedule: e.target.value })}
-                  className="p-2 border border-blue-300 rounded-lg"
+                  onChange={(e) =>
+                    setNewDiagnosis({
+                      ...newDiagnosis,
+                      schedule: e.target.value,
+                    })
+                  }
+                  className='p-2 border border-blue-300 rounded-lg'
                 />
                 <button
                   onClick={addDiagnosis}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                  className='px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700'
                 >
                   Add Diagnosis
                 </button>
