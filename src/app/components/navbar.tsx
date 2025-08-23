@@ -11,14 +11,15 @@ import { useDispatch } from "react-redux";
 import { clearAuth } from "@/lib/store/Slices/Auth";
 
 type SavedAuth = {
-	role: "medical" | "patient" | null;
-	code: string | null;
-	userDetails?: { name?: string; avatar?: string } & Record<string, any>;
-	status?: "idle" | "loading" | "succeeded" | "failed";
-	isLoggedIn?: boolean;
+  role: "medical" | "patient" | null;
+  code: string | null;
+  userDetails?: { name?: string; avatar?: string } & Record<string, any>;
+  status?: "idle" | "loading" | "succeeded" | "failed";
+  isLoggedIn?: boolean;
 };
 
 function Navbar() {
+
 	const [isClicked, setIsClicked] = useState("Home");
 	const [menuOpen, setMenuOpen] = useState(false);
 	const [profileOpen, setProfileOpen] = useState(false);
@@ -191,15 +192,17 @@ function Navbar() {
 										</Link>
 									)}
 
-									{/* {effectiveRole === "patient" && (
+
+                  {/* {effectiveRole === "patient" && (
                     <Link
                       href="/my-doctors"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      className="block hover:bg-gray-100 px-4 py-2 text-gray-700 text-sm"
                       onClick={() => setProfileOpen(false)}
                     >
                       My Doctors
                     </Link>
                   )} */}
+
 
 									<button
 										onClick={handleLogout}
@@ -338,6 +341,7 @@ function Navbar() {
 			</div>
 		</div>
 	);
+
 }
 
 export default Navbar;

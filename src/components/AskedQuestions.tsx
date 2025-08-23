@@ -42,12 +42,14 @@ export default function AskedQuestions() {
   return (
     <div className="space-y-4 mx-auto pb-16 max-w-[1280px]">
       <div className="flex flex-col gap-5">
-        <h2 className="font-extrabold text-[#000D44] text-5xl text-center animate-pulse">
+        <h2 className="font-extrabold text-blue-900 text-5xl text-center animate-pulse">
           Frequently asked questions
         </h2>
-        <h2 className="mb-8 text-[17px] text-center">
-          Everything you need to know about the App
-        </h2>
+        <div>
+          <p className="mb-8 text-[17px] text-center">
+            Everything you need to know about the App
+          </p>
+        </div>
       </div>
       <Accordion
         type="single"
