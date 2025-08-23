@@ -277,6 +277,7 @@ export async function getCode(
   phone: string
 ): Promise<string | null> {
   try {
+
     const patientURL = `/doctors/${newDrCode}/patients/${phone}`;
     const res = await AxiosInterceptor.get(patientURL);
     console.log("Patient API response:", res.data);
@@ -289,6 +290,7 @@ export async function getCode(
       console.log("Add doctor code response:", addDrCodeRes.data);
       return addDrCodeRes.data;
     } else {
+
       console.log("You are not found in doctor's list");
       return null;
     }
