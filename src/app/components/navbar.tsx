@@ -10,7 +10,6 @@ import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { clearAuth } from "@/lib/store/Slices/Auth";
 
-
 type SavedAuth = {
 	role: "medical" | "patient" | null;
 	code: string | null;
@@ -23,7 +22,6 @@ function Navbar() {
 	const [isClicked, setIsClicked] = useState("Home");
 	const [menuOpen, setMenuOpen] = useState(false);
 	const [profileOpen, setProfileOpen] = useState(false);
-
 
 	const {
 		role: roleRedux,
@@ -74,56 +72,54 @@ function Navbar() {
 		[effectiveUser]
 	);
 
-const handleLogout = () => {
-  // nemsa7 el storage
-  if (typeof window !== "undefined") {
-    localStorage.removeItem("auth");
-  }
+	const handleLogout = () => {
+		// nemsa7 el storage
+		if (typeof window !== "undefined") {
+			localStorage.removeItem("auth");
+		}
 
-  // 2) nemsa7 Redux 
-  dispatch(clearAuth());
+		// 2) nemsa7 Redux
+		dispatch(clearAuth());
 
-  // clear local navbar snapshot/UI
-  setAuthLS(null);
-  setProfileOpen(false);
-  setMenuOpen(false);
+		// clear local navbar snapshot/UI
+		setAuthLS(null);
+		setProfileOpen(false);
+		setMenuOpen(false);
 
-
-  router.replace("/");
-  router.refresh(); 
-};
+		router.replace("/");
+		router.refresh();
+	};
 
 	const navItems = ["Home", "Features", "Contact Us"];
 
 	return (
-
-		<div className="fixed top-0 left-0 w-full bg-[#000D44] z-20 shadow-md mb-20">
-			<div className="max-w-screen-xl mx-auto flex items-center justify-between px-4 sm:px-6 md:px-8 py-3 md:py-0">
-				<Link href="/" onClick={() => setIsClicked("")}>
-
+		<div className='fixed top-0 left-0 w-full bg-[#000D44] z-20 shadow-md mb-20'>
+			<div className='max-w-screen-xl mx-auto flex items-center justify-between px-4 sm:px-6 md:px-8 py-3 md:py-0'>
+				<Link href='/' onClick={() => setIsClicked("")}>
 					<Image
-						className="cursor-pointer w-16 sm:w-20 md:w-24 h-auto"
-						src="/Medlogo.png"
-						alt="MedReminder logo"
+						className='cursor-pointer w-16 sm:w-20 md:w-24 h-auto'
+						src='/Medlogo.png'
+						alt='MedReminder logo'
 						width={100}
 						height={90}
 						priority
 					/>
 				</Link>
 
-				<ul className="hidden md:flex items-center text-white space-x-6 lg:space-x-10 font-medium text-sm lg:text-base">
+				<ul className='hidden md:flex items-center text-white space-x-6 lg:space-x-10 font-medium text-sm lg:text-base'>
 					{navItems.map((item) => (
 						<Link
 							href={
 								item === "Home"
 									? "/"
 									: item === "Contact Us"
-										? "/about"
-										: `/${item.toLowerCase()}`
+									? "/about"
+									: `/${item.toLowerCase()}`
 							}
 							key={item}
-							className={`cursor-pointer underline-offset-8 transition-all duration-200 ${isClicked === item ? "underline decoration-2" : "hover:underline"
-								}`}
+							className={`cursor-pointer underline-offset-8 transition-all duration-200 ${
+								isClicked === item ? "underline decoration-2" : "hover:underline"
+							}`}
 							onClick={() => setIsClicked(item)}
 						>
 							{item}
@@ -132,54 +128,54 @@ const handleLogout = () => {
 				</ul>
 
 				{/* RIGHT SIDE (desktop) */}
-				<div className="hidden md:flex items-center gap-3 w-48 lg:w-56 justify-end">
+				<div className='hidden md:flex items-center gap-3 w-48 lg:w-56 justify-end'>
 					{!isLoggedIn ? (
 						<>
 							<Link
-								href="/login"
+								href='/login'
 								onClick={() => setIsClicked("")}
-								className="flex-1 bg-white text-[#000D44] font-semibold border border-gray-200 px-3 py-2 lg:px-4 lg:py-2 rounded-xl text-center hover:bg-gray-100 transition text-sm lg:text-base"
+								className='flex-1 bg-white text-[#000D44] font-semibold border border-gray-200 px-3 py-2 lg:px-4 lg:py-2 rounded-xl text-center hover:bg-gray-100 transition text-sm lg:text-base'
 							>
 								Login
 							</Link>
 							<Link
-								href="/signup"
+								href='/signup'
 								onClick={() => setIsClicked("")}
-								className="flex-1 bg-[#4B4EFC] text-white font-semibold border border-[#4B4EFC] px-3 py-2 lg:px-4 lg:py-2 rounded-xl text-center hover:bg-[#3737e8] transition text-sm lg:text-base"
+								className='flex-1 bg-[#4B4EFC] text-white font-semibold border border-[#4B4EFC] px-3 py-2 lg:px-4 lg:py-2 rounded-xl text-center hover:bg-[#3737e8] transition text-sm lg:text-base'
 							>
 								SignUp
 							</Link>
 						</>
 					) : (
-						<div className="relative">
+						<div className='relative'>
 							<button
-								className="flex items-center gap-2 text-white focus:outline-none"
+								className='flex items-center gap-2 text-white focus:outline-none'
 								onClick={() => setProfileOpen(!profileOpen)}
 							>
 								<Image
-									src="/profileimg.svg"
-									alt="Profile"
+									src='/profileimg.svg'
+									alt='Profile'
 									width={36}
 									height={36}
-									className="rounded-full border border-gray-300 bg-white"
+									className='rounded-full border border-gray-300 bg-white'
 								/>
-								<span className="hidden sm:inline font-medium">{user.name}</span>
+								<span className='hidden sm:inline font-medium'>{user.name}</span>
 								<ChevronDown size={18} />
 							</button>
 
 							{profileOpen && (
-								<div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-30">
+								<div className='absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-30'>
 									<Link
-										href="/profile"
-										className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+										href='/profile'
+										className='block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100'
 										onClick={() => setProfileOpen(false)}
 									>
 										Profile
 									</Link>
 
 									<Link
-										href="profile/schedule"
-										className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+										href='/profile/schedule'
+										className='block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100'
 										onClick={() => setProfileOpen(false)}
 									>
 										Schedule
@@ -187,8 +183,8 @@ const handleLogout = () => {
 
 									{effectiveRole === "medical" && (
 										<Link
-											href="/dashboard"
-											className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+											href='/dashboard'
+											className='block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100'
 											onClick={() => setProfileOpen(false)}
 										>
 											Dashboard
@@ -207,7 +203,7 @@ const handleLogout = () => {
 
 									<button
 										onClick={handleLogout}
-										className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+										className='w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100'
 									>
 										Logout
 									</button>
@@ -219,7 +215,7 @@ const handleLogout = () => {
 
 				{/* burger button */}
 				<button
-					className="md:hidden text-white"
+					className='md:hidden text-white'
 					onClick={() => setMenuOpen(!menuOpen)}
 				>
 					{menuOpen ? <X size={28} /> : <Menu size={28} />}
@@ -228,22 +224,24 @@ const handleLogout = () => {
 
 			{/* MOBILE PANEL */}
 			<div
-				className={`md:hidden bg-[#000D44] text-white px-6 py-4 space-y-3 transition-all duration-300 ease-in-out ${menuOpen ? "max-h-screen opacity-100" : "max-h-0 opacity-0 overflow-hidden"
-					}`}
+				className={`md:hidden bg-[#000D44] text-white px-6 py-4 space-y-3 transition-all duration-300 ease-in-out ${
+					menuOpen ? "max-h-screen opacity-100" : "max-h-0 opacity-0 overflow-hidden"
+				}`}
 			>
-				<ul className="flex flex-col space-y-3 text-sm sm:text-base">
+				<ul className='flex flex-col space-y-3 text-sm sm:text-base'>
 					{["Home", "Features", "Contact Us"].map((item) => (
 						<Link
 							href={
 								item === "Home"
 									? "/"
 									: item === "Contact Us"
-										? "/about"
-										: `/${item.toLowerCase()}`
+									? "/about"
+									: `/${item.toLowerCase()}`
 							}
 							key={item}
-							className={`cursor-pointer underline-offset-8 transition-all duration-200 ${isClicked === item ? "underline decoration-2" : "hover:underline"
-								}`}
+							className={`cursor-pointer underline-offset-8 transition-all duration-200 ${
+								isClicked === item ? "underline decoration-2" : "hover:underline"
+							}`}
 							onClick={() => {
 								setIsClicked(item);
 								setMenuOpen(false);
@@ -254,55 +252,55 @@ const handleLogout = () => {
 					))}
 				</ul>
 
-				<div className="flex flex-col gap-3 mt-4 w-full">
+				<div className='flex flex-col gap-3 mt-4 w-full'>
 					{!isLoggedIn ? (
 						<>
 							<Link
-								href="/login"
+								href='/login'
 								onClick={() => {
 									setIsClicked("");
 									setMenuOpen(false);
 								}}
-								className="w-full bg-white text-[#000D44] font-semibold border border-gray-200 px-4 py-2 rounded-xl text-center hover:bg-gray-100 transition"
+								className='w-full bg-white text-[#000D44] font-semibold border border-gray-200 px-4 py-2 rounded-xl text-center hover:bg-gray-100 transition'
 							>
 								Login
 							</Link>
 							<Link
-								href="/signup"
+								href='/signup'
 								onClick={() => {
 									setIsClicked("");
 									setMenuOpen(false);
 								}}
-								className="w-full bg-[#4B4EFC] text-white font-semibold border border-[#4B4EFC] px-4 py-2 rounded-xl text-center hover:bg-[#3737e8] transition"
+								className='w-full bg-[#4B4EFC] text-white font-semibold border border-[#4B4EFC] px-4 py-2 rounded-xl text-center hover:bg-[#3737e8] transition'
 							>
 								SignUp
 							</Link>
 						</>
 					) : (
-						<div className="border-t border-gray-600 pt-4">
-							<div className="flex items-center gap-2 mb-3">
+						<div className='border-t border-gray-600 pt-4'>
+							<div className='flex items-center gap-2 mb-3'>
 								<Image
-									src="/profileimg.svg"
+									src='/profileimg.svg'
 									// {user.avatar || "profileimg.svg"}
-									alt="Profile"
+									alt='Profile'
 									width={36}
 									height={36}
-									className="rounded-full border border-gray-300 bg-white"
+									className='rounded-full border border-gray-300 bg-white'
 								/>
-								<span className="font-medium">{user.name}</span>
+								<span className='font-medium'>{user.name}</span>
 							</div>
 
 							<Link
-								href="/profile"
-								className="block py-2 text-sm hover:underline"
+								href='/profile'
+								className='block py-2 text-sm hover:underline'
 								onClick={() => setMenuOpen(false)}
 							>
 								Profile
 							</Link>
 
 							<Link
-								href="/notifications"
-								className="block py-2 text-sm hover:underline"
+								href='/profile/schedule'
+								className='block py-2 text-sm hover:underline'
 								onClick={() => setMenuOpen(false)}
 							>
 								Schedule
@@ -310,8 +308,8 @@ const handleLogout = () => {
 
 							{effectiveRole === "medical" && (
 								<Link
-									href="/dashboard"
-									className="block py-2 text-sm hover:underline"
+									href='/dashboard'
+									className='block py-2 text-sm hover:underline'
 									onClick={() => setMenuOpen(false)}
 								>
 									Dashboard
@@ -320,8 +318,8 @@ const handleLogout = () => {
 
 							{effectiveRole === "patient" && (
 								<Link
-									href="/my-doctors"
-									className="block py-2 text-sm hover:underline"
+									href='/my-doctors'
+									className='block py-2 text-sm hover:underline'
 									onClick={() => setMenuOpen(false)}
 								>
 									My Doctors
@@ -329,7 +327,7 @@ const handleLogout = () => {
 							)}
 
 							<button
-								className="w-full text-left py-2 text-sm text-red-400 hover:underline"
+								className='w-full text-left py-2 text-sm text-red-400 hover:underline'
 								onClick={handleLogout}
 							>
 								Logout
