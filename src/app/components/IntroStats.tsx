@@ -7,7 +7,7 @@ export default function IntroStats() {
           <div>
             <h2
               id="intro-stats"
-              className="font-extrabold text-[#000D44] text-5xl xl:text-6xl lg:text-left text-center tracking-tight"
+              className="font-medium text-[#000D44] text-5xl xl:text-6xl lg:text-left text-center tracking-tight"
             >
               <span className="block">Innovative Solutions</span>
               <span className="block">for Patient Safety</span>

@@ -59,14 +59,14 @@ export default function AskedQuestions() {
           <AccordionItem
             value={item.id}
             key={item.id}
-            className="px-5 py-2 border-[#0609181f] border-2 rounded-lg"
+            className="px-5 py-2 border-[#0609181f] border-2 rounded-lg bg-white"
           >
             <AccordionPrimitive.Header className="flex">
               <AccordionPrimitive.Trigger className="flex flex-1 justify-between items-center [&[data-state=open]>svg>path:last-child]:opacity-0 py-2 focus-visible:border-ring rounded-md outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 font-semibold text-[15px] text-left leading-6 [&[data-state=open]>svg]:rotate-180 [&[data-state=open]>svg>path:last-child]:rotate-90 [&>svg>path:last-child]:origin-center transition-all [&>svg>path:last-child]:transition-all [&>svg>path:last-child]:duration-200">
                 <span className="flex flex-col space-y-1">
-                  <span>{item.title}</span>
+                  <span className=" text-blue-900 text-lg ">{item.title}</span>
                   {item.sub && (
-                    <span className="font-normal text-sm">{item.sub}</span>
+                    <span className="font-normal text-blue-900 opacity-90  text-sm">{item.sub}</span>
                   )}
                 </span>
                 <PlusIcon
