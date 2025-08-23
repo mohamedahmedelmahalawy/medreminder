@@ -1,252 +1,209 @@
-
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
+import { Loader2, FileX, Trash2, PlusCircle } from "lucide-react";
 
-interface Diagnosis {
-  id?: string;
-  diagnosis: string;
-  prognosis: string;
-  ['medical-report']: string;
-  ['medical-treatment']: string;
-  schedule: string;
-  complaint: string;
-}
-
-export function buildDiagnosisUrl(doctor_code: string, patient_phone: string) {
-  return `https://fast-api-dnk5.vercel.app/doctors/${encodeURIComponent(
-    doctor_code
-  )}/patients/${encodeURIComponent(patient_phone)}/diagnosis`;
-}
-
-export default function PatientDiagnosisPage() {
-  const routeParams = useParams();
-  
-  console.log(routeParams);
-  
-  
-  const doctor_code = Array.isArray(routeParams?.doctor_code)
-    ? routeParams?.doctor_code[0]
-    : (routeParams?.doctor_code as string | undefined);
-  const patient_phone = Array.isArray(routeParams?.patient_phone)
-    ? routeParams?.patient_phone[0]
-    : (routeParams?.patient_phone as string | undefined);
-
-
-    console.log(doctor_code);
-    
-  const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([]);
-  const [patientName, setPatientName] = useState<string>('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const [newDiagnosis, setNewDiagnosis] = useState({
-    diagnosis: '',
-    prognosis: '',
-    complaint: '',
-    ['medical-report']: '',
-    ['medical-treatment']: '',
-    schedule: '',
+export default function PatientPage() {
+  const params = useParams<{ patient: string }>();
+  const [diagnoses, setDiagnoses] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [formOpen, setFormOpen] = useState(false);
+  const [newDiag, setNewDiag] = useState({
+    diagnosis: "",
+    complaint: "",
+    prognosis: "",
+    "medical-report": "",
+    "medical-treatment": "",
+    schedule: ""
   });
 
-  const canQuery = useMemo(() => Boolean(doctor_code && patient_phone), [
-    doctor_code,
-    patient_phone,
-  ]);
+  const patient_phone = params?.patient ? decodeURIComponent(params.patient) : undefined;
 
-  const listUrl = useMemo(() => {
-    if (!canQuery) return '';
-    return buildDiagnosisUrl(doctor_code!, patient_phone!);
-  }, [canQuery, doctor_code, patient_phone]);
+ 
+  let doctor_code: string | undefined = undefined;
+  if (typeof window !== "undefined") {
+    const urlDoctor = new URLSearchParams(window.location.search).get("doctor");
+    if (urlDoctor) {
+      doctor_code = urlDoctor;
+    } else {
+      const authData = localStorage.getItem("auth");
+      if (authData) {
+        try {
+          const parsed = JSON.parse(authData);
+          doctor_code = parsed.code; 
+        } catch (err) {
+          console.error("❌ Error parsing auth from localStorage", err);
+        }
+      }
+    }
+  }
 
-  const fetchDiagnoses = useCallback(async () => {
-    if (!canQuery) return;
+  //  Fetch diagnoses
+  const fetchData = async () => {
+    if (!doctor_code || !patient_phone) return;
     try {
-      setLoading(true);
-      setError(null);
-      const res = await fetch(listUrl, { cache: 'no-store' });
-      if (!res.ok) throw new Error(`Failed to fetch diagnoses: ${res.status}`);
+      const url = `https://fast-api-dnk5.vercel.app/doctors/${doctor_code}/patients/${patient_phone}/diagnosis`;
+      const res = await fetch(url);
       const data = await res.json();
-      setDiagnoses(Array.isArray(data.diagnoses) ? data.diagnoses : []);
-      setPatientName(data.patient_name || '');
-    } catch (err: any) {
-      setError(err?.message ?? 'Failed to load diagnoses');
-    } finally {
-      setLoading(false);
-    }
-  }, [canQuery, listUrl]);
-
-  const addDiagnosis = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const res = await fetch(listUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newDiagnosis),
-      });
-      if (!res.ok) throw new Error('Failed to add diagnosis');
-      setNewDiagnosis({
-        diagnosis: '',
-        prognosis: '',
-        complaint: '',
-        ['medical-report']: '',
-        ['medical-treatment']: '',
-        schedule: '',
-      });
-      await fetchDiagnoses();
-    } catch (err: any) {
-      setError(err?.message ?? 'Failed to add diagnosis');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const deleteDiagnosis = async (id: string | undefined) => {
-    if (!id) return;
-    try {
-      setLoading(true);
-      setError(null);
-      const res = await fetch(listUrl, {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id }),
-      });
-      if (!res.ok) throw new Error('Failed to delete diagnosis');
-      await fetchDiagnoses();
-    } catch (err: any) {
-      setError(err?.message ?? 'Failed to delete diagnosis');
+      setDiagnoses(data);
+    } catch (err) {
+      console.error("❌ Error fetching diagnoses:", err);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchDiagnoses();
-  }, [fetchDiagnoses]);
+    fetchData();
+  }, [doctor_code, patient_phone]);
 
-  if (!canQuery) {
+  //  Add diagnosis
+  const handleAdd = async (e: any) => {
+    e.preventDefault();
+    try {
+      const url = `https://fast-api-dnk5.vercel.app/doctors/${doctor_code}/patients/${patient_phone}/diagnosis`;
+      await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newDiag),
+      });
+      setNewDiag({
+        diagnosis: "",
+        complaint: "",
+        prognosis: "",
+        "medical-report": "",
+        "medical-treatment": "",
+        schedule: ""
+      });
+      setFormOpen(false);
+      fetchData();
+    } catch (err) {
+      console.error("❌ Error adding diagnosis:", err);
+    }
+  };
+
+  // Delete diagnosis
+  const handleDelete = async (diag: any) => {
+    try {
+      const url = `https://fast-api-dnk5.vercel.app/doctors/${doctor_code}/patients/${patient_phone}/diagnosis`;
+      await fetch(url, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ diagnosis: diag.diagnosis, complaint: diag.complaint }),
+      });
+      fetchData();
+    } catch (err) {
+      console.error("❌ Error deleting diagnosis:", err);
+    }
+  };
+
+  if (loading)
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 p-8">
-        <div className="max-w-3xl mx-auto">
-          <div className="shadow-xl border border-blue-200 rounded-2xl overflow-hidden">
-            <div className="bg-blue-600 text-white px-6 py-4">
-              <h2 className="text-xl font-bold">Patient Diagnoses</h2>
-            </div>
-            <div className="p-6 space-y-4">
-              <p className="text-blue-800">Missing or invalid route params.</p>
-              <code className="block bg-blue-100 text-blue-900 p-3 rounded-lg">
-                app/doctors/[doctor_code]/patients/[patient_phone]/diagnosis/page.tsx
-              </code>
-            </div>
-          </div>
-        </div>
+      <div className="flex justify-center items-center min-h-screen bg-blue-900">
+        <Loader2 className="w-10 h-10 animate-spin text-white" />
       </div>
     );
+
+  if (!diagnoses || diagnoses.detail)
+    return (
+      <div className="flex flex-col justify-center items-center min-h-screen bg-blue-900 text-white p-6">
+        <FileX className="w-14 h-14 mb-4 text-blue-300" />
+        <p className="text-lg font-semibold">No patient data found</p>
+      </div>
+    );
+
+  //  Normalize diagnosis formats
+  let diagnosisList: any[] = [];
+  if (Array.isArray(diagnoses.diagnoses)) {
+    diagnosisList = diagnoses.diagnoses;
+  } else if (Array.isArray(diagnoses.cases)) {
+    diagnosisList = diagnoses.cases.flatMap((c: any) => c.diagnosis || []);
+  } else if (diagnoses.diagnosis) {
+    diagnosisList = [diagnoses.diagnosis];
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 p-8">
-      <div className="max-w-3xl mx-auto">
-        <div className="shadow-xl border border-blue-200 rounded-2xl overflow-hidden">
-          <div className="bg-blue-600 text-white px-6 py-4">
-            <h2 className="text-xl font-bold">Patient Diagnoses</h2>
-            {patientName && <p className="text-sm text-blue-100">Patient: {patientName}</p>}
+    <div className="min-h-screen bg-gray-100 p-8">
+      <h1 className="text-4xl font-bold text-blue-900 mb-8 text-center">
+        Patient: {diagnoses.patient_name || "Unknown"}
+      </h1>
+
+      {/*  Add Button */}
+      <div className="flex justify-center mb-6">
+        <button
+          onClick={() => setFormOpen(!formOpen)}
+          className="flex items-center gap-2 bg-blue-600 text-white px-5 py-2 rounded-lg shadow hover:bg-blue-950 transition"
+        >
+          <PlusCircle size={20} /> {formOpen ? "Cancel" : "Add Diagnosis"}
+        </button>
+      </div>
+
+      {/*  Add Form */}
+      {formOpen && (
+        <form
+          onSubmit={handleAdd}
+          className="max-w-3xl mx-auto bg-white shadow rounded-xl p-6 mb-8 space-y-4 border border-blue-200"
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {Object.keys(newDiag).map((key) => (
+              <div key={key} className="flex flex-col">
+                <label className="text-sm font-medium text-blue-900 mb-1">
+                  {key.replace("medical-", "").replace("-", " ")}
+                </label>
+                <input
+                  type={key === "schedule" ? "datetime-local" : "text"}
+                  value={(newDiag as any)[key]}
+                  onChange={(e) =>
+                    setNewDiag({ ...newDiag, [key]: e.target.value })
+                  }
+                  className="border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                  required={key !== "prognosis"}
+                />
+              </div>
+            ))}
           </div>
+          <button
+            type="submit"
+            className="w-full bg-blue-900 text-white py-2 rounded-lg shadow hover:bg-blue-950 transition"
+          >
+            Save Diagnosis
+          </button>
+        </form>
+      )}
 
-          <div className="p-6 space-y-6">
-            {error && (
-              <div className="rounded-lg border border-blue-300 bg-blue-50 p-3 text-blue-900">
-                {error}
-              </div>
-            )}
+      {/*  Diagnoses List */}
+      <div className="grid gap-6 max-w-4xl mx-auto">
+        {diagnosisList.length > 0 ? (
+          diagnosisList.map((diag: any, i: number) => (
+            <div
+              key={i}
+              className="relative bg-white border border-blue-300 text-gray-800 shadow rounded-xl p-6 space-y-3"
+            >
+              <h2 className="text-2xl font-semibold text-blue-900">
+                {diag.diagnosis || "N/A"}
+              </h2>
+              <p><strong>Complaint:</strong> {diag.complaint || "N/A"}</p>
+              <p><strong>Prognosis:</strong> {diag.prognosis || "N/A"}</p>
+              <p><strong>Report:</strong> {diag["medical-report"] || diag.report || "N/A"}</p>
+              <p><strong>Treatment:</strong> {diag["medical-treatment"] || diag.treatment || "N/A"}</p>
+              <p><strong>Schedule:</strong> {diag.schedule ? new Date(diag.schedule).toLocaleString() : "N/A"}</p>
 
-            {loading && (
-              <div className="flex items-center gap-3 text-blue-800">
-                <span className="inline-block h-5 w-5 rounded-full border-2 border-blue-600 border-t-transparent animate-spin" />
-                Loading diagnoses...
-              </div>
-            )}
-
-            <div className="space-y-3">
-              {!loading && diagnoses.length === 0 ? (
-                <p className="text-blue-700 text-center">No diagnoses found.</p>
-              ) : (
-                diagnoses.map((diag, idx) => (
-                  <div
-                    key={idx}
-                    className="bg-blue-50 border border-blue-200 p-4 rounded-lg shadow-sm space-y-2"
-                  >
-                    <h3 className="text-lg font-bold text-blue-900">{diag.diagnosis}</h3>
-                    <p className="text-sm text-blue-700"><span className="font-semibold">Complaint:</span> {diag.complaint}</p>
-                    <p className="text-sm text-blue-700"><span className="font-semibold">Prognosis:</span> {diag.prognosis}</p>
-                    <p className="text-sm text-blue-700"><span className="font-semibold">Report:</span> {diag['medical-report']}</p>
-                    <p className="text-sm text-blue-700"><span className="font-semibold">Treatment:</span> {diag['medical-treatment']}</p>
-                    <p className="text-xs text-blue-600"><span className="font-semibold">Scheduled:</span> {new Date(diag.schedule).toLocaleString()}</p>
-                    <button
-                      onClick={() => deleteDiagnosis(diag.id)}
-                      className="mt-2 px-3 py-1 bg-red-600 text-white rounded-lg hover:bg-red-700"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                ))
-              )}
+              {/* Delete button */}
+              <button
+                onClick={() => handleDelete(diag)}
+                className="absolute top-4 right-4 text-red-500 hover:text-red-700 transition"
+              >
+                <Trash2 size={22} />
+              </button>
             </div>
-
-            <div className="border-t border-blue-200 pt-4">
-              <h3 className="text-lg font-semibold text-blue-900 mb-2">Add New Diagnosis</h3>
-              <div className="grid gap-2">
-                <input
-                  type="text"
-                  placeholder="Diagnosis"
-                  value={newDiagnosis.diagnosis}
-                  onChange={(e) => setNewDiagnosis({ ...newDiagnosis, diagnosis: e.target.value })}
-                  className="p-2 border border-blue-300 rounded-lg"
-                />
-                <input
-                  type="text"
-                  placeholder="Prognosis"
-                  value={newDiagnosis.prognosis}
-                  onChange={(e) => setNewDiagnosis({ ...newDiagnosis, prognosis: e.target.value })}
-                  className="p-2 border border-blue-300 rounded-lg"
-                />
-                <input
-                  type="text"
-                  placeholder="Complaint"
-                  value={newDiagnosis.complaint}
-                  onChange={(e) => setNewDiagnosis({ ...newDiagnosis, complaint: e.target.value })}
-                  className="p-2 border border-blue-300 rounded-lg"
-                />
-                <textarea
-                  placeholder="Medical Report"
-                  value={newDiagnosis['medical-report']}
-                  onChange={(e) => setNewDiagnosis({ ...newDiagnosis, ['medical-report']: e.target.value })}
-                  className="p-2 border border-blue-300 rounded-lg"
-                />
-                <textarea
-                  placeholder="Medical Treatment"
-                  value={newDiagnosis['medical-treatment']}
-                  onChange={(e) => setNewDiagnosis({ ...newDiagnosis, ['medical-treatment']: e.target.value })}
-                  className="p-2 border border-blue-300 rounded-lg"
-                />
-                <input
-                  type="datetime-local"
-                  value={newDiagnosis.schedule}
-                  onChange={(e) => setNewDiagnosis({ ...newDiagnosis, schedule: e.target.value })}
-                  className="p-2 border border-blue-300 rounded-lg"
-                />
-                <button
-                  onClick={addDiagnosis}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                >
-                  Add Diagnosis
-                </button>
-              </div>
-            </div>
+          ))
+        ) : (
+          <div className="flex flex-col items-center justify-center bg-white shadow rounded-xl p-8 border border-blue-200">
+            <FileX className="w-12 h-12 text-blue-700 mb-3" />
+            <p className="text-blue-900 font-medium">No diagnoses found</p>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
