@@ -7,7 +7,7 @@ export default function IntroStats() {
           <div>
             <h2
               id="intro-stats"
-              className="font-medium text-[#000D44] text-5xl xl:text-6xl lg:text-left text-center tracking-tight"
+              className="font-extrabold text-blue-900 text-5xl xl:text-6xl lg:text-left text-center tracking-tight"
             >
               <span className="block">Innovative Solutions</span>
               <span className="block">for Patient Safety</span>
@@ -30,7 +30,7 @@ export default function IntroStats() {
                 <div className="mt-2 text-[#000D44]">Proven Results</div>
               </div>
 
-              <div className="sm:text-left text-center ">
+              <div className="sm:text-left text-center">
                 <div className="font-semibold tabular-nums text-[#0021b4] text-4xl sm:text-5xl">
                   24/7
                 </div>

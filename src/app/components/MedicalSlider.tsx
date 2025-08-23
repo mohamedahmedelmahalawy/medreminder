@@ -160,16 +160,16 @@ const MedicalSlider: React.FC = () => {
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 py-36">
+    <div className="mx-auto px-4 py-36 w-full max-w-7xl">
       <div className="flex-1 pb-12">
         <div className="flex items-center gap-2 mb-4">
-          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-          <p className="text-green-500 text-xl font-semibold uppercase tracking-wide">
+          <div className="bg-green-500 rounded-full w-2 h-2"></div>
+          <p className="font-semibold text-green-500 text-xl uppercase tracking-wide">
             CATEGORIES
           </p>
-          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+          <div className="bg-green-500 rounded-full w-2 h-2"></div>
         </div>
-        <h2 className="text-4xl font-bold text-blue-900">
+        <h2 className="font-bold text-blue-900 text-4xl">
           Top Searched Specialities
         </h2>
       </div>
@@ -177,7 +177,9 @@ const MedicalSlider: React.FC = () => {
         {/* Navigation Buttons */}
         <button
           onClick={prevSlide}
-          className=" absolute cursor-pointer hover:shadow-lg left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 bg-blue-500 hover:bg-blue-600 text-white rounded-full p-3 shadow-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+          className={
+            " absolute cursor-pointer hover:shadow-lg left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 bg-blue-500 hover:bg-blue-600 text-white rounded-full p-3 shadow-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+          }
           disabled={categories.length <= itemsPerView}
         >
           <ChevronLeft className="w-5 h-5" />
@@ -185,7 +187,7 @@ const MedicalSlider: React.FC = () => {
 
         <button
           onClick={nextSlide}
-          className="absolute cursor-pointer hover:shadow-lg right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 bg-blue-500 hover:bg-blue-600 text-white rounded-full p-3 shadow-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="top-1/2 right-0 z-10 absolute bg-blue-500 hover:bg-blue-600 disabled:opacity-50 shadow-lg hover:shadow-lg p-3 rounded-full text-white transition-colors -translate-y-1/2 translate-x-4 duration-200 cursor-pointer disabled:cursor-not-allowed"
           disabled={categories.length <= itemsPerView}
         >
           <ChevronRight className="w-5 h-5" />
@@ -210,7 +212,7 @@ const MedicalSlider: React.FC = () => {
                     : "w-1/4"
                 }`}
               >
-                <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 p-8  border border-gray-100">
+                <div className="bg-white shadow-md hover:shadow-lg p-8 border border-gray-100 rounded-xl transition-shadow duration-300">
                   {/* Icon Circle */}
                   <div
                     className={`${
@@ -226,10 +228,10 @@ const MedicalSlider: React.FC = () => {
 
                   {/* Content */}
                   <div className="text-center">
-                    <h3 className="font-bold text-gray-900 text-2xl mb-2">
+                    <h3 className="mb-2 font-bold text-gray-900 text-2xl">
                       {category.title}
                     </h3>
-                    <p className="text-lg text-gray-500">
+                    <p className="text-gray-500 text-lg">
                       {category.listings} Listings
                     </p>
                   </div>
@@ -241,7 +243,7 @@ const MedicalSlider: React.FC = () => {
 
         {/* Dots Indicator */}
         {categories.length > itemsPerView && (
-          <div className="flex justify-center mt-6 space-x-2">
+          <div className="flex justify-center space-x-2 mt-6">
             {Array.from({ length: maxIndex + 1 }).map((_, index) => (
               <button
                 key={index}
