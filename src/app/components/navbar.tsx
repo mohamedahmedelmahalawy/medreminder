@@ -11,11 +11,11 @@ import { useDispatch } from "react-redux";
 import { clearAuth } from "@/lib/store/Slices/Auth";
 
 type SavedAuth = {
-  role: "medical" | "patient" | null;
-  code: string | null;
-  userDetails?: { name?: string; avatar?: string } & Record<string, any>;
-  status?: "idle" | "loading" | "succeeded" | "failed";
-  isLoggedIn?: boolean;
+	role: "medical" | "patient" | null;
+	code: string | null;
+	userDetails?: { name?: string; avatar?: string } & Record<string, any>;
+	status?: "idle" | "loading" | "succeeded" | "failed";
+	isLoggedIn?: boolean;
 };
 
 function Navbar() {
@@ -114,13 +114,12 @@ function Navbar() {
 								item === "Home"
 									? "/"
 									: item === "Contact Us"
-									? "/about"
-									: `/${item.toLowerCase()}`
+										? "/about"
+										: `/${item.toLowerCase()}`
 							}
 							key={item}
-							className={`cursor-pointer underline-offset-8 transition-all duration-200 ${
-								isClicked === item ? "underline decoration-2" : "hover:underline"
-							}`}
+							className={`cursor-pointer underline-offset-8 transition-all duration-200 ${isClicked === item ? "underline decoration-2" : "hover:underline"
+								}`}
 							onClick={() => setIsClicked(item)}
 						>
 							{item}
@@ -135,14 +134,15 @@ function Navbar() {
 							<Link
 								href='/login'
 								onClick={() => setIsClicked("")}
-								className='flex-1 bg-white text-[#000D44] font-semibold border border-gray-200 px-3 py-2 lg:px-4 lg:py-2 rounded-xl text-center hover:bg-gray-100 transition text-sm lg:text-base'
+								className='flex-1 bg-white text-[#000D44] font-semibold border border-gray-200 px-3 py-2 lg:px-4 lg:py-2 rounded-xl text-center hover:bg-gray-300 transition text-sm lg:text-base'
 							>
 								Login
 							</Link>
 							<Link
 								href='/signup'
 								onClick={() => setIsClicked("")}
-								className='flex-1 bg-[#4B4EFC] text-white font-semibold border border-[#4B4EFC] px-3 py-2 lg:px-4 lg:py-2 rounded-xl text-center hover:bg-[#3737e8] transition text-sm lg:text-base'
+								className='flex-1  bg-blue-600 text-white font-medium
+                           shadow-md hover:bg-blue-700 px-3 py-2 lg:px-4 lg:py-2 rounded-xl text-center  transition text-sm lg:text-base'
 							>
 								SignUp
 							</Link>
@@ -193,7 +193,7 @@ function Navbar() {
 									)}
 
 
-                  {/* {effectiveRole === "patient" && (
+									{/* {effectiveRole === "patient" && (
                     <Link
                       href="/my-doctors"
                       className="block hover:bg-gray-100 px-4 py-2 text-gray-700 text-sm"
@@ -227,9 +227,8 @@ function Navbar() {
 
 			{/* MOBILE PANEL */}
 			<div
-				className={`md:hidden bg-[#000D44] text-white px-6 py-4 space-y-3 transition-all duration-300 ease-in-out ${
-					menuOpen ? "max-h-screen opacity-100" : "max-h-0 opacity-0 overflow-hidden"
-				}`}
+				className={`md:hidden bg-[#000D44] text-white px-6 py-4 space-y-3 transition-all duration-300 ease-in-out ${menuOpen ? "max-h-screen opacity-100" : "max-h-0 opacity-0 overflow-hidden"
+					}`}
 			>
 				<ul className='flex flex-col space-y-3 text-sm sm:text-base'>
 					{["Home", "Features", "Contact Us"].map((item) => (
@@ -238,13 +237,12 @@ function Navbar() {
 								item === "Home"
 									? "/"
 									: item === "Contact Us"
-									? "/about"
-									: `/${item.toLowerCase()}`
+										? "/about"
+										: `/${item.toLowerCase()}`
 							}
 							key={item}
-							className={`cursor-pointer underline-offset-8 transition-all duration-200 ${
-								isClicked === item ? "underline decoration-2" : "hover:underline"
-							}`}
+							className={`cursor-pointer underline-offset-8 transition-all duration-200 ${isClicked === item ? "underline decoration-2" : "hover:underline"
+								}`}
 							onClick={() => {
 								setIsClicked(item);
 								setMenuOpen(false);

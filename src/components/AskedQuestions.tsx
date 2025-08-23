@@ -42,6 +42,13 @@ export default function AskedQuestions() {
   return (
     <div className="space-y-4 mx-auto pb-16 max-w-[1280px]">
       <div className="flex flex-col gap-5">
+    <div className="flex items-center justify-center mb-2 text-xl">
+      <div className="bg-green-400 mr-2 rounded-full w-2 h-2"></div>
+      <span className="font-semibold text-green-500 md:text-base text-xl tracking-wider">
+        FAQ
+      </span>
+      <div className="bg-green-400 ml-2 rounded-full w-2 h-2"></div>
+    </div>
         <h2 className="font-extrabold text-blue-900 text-5xl text-center animate-pulse">
           Frequently asked questions
         </h2>

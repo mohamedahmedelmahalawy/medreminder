@@ -46,9 +46,16 @@ const medicalManagementPosts: MedicalManagementPost[] = [
 
 function FeaturesSection() {
   return (
-    <main className="mx-auto py-18 pt-8 max-w-[1280px]">
-      <section className="flex flex-col justify-center items-center gap-5 py-18 w-full">
+    <main className="mx-auto py-18 pt-8 max-w-[1280px] " id="features">
+      <section className="flex flex-col justify-center items-center gap-5 w-full">
         <div className="flex flex-col gap-5">
+          <div className="flex items-center justify-center mb-2 text-xl">
+            <div className="bg-green-400 mr-2 rounded-full w-2 h-2"></div>
+            <span className="font-semibold text-green-500 md:text-base text-xl tracking-wider">
+              FEATURES
+            </span>
+            <div className="bg-green-400 ml-2 rounded-full w-2 h-2"></div>
+          </div>
           <h2 className="font-extrabold text-blue-900 text-5xl text-center animate-pulse">
             Application Features
           </h2>

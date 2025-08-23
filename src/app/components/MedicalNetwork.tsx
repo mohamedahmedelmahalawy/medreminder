@@ -1,15 +1,16 @@
 import React from "react";
 import { ArrowRight, Mail, Check } from "lucide-react";
+import Image from "next/image";
 
 const MedicalNetwork: React.FC = () => {
   return (
-    <div className="bg-gray-50 py-20 sm:py-28 lg:py-32">
+    <div className="bg-gray-50 py-18 sm:py-18 lg:py-18">
       <div className="mx-auto px-4 sm:px-6 lg:px-8 w-full max-w-7xl">
         {/* Header */}
         <div className="mb-6 text-xl">
           <div className="flex items-center mb-2 text-xl">
             <div className="bg-green-400 mr-2 rounded-full w-2 h-2"></div>
-            <span className="font-medium text-green-500 md:text-base text-xl tracking-wider">
+            <span className="font-semibold text-green-500 md:text-base text-xl tracking-wider">
               WHY CHOOSE MED-REMINDER
             </span>
             <div className="bg-green-400 ml-2 rounded-full w-2 h-2"></div>
@@ -74,7 +75,7 @@ const MedicalNetwork: React.FC = () => {
             {/* Action Buttons */}
             <div className="flex sm:flex-row flex-col gap-4 pt-6 sm:pt-8">
               {/* Read More Button */}
-              <button className="group relative flex justify-center items-center space-x-2 bg-blue-500 hover:bg-blue-600 px-8 py-4 rounded-lg overflow-hidden font-medium text-white transition-all duration-300 cursor-pointer">
+              <button className="group relative flex justify-center items-center space-x-2 bg-blue-500 hover:bg-blue-600 px-4 py-4 rounded-lg overflow-hidden font-medium text-white transition-all duration-300 cursor-pointer">
                 <span className="z-10 relative">Read More</span>
                 <div className="z-10 relative transition-transform group-hover:translate-x-1 duration-600 transform">
                   <ArrowRight className="w-5 h-5" />
@@ -84,7 +85,7 @@ const MedicalNetwork: React.FC = () => {
               </button>
 
               {/* Support Email Button */}
-              <button className="group relative flex justify-center items-center space-x-3 bg-white hover:bg-gray-50 px-8 py-4 border border-gray-200 rounded-lg overflow-hidden font-medium text-gray-700 transition-all duration-300">
+              <button className="group relative flex justify-center items-center space-x-3 bg-white hover:bg-gray-50 px-4 py-3 border border-gray-200 rounded-lg overflow-hidden font-medium text-gray-700 transition-all duration-300">
                 <div className="relative flex justify-center items-center bg-blue-500 group-hover:bg-[#000D44] rounded-full w-10 h-10 transition-colors duration-300">
                   <Mail className="w-5 h-5 text-white" />
                 </div>
@@ -101,20 +102,24 @@ const MedicalNetwork: React.FC = () => {
           {/* Right Images */}
           <div className="relative w-full">
             {/* Main large image */}
-            <div className="z-10 relative bg-white shadow-lg p-2 rounded-2xl">
-              <img
+            <div className="z-10 relative bg-white shadow-lg p-2 rounded-2xl h-[260px] sm:h-[340px] lg:h-[420px] xl:h-[580px]">
+              <Image
                 src="/wh-img-5.jpg"
                 alt="Medical professionals"
-                className="rounded-xl w-full h-[260px] sm:h-[340px] lg:h-[420px] xl:h-[580px] object-cover"
+                className="rounded-xl object-cover"
+                fill
+                sizes="100vw"
               />
             </div>
 
             {/* Smaller overlay image */}
-            <div className="hidden sm:block bottom-0 left-2 sm:-left-6 md:-left-8 z-15 absolute bg-white shadow-lg p-2 rounded-2xl">
-              <img
+            <div className="hidden  lg:block bottom-0 left-2 sm:-left-6 md:-left-8 z-15 absolute bg-white shadow-lg p-2 rounded-2xl">
+              <Image
                 src="/wh-img-3.jpg"
                 alt="Healthcare service"
                 className="rounded-lg w-40 md:w-56 lg:w-72 h-auto object-cover"
+                width={72}
+                height={70}
               />
             </div>
 

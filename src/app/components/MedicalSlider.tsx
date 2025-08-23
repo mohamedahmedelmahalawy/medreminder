@@ -160,11 +160,11 @@ const MedicalSlider: React.FC = () => {
   };
 
   return (
-    <div className="mx-auto px-4 py-36 w-full max-w-7xl">
+    <div className="mx-auto px-4 py-18 w-full max-w-7xl">
       <div className="flex-1 pb-12">
         <div className="flex items-center gap-2 mb-4">
           <div className="bg-green-500 rounded-full w-2 h-2"></div>
-          <p className="font-semibold text-green-500 text-xl uppercase tracking-wide">
+          <p className="font-semibold text-green-500 md:text-base text-xl tracking-wider">
             CATEGORIES
           </p>
           <div className="bg-green-500 rounded-full w-2 h-2"></div>
@@ -178,7 +178,7 @@ const MedicalSlider: React.FC = () => {
         <button
           onClick={prevSlide}
           className={
-            " absolute cursor-pointer hover:shadow-lg left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 bg-blue-500 hover:bg-blue-600 text-white rounded-full p-3 shadow-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            " absolute cursor-pointer hover:shadow-lg left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 bg-white hover:bg-blue-700 text-blue-600 hover:text-white rounded-full p-3 shadow-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           }
           disabled={categories.length <= itemsPerView}
         >
@@ -187,14 +187,14 @@ const MedicalSlider: React.FC = () => {
 
         <button
           onClick={nextSlide}
-          className="top-1/2 right-0 z-10 absolute bg-blue-500 hover:bg-blue-600 disabled:opacity-50 shadow-lg hover:shadow-lg p-3 rounded-full text-white transition-colors -translate-y-1/2 translate-x-4 duration-200 cursor-pointer disabled:cursor-not-allowed"
+          className="top-1/2 right-0 z-10 absolute bg-white hover:bg-blue-700 text-blue-600 hover:text-white disabled:opacity-50 shadow-lg hover:shadow-lg p-3 rounded-full transition-colors -translate-y-1/2 translate-x-4 duration-200 cursor-pointer disabled:cursor-not-allowed"
           disabled={categories.length <= itemsPerView}
         >
           <ChevronRight className="w-5 h-5" />
         </button>
 
         {/* Slider Container */}
-        <div className="overflow-hidden">
+        <div className="overflow-hidden py-7">
           <div
             className="flex transition-transform duration-900 ease-in-out"
             style={{

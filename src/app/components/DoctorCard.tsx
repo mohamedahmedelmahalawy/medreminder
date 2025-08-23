@@ -41,7 +41,7 @@ const DoctorCard = ({ doctor }: { doctor: Doctor }) => {
   ];
 
   return (
-    <div className="px-3">
+    <div className="px-3 py-8">
       <div
         className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden relative group"
         onMouseEnter={() => setIsHovered(true)}
@@ -66,7 +66,7 @@ const DoctorCard = ({ doctor }: { doctor: Doctor }) => {
                 return (
                   <div
                     key={social.name}
-                    className={`w-10 h-10 rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 transform ${
+                    className={`w-7 h-7 rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 transform ${
                       isHovered
                         ? `translate-y-0 opacity-100`
                         : `translate-y-full opacity-0`

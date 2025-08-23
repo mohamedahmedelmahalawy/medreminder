@@ -484,13 +484,14 @@ export default function TableOriginUI() {
               onPointerDownOutside={() => setViewOpen(false)}
               // optional: also close on ESC
               onEscapeKeyDown={() => setViewOpen(false)}
-              // optional: close on hover-out (use a tiny delay to av`oid flicker)
-              onMouseLeave={() => {
+              // optional: close on hover-out (use a tiny delay to avoid flicker)
+              onMouseLeave={(event) => {
                 const t = setTimeout(() => setViewOpen(false), 100);
                 // cancel if they come back quickly
                 const cancel = () => clearTimeout(t);
 
-                this?.addEventListener?.("mouseenter", cancel, { once: true });
+                const target = event.currentTarget as HTMLElement;
+                target.addEventListener("mouseenter", cancel, { once: true });
               }}
             >
               <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
