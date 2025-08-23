@@ -30,7 +30,7 @@ export default function DatePickerComp({ value, onChange }: DatePickerCompProps)
               className="group bg-background hover:bg-background border-input w-full justify-between px-3 font-normal outline-offset-0 outline-none focus-visible:outline-[3px]"
             >
               <span className={cn("truncate", !value && "text-muted-foreground")}>
-                {value ? format(value, "PPP") : "Pick a date"}
+                {value ? format(value, "PPP") : "Date Of Admission"}
               </span>
               <CalendarIcon
                 size={16}

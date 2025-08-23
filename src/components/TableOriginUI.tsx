@@ -100,6 +100,9 @@ import { DialogContent, DialogHeader } from "./ui/dialog";
 import { DialogDescription, DialogTitle } from "@radix-ui/react-dialog";
 import { Dialog } from "@/components/ui/dialog";
 import { useDispatch, useSelector } from "react-redux";
+import { parseISO, isWithinInterval, startOfDay, endOfDay } from "date-fns";
+import type { DateRange } from "react-day-picker";
+import type { Filters } from "./FilterInput";
 import { AppDispatch, RootState } from "@/lib/store/Slices/Store";
 import {
   addDiagnosis,
@@ -112,6 +115,7 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { DoctorPatient } from "@/lib/interfaces/DoctorPatient";
 import { DiagnosisEntry } from "@/lib/interfaces/DiagnosisEntry";
+import CalenderENInput from "./CalenderENInput";
 
 // import { Row } from "react-aria-components";
 type Item = {
@@ -124,6 +128,13 @@ type Item = {
   age?: number;
   dateOfAdmission?: string;
 };
+
+function toDate(d?: string | Date | null) {
+  if (!d) return null;
+  if (d instanceof Date) return d;
+  const parsed = parseISO(d);
+  return isNaN(parsed.getTime()) ? null : parsed;
+}
 
 // Custom filter function for multi-column searching
 const multiColumnFilterFn: FilterFn<Item> = (row, columnId, filterValue) => {
@@ -172,14 +183,14 @@ const columns: ColumnDef<Item>[] = [
     accessorKey: "name",
 
     cell: ({ row }) => (
-      <div className="font-medium">
+      <div className="font-medium cursor-pointer">
         <Link href={`/patients/${row.original.phone}`}>
           {row.getValue("name")}
         </Link>
       </div>
     ),
 
-    size: 180,
+    size: 170,
     filterFn: multiColumnFilterFn,
     enableHiding: false,
   },
@@ -188,7 +199,7 @@ const columns: ColumnDef<Item>[] = [
     accessorKey: "age",
 
     cell: ({ row }) => <div className="font-medium">{row.getValue("age")}</div>,
-    size: 70,
+    size: 50,
 
     filterFn: multiColumnFilterFn,
     enableHiding: false,
@@ -196,7 +207,11 @@ const columns: ColumnDef<Item>[] = [
   {
     header: "Date Of Admission ",
     accessorKey: "dateOfAdmission",
-    size: 220,
+    size: 170,
+    cell: ({ row }) => {
+      const d = toDate(row.original.dateOfAdmission);
+      return <span>{d ? d.toLocaleDateString("en-GB") : "—"}</span>;
+    },
   },
   {
     header: "Phone",
@@ -206,13 +221,13 @@ const columns: ColumnDef<Item>[] = [
         <span className="text-lg leading-none"></span> {row.getValue("phone")}
       </div>
     ),
-    size: 180,
+    size: 170,
   },
   {
     header: "Country",
     accessorKey: "country",
 
-    size: 100,
+    size: 80,
     // filterFn: statusFilterFn,
   },
   {
@@ -222,7 +237,7 @@ const columns: ColumnDef<Item>[] = [
       <Badge
         className={cn(
           row.getValue("gender") === "female" &&
-            "bg-red-400 text-primary-foreground"
+          "bg-red-400 text-primary-foreground"
         )}
       >
         {String(row.getValue("gender"))[0].toUpperCase()}
@@ -243,27 +258,32 @@ const columns: ColumnDef<Item>[] = [
   },
 ];
 
-export default function TableOriginUI() {
+type Props = {
+  dateRange?: DateRange;
+  filters: Filters;
+};
+export default function TableOriginUI({ filters }: Props) {
   const id = useId();
   const [viewOpen, setViewOpen] = useState(false);
 
   const { current } = useSelector((s: RootState) => s.doctor);
+  const [dateRange, setDateRange] = useState<DateRange | undefined>();
   console.log(current);
 
   const code: string =
     typeof window !== "undefined"
       ? (() => {
-          const raw = localStorage.getItem("auth");
-          if (!raw) return null;
-          try {
-            const parsed = JSON.parse(raw);
-            // works whether you saved a string or an object { code: "..." }
-            return typeof parsed === "string" ? parsed : parsed?.code ?? null;
-          } catch {
-            // if you stored plain string without JSON.stringify
-            return raw;
-          }
-        })()
+        const raw = localStorage.getItem("auth");
+        if (!raw) return null;
+        try {
+          const parsed = JSON.parse(raw);
+          // works whether you saved a string or an object { code: "..." }
+          return typeof parsed === "string" ? parsed : parsed?.code ?? null;
+        } catch {
+          // if you stored plain string without JSON.stringify
+          return raw;
+        }
+      })()
       : null;
 
   const dispatch = useDispatch<AppDispatch>();
@@ -283,13 +303,11 @@ export default function TableOriginUI() {
       desc: false,
     },
   ]);
-  // const doctorCode =               lma nestah3'l bel code login w signup
-  //   useAppSelector((s) =>
-  //     s.auth.userDetails && "code" in s.auth.userDetails ? s.auth.userDetails.code : null
-  //   ) ?? undefined;
+
   const [data, setData] = useState<Item[]>([]);
   useEffect(() => {
     async function fetchPosts() {
+      if (!code) return;
       const res = await fetch(
         `https://fast-api-dnk5.vercel.app/doctors/${code}/patients`
       );
@@ -302,7 +320,7 @@ export default function TableOriginUI() {
       console.log(code);
     }
     fetchPosts();
-  }, [current]);
+  }, [current, code]);
 
   const handleDeleteRows = async () => {
     const selectedRows = table.getSelectedRowModel().rows;
@@ -325,8 +343,28 @@ export default function TableOriginUI() {
     table.resetRowSelection();
   };
 
+  const filteredData = useMemo(() => {
+    // start from raw data
+    let rows = data;
+
+    // apply date range if provided
+    if (dateRange?.from || dateRange?.to) {
+      const start = dateRange?.from ? startOfDay(dateRange.from) : new Date(0);
+      const end = dateRange?.to ? endOfDay(dateRange.to) : endOfDay(new Date(8640000000000000));
+
+      rows = rows.filter((row) => {
+
+        const d = toDate(row.dateOfAdmission);
+        return d ? isWithinInterval(d, { start, end }) : false;
+      });
+    }
+
+    return rows;
+  }, [data, dateRange]);
+
+
   const table = useReactTable({
-    data,
+    data: filteredData,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -346,44 +384,6 @@ export default function TableOriginUI() {
     },
   });
 
-  // Get unique status values
-  // const uniqueStatusValues = useMemo(() => {
-  // 	const statusColumn = table.getColumn("status");
-
-  // 	if (!statusColumn) return [];
-
-  // 	const values = Array.from(statusColumn.getFacetedUniqueValues().keys());
-
-  // 	return values.sort();
-  // }, [table.getColumn("status")?.getFacetedUniqueValues()]);
-
-  // // Get counts for each status
-  // const statusCounts = useMemo(() => {
-  // 	const statusColumn = table.getColumn("status");
-  // 	if (!statusColumn) return new Map();
-  // 	return statusColumn.getFacetedUniqueValues();
-  // }, [table.getColumn("status")?.getFacetedUniqueValues()]);
-
-  // const selectedStatuses = useMemo(() => {
-  // 	const filterValue = table.getColumn("status")?.getFilterValue() as string[];
-  // 	return filterValue ?? [];
-  // }, [table.getColumn("status")?.getFilterValue()]);
-
-  // const handleStatusChange = (checked: boolean, value: string) => {
-  // 	const filterValue = table.getColumn("status")?.getFilterValue() as string[];
-  // 	const newFilterValue = filterValue ? [...filterValue] : [];
-
-  // 	if (checked) {
-  // 		newFilterValue.push(value);
-  // 	} else {
-  // 		const index = newFilterValue.indexOf(value);
-  // 		if (index > -1) {
-  // 			newFilterValue.splice(index, 1);
-  // 		}
-  // 	}
-
-  // 	table.getColumn("status")?.setFilterValue(newFilterValue.length ? newFilterValue : undefined);
-  // };
 
   return (
     <div className="space-y-4">
@@ -430,34 +430,10 @@ export default function TableOriginUI() {
           {/* Filter by status */}
           <Popover modal={false}>
             <PopoverTrigger asChild>
-              {/* <Button variant="outline">
-								<FilterIcon className="opacity-60 -ms-1" size={16} aria-hidden="true" />
-								Status
-								{selectedStatuses.length > 0 && (
-									<span className="inline-flex items-center bg-background -me-1 px-1 border rounded h-5 max-h-full font-[inherit] font-medium text-[0.625rem] text-muted-foreground/70">
-										{selectedStatuses.length}
-									</span>
-								)}
-							</Button> */}
+
             </PopoverTrigger>
             <PopoverContent className="p-3 w-auto min-w-36" align="start">
-              {/* <div className="space-y-3">
-								<div className="font-medium text-muted-foreground text-xs">Filters</div>
-								<div className="space-y-3">
-									{uniqueStatusValues.map((value, i) => (
-										<div key={value} className="flex items-center gap-2">
-											<Checkbox
-												id={`${id}-${i}`}
-												checked={selectedStatuses.includes(value)}
-												onCheckedChange={(checked: boolean) => handleStatusChange(checked, value)}
-											/>
-											<Label htmlFor={`${id}-${i}`} className="flex justify-between gap-2 font-normal grow">
-												{value} <span className="ms-2 text-muted-foreground text-xs">{statusCounts.get(value)}</span>
-											</Label>
-										</div>
-									))}
-								</div>
-							</div> */}
+
             </PopoverContent>
           </Popover>
           {/* Toggle columns visibility */}
@@ -467,9 +443,9 @@ export default function TableOriginUI() {
             modal={false}
           >
             <DropdownMenuTrigger asChild>
-              <Button variant="outline">
+              <Button variant="outline" className="bg-background hover:bg-blue-600 hover:text-white  transition-colors duration-250">
                 <Columns3Icon
-                  className="opacity-60 -ms-1"
+                  className="opacity-60 -ms-1 "
                   size={16}
                   aria-hidden="true"
                 />
@@ -515,7 +491,9 @@ export default function TableOriginUI() {
                 })}
             </DropdownMenuContent>
           </DropdownMenu>
+          <CalenderENInput value={dateRange} onChange={setDateRange} />
         </div>
+
         <div className="flex items-center gap-3">
           {/* Delete button */}
           {table.getSelectedRowModel().rows.length > 0 && (
@@ -581,13 +559,13 @@ export default function TableOriginUI() {
                     <TableHead
                       key={header.id}
                       style={{ width: `${header.getSize()}px` }}
-                      className="h-11"
+                      className="h-11 align-middle text-center "
                     >
                       {header.isPlaceholder ? null : header.column.getCanSort() ? (
                         <div
                           className={cn(
                             header.column.getCanSort() &&
-                              "flex h-full cursor-pointer items-center justify-between gap-2 select-none"
+                            "flex w-full h-full  items-center justify-center gap-2 select-none"
                           )}
                           onClick={header.column.getToggleSortingHandler()}
                           onKeyDown={(e) => {
@@ -645,7 +623,7 @@ export default function TableOriginUI() {
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
                       key={cell.id}
-                      className="last:py-0 cursor-pointer"
+                      className="last:py-0  text-center"
                     >
                       {flexRender(
                         cell.column.columnDef.cell,
@@ -713,8 +691,8 @@ export default function TableOriginUI() {
               {Math.min(
                 Math.max(
                   table.getState().pagination.pageIndex *
-                    table.getState().pagination.pageSize +
-                    table.getState().pagination.pageSize,
+                  table.getState().pagination.pageSize +
+                  table.getState().pagination.pageSize,
 
                   0
                 ),
@@ -803,17 +781,17 @@ function RowActions({ row }: { row: Row<Item> }) {
   const code: string =
     typeof window !== "undefined"
       ? (() => {
-          const raw = localStorage.getItem("auth");
-          if (!raw) return null;
-          try {
-            const parsed = JSON.parse(raw);
-            // works whether you saved a string or an object { code: "..." }
-            return typeof parsed === "string" ? parsed : parsed?.code ?? null;
-          } catch {
-            // if you stored plain string without JSON.stringify
-            return raw;
-          }
-        })()
+        const raw = localStorage.getItem("auth");
+        if (!raw) return null;
+        try {
+          const parsed = JSON.parse(raw);
+          // works whether you saved a string or an object { code: "..." }
+          return typeof parsed === "string" ? parsed : parsed?.code ?? null;
+        } catch {
+          // if you stored plain string without JSON.stringify
+          return raw;
+        }
+      })()
       : null;
 
   const handleEdit = () => {
@@ -908,8 +886,11 @@ function RowActions({ row }: { row: Row<Item> }) {
               Add Diagnostic
             </DropdownMenuItem>
 
+
+
             <DropdownMenuItem className="focus:bg-amber-950 focus:text-white">
-              <Link href={`/patient-details/${row.original.phone}`}>
+              <Link href={`/patients/${row.original.phone}`}>
+               
                 Show Details
               </Link>
             </DropdownMenuItem>

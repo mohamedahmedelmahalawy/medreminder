@@ -11,9 +11,17 @@ import { Calendar } from "@/components/ui/calendar";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
-export default function CalenderENInput() {
+type Props = {
+	value?: DateRange;
+	onChange?: (range?: DateRange) => void;
+};
+export default function CalenderENInput({ value, onChange }: Props) {
+
+
 	const id = useId();
 	const [date, setDate] = useState<DateRange | undefined>();
+
+
 
 	return (
 		<div>
@@ -23,29 +31,27 @@ export default function CalenderENInput() {
 						<Button
 							id={id}
 							variant="outline"
-							className="group bg-background hover:bg-background border-input w-full justify-between px-3 font-normal outline-offset-0 outline-none focus-visible:outline-[3px]">
-							<span className={cn("truncate", !date && "text-muted-foreground")}>
-								{date?.from ? (
-									date.to ? (
-										<>
-											{format(date.from, "LLL dd, y")} - {format(date.to, "LLL dd, y")}
+							className="group bg-background hover:bg-blue-600  border-input w-full justify-between px-3 font-normal   transition-colors duration-250"
+						>
+							<span className={cn("truncate", "text-black group-hover:text-white font-semibold")}>
+								{value?.from
+									? value.to
+										? <>
+											{format(value.from, "LLL dd, y")} - {format(value.to, "LLL dd, y")}
 										</>
-									) : (
-										format(date.from, "LLL dd, y")
-									)
-								) : (
-									"Pick a date range"
-								)}
+										: format(value.from, "LLL dd, y")
+									: "Filter By Date Range"}
 							</span>
-							<CalendarIcon
-								size={16}
-								className="text-muted-foreground/80 group-hover:text-foreground shrink-0 transition-colors"
-								aria-hidden="true"
-							/>
+							<CalendarIcon size={16} className="text-black-foreground/80 group-hover:text-white shrink-0 " />
 						</Button>
 					</PopoverTrigger>
-					<PopoverContent className="w-auto p-2" align="start">
-						<Calendar mode="range" selected={date} onSelect={setDate} />
+					<PopoverContent className="w-auto p-2 " align="start">
+						<Calendar
+							mode="range"
+							selected={value}
+							onSelect={onChange}
+
+						/>
 					</PopoverContent>
 				</Popover>
 			</div>

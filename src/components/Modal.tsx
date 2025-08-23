@@ -24,6 +24,7 @@ import { AppDispatch } from "@/lib/store/Slices/Store";
 import { addPatient } from "@/lib/store/Slices/MedicalSlicer";
 import { DoctorPatient } from "@/lib/interfaces/DoctorPatient";
 import CountryInput from "./CountryInput";
+import { parse } from "date-fns";
 interface ModalProps {
 	name?: string;
 }
@@ -68,7 +69,14 @@ export default function Modal({ name }: ModalProps) {
 				profession: data.profession,
 				age: Number(data.age),
 				dateOfAdmission:
-					typeof data.dateOfAdmission === "string" ? data.dateOfAdmission : data.dateOfAdmission?.toISOString(),
+  typeof data.dateOfAdmission === "string"
+    ? (
+        // handle "YYYY-MM-DD" from <input type="date"> OR "DD/MM/YYYY"
+        /\d{4}-\d{2}-\d{2}/.test(data.dateOfAdmission)
+          ? new Date(data.dateOfAdmission + "T00:00:00").toISOString()
+          : parse(data.dateOfAdmission, "dd/MM/yyyy", new Date()).toISOString()
+      )
+    : data.dateOfAdmission.toISOString(),
 				cases: [{ diagnosis: [] }],
 			};
 			console.log(patient);
@@ -87,7 +95,7 @@ export default function Modal({ name }: ModalProps) {
 	return (
 		<Dialog    open={closeModal} onOpenChange={setCloseModal}>
 			<DialogTrigger asChild>
-				<Button variant="outline">
+				<Button variant="outline" className=" bg-background hover:bg-blue-600 hover:text-white  transition-colors duration-250">
 					<PlusIcon className="-ms-1 opacity-60" size={20} aria-hidden="true" />
 					{name}
 				</Button>
