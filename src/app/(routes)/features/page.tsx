@@ -48,17 +48,26 @@ function Features() {
   return (
     <main className="mx-auto pt-8 max-w-[1280px]">
       <section className="flex flex-col justify-center gap-5 pb-7 w-full">
-        <h2 className="mb-5 font-semibold text-[#42307D] text-5xl text-center animate-pulse">
-          Application Features
-        </h2>
-        <p className="mb-4 text-center">
-          How Medical crew and patient stay in sync?
-        </p>
-        <ul className="gap-8 grid grid-cols-1 md:grid-cols-2 mx-auto w-full">
-          {medicalManagementPosts?.map((post) => {
-            return <MedicalManagementCard key={post.id} {...post} />;
-          })}
-        </ul>
+        <div className="flex flex-col gap-5">
+          <div className="flex items-center justify-center mb-2 text-xl">
+            <div className="bg-green-400 mr-2 rounded-full w-2 h-2"></div>
+            <span className="font-semibold text-green-500 md:text-base text-xl tracking-wider">
+              FEATURES
+            </span>
+            <div className="bg-green-400 ml-2 rounded-full w-2 h-2"></div>
+          </div>
+          </div>
+          <h2 className="mb-5 font-extrabold  text-blue-900 text-5xl text-center animate-pulse">
+            Application Features
+          </h2>
+          <p className="mb-4 text-center">
+            How Medical crew and patient stay in sync?
+          </p>
+          <ul className="gap-8 grid grid-cols-1 md:grid-cols-2 mx-auto w-full">
+            {medicalManagementPosts?.map((post) => {
+              return <MedicalManagementCard key={post.id} {...post} />;
+            })}
+          </ul>
       </section>
       <section className="flex flex-col justify-center gap-5 pb-7 w-full">
         <ul className="gap-8 grid grid-cols-1 md:grid-cols-2 mx-auto w-full">
