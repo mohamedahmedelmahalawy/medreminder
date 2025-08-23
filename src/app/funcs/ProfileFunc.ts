@@ -262,13 +262,11 @@ export async function getCode(
   phone: string
 ): Promise<string | null> {
   try {
-
     try {
       const patientURL = `/doctors/${newDrCode}/patients/${phone}`;
       console.log(patientURL);
       const res = await AxiosInterceptor.get(patientURL);
       if (res.data.phone === phone) {
-
         try {
           const addDrCodeURL = `/patients/${phone}/drCodes`;
           const addDrCodeRes = await AxiosInterceptor.post(addDrCodeURL, null, {
@@ -298,11 +296,9 @@ export const formatDate = (dateString: string) => {
   try {
     const date = new Date(dateString);
 
-
     if (isNaN(date.getTime())) {
       return "Invalid Date";
     }
-
 
     const options: Intl.DateTimeFormatOptions = {
       year: "numeric",
