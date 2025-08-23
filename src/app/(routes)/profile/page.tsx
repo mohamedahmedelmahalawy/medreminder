@@ -42,41 +42,5 @@ export default async function ProfilePage() {
     },
   ];
 
-  const experiences: Experience[] = [
-    {
-      title: "Medical Doctor & Data Scientist",
-      institution: "Healthcare Technology Solutions",
-      period: "2023 - Present",
-      description: [
-        "Integrating data science methodologies with clinical practice",
-        "Developing predictive models for patient diagnosis and treatment outcomes",
-        "Managing comprehensive patient care with focus on chronic disease management",
-        "Implementing digital health solutions to improve patient monitoring",
-      ],
-      specializations: [
-        "Data Science",
-        "Digital Health",
-        "Chronic Disease Management",
-        "Predictive Analytics",
-      ],
-    },
-    {
-      title: "Software Engineer",
-      institution: "Medical Technology Company",
-      period: "2022 - 2023",
-      description: [
-        "Developed healthcare management systems and patient tracking applications",
-        "Created data visualization tools for medical professionals",
-        "Implemented machine learning algorithms for medical data analysis",
-        "Collaborated with medical teams to digitize healthcare processes",
-      ],
-      specializations: [
-        "Healthcare Software",
-        "Machine Learning",
-        "Medical Data Analysis",
-      ],
-    },
-  ];
-
-  return <MedicalProfile experiences={experiences} services={services} />;
+  return <MedicalProfile services={services} />;
 }

@@ -4,7 +4,15 @@ import React, { useEffect, useState } from "react";
 import { Experience, Service } from "../(routes)/profile/page";
 import { DoctorPatient } from "@/lib/interfaces/DoctorPatient";
 import { DiagnosisEntry } from "@/lib/interfaces/DiagnosisEntry";
-import { Briefcase, Calendar, User, Users } from "lucide-react";
+import {
+	Briefcase,
+	Calendar,
+	Mail,
+	MapPin,
+	Phone,
+	User,
+	Users,
+} from "lucide-react";
 import { formatDate } from "../funcs/ProfileFunc";
 import Link from "next/link";
 
@@ -12,13 +20,11 @@ export default function ProfileManage({
 	role,
 	profile,
 	displayPatients,
-	experiences,
 	services,
 }: {
 	role: string;
 	profile: DoctorPatient;
 	displayPatients: DoctorPatient[];
-	experiences: Experience[];
 	services: Service[];
 }) {
 	const [activeTab, setActiveTab] = useState<
@@ -36,6 +42,141 @@ export default function ProfileManage({
 	const [selectedPatient, setSelectedPatient] = useState<DoctorPatient | null>(
 		null
 	);
+
+	const getProfessionExperiences = (profession: string): Experience[] => {
+		let experiences: Experience[] = [];
+
+		if (profession === "General Practitioner") {
+			experiences = [
+				{
+					title: "Primary Care Physician",
+					institution: "Community Health Clinic",
+					period: "2020 - Present",
+					description: [
+						"Providing comprehensive medical care for patients of all ages",
+						"Managing preventive healthcare and chronic disease follow-up",
+						"Performing routine check-ups and minor medical procedures",
+						"Collaborating with specialists for patient referrals",
+					],
+					specializations: [
+						"Preventive Medicine",
+						"Family Care",
+						"Chronic Disease Management",
+					],
+				},
+			];
+		} else if (profession === "Surgeon") {
+			experiences = [
+				{
+					title: "General Surgeon",
+					institution: "City Hospital",
+					period: "2019 - Present",
+					description: [
+						"Performing surgical procedures including appendectomies and hernia repairs",
+						"Collaborating with anesthesiologists and surgical teams",
+						"Conducting post-operative care and monitoring patient recovery",
+						"Researching and adopting minimally invasive surgical techniques",
+					],
+					specializations: [
+						"General Surgery",
+						"Minimally Invasive Surgery",
+						"Post-Operative Care",
+					],
+				},
+			];
+		} else if (profession === "Pediatrician") {
+			experiences = [
+				{
+					title: "Pediatric Specialist",
+					institution: "Children’s Medical Center",
+					period: "2021 - Present",
+					description: [
+						"Providing preventive and acute care for children and adolescents",
+						"Diagnosing and treating pediatric illnesses and developmental issues",
+						"Administering vaccinations and guiding parents on child health",
+						"Collaborating with schools for child health awareness",
+					],
+					specializations: ["Pediatric Care", "Immunization", "Child Development"],
+				},
+			];
+		} else if (profession === "Dentist") {
+			experiences = [
+				{
+					title: "Dental Surgeon",
+					institution: "Smile Dental Clinic",
+					period: "2018 - Present",
+					description: [
+						"Performing dental examinations, fillings, and extractions",
+						"Educating patients on oral hygiene and preventive care",
+						"Using modern tools for root canal treatments and cosmetic dentistry",
+						"Collaborating with orthodontists and oral surgeons for complex cases",
+					],
+					specializations: [
+						"General Dentistry",
+						"Cosmetic Dentistry",
+						"Oral Surgery",
+					],
+				},
+			];
+		} else if (profession === "Cardiologist") {
+			experiences = [
+				{
+					title: "Interventional Cardiologist",
+					institution: "Heart Care Institute",
+					period: "2020 - Present",
+					description: [
+						"Diagnosing and treating cardiovascular diseases",
+						"Performing angioplasty, stent placement, and echocardiograms",
+						"Managing patients with hypertension and arrhythmias",
+						"Conducting research on new cardiac treatment protocols",
+					],
+					specializations: [
+						"Interventional Cardiology",
+						"Cardiac Imaging",
+						"Hypertension Management",
+					],
+				},
+			];
+		} else {
+			experiences = [
+				{
+					title: "Medical Doctor & Data Scientist",
+					institution: "Healthcare Technology Solutions",
+					period: "2023 - Present",
+					description: [
+						"Integrating data science methodologies with clinical practice",
+						"Developing predictive models for patient diagnosis and treatment outcomes",
+						"Managing comprehensive patient care with focus on chronic disease management",
+						"Implementing digital health solutions to improve patient monitoring",
+					],
+					specializations: [
+						"Data Science",
+						"Digital Health",
+						"Chronic Disease Management",
+						"Predictive Analytics",
+					],
+				},
+				{
+					title: "Software Engineer",
+					institution: "Medical Technology Company",
+					period: "2022 - 2023",
+					description: [
+						"Developed healthcare management systems and patient tracking applications",
+						"Created data visualization tools for medical professionals",
+						"Implemented machine learning algorithms for medical data analysis",
+						"Collaborated with medical teams to digitize healthcare processes",
+					],
+					specializations: [
+						"Healthcare Software",
+						"Machine Learning",
+						"Medical Data Analysis",
+					],
+				},
+			];
+		}
+
+		return experiences;
+	};
 
 	const TabButton: React.FC<{
 		tab: string;
@@ -58,6 +199,7 @@ export default function ProfileManage({
 			<span className='font-medium'>{label}</span>
 		</button>
 	);
+
 	return (
 		<div>
 			{" "}
@@ -106,50 +248,238 @@ export default function ProfileManage({
 							</div>
 						</div>
 
-						{/* Tab Content */}
 						<div className='p-6'>
-							{activeTab === "about" && (
+							{/* Doctor About Page */}
+							{activeTab === "about" && role === "medical" && (
 								<div className='space-y-6'>
-									<div>
-										<h3 className='text-xl font-bold text-gray-900 mb-4'>
-											About Dr. {profile.name}
-										</h3>
-										<p className='text-gray-600 leading-relaxed mb-6'>{profile.bio}</p>
-									</div>
-
-									<div>
-										<h4 className='font-semibold text-gray-900 mb-4'>
-											Medical & Technical Services
-										</h4>
-										<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-											{services.map((service, index) => (
-												<div
-													key={index}
-													className='p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow'
-												>
-													<div className='flex items-start space-x-3'>
-														{service.icon}
-														<div>
-															<h5 className='font-medium text-gray-900 mb-2'>
-																{service.name}
-															</h5>
-															<p className='text-gray-600 text-sm'>{service.description}</p>
+									<div className='w-full'>
+										<div className='max-w-7xl mx-auto'>
+											{/* Top Section - Contact & Professional Details Side by Side */}
+											<div className='grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8'>
+												{/* Contact Information Card */}
+												<div className='bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-8 shadow-lg border border-blue-100'>
+													<h3 className='text-lg font-bold text-gray-900 mb-6 flex items-center'>
+														<User className='w-5 h-5 mr-2 text-blue-600' />
+														Contact Information
+													</h3>
+													<div className='space-y-4'>
+														<div className='flex items-center space-x-4 p-3 bg-white rounded-lg shadow-sm border border-gray-100'>
+															<div className='p-2 bg-blue-100 rounded-full'>
+																<MapPin className='w-4 h-4 text-blue-600' />
+															</div>
+															<div>
+																<p className='text-sm text-gray-500'>Location</p>
+																<p className='font-medium text-gray-900'>
+																	{profile.city}, {profile.country}
+																</p>
+															</div>
+														</div>
+														<div className='flex items-center space-x-4 p-3 bg-white rounded-lg shadow-sm border border-gray-100'>
+															<div className='p-2 bg-green-100 rounded-full'>
+																<Mail className='w-4 h-4 text-green-600' />
+															</div>
+															<div>
+																<p className='text-sm text-gray-500'>Email</p>
+																<p className='font-medium text-gray-900 text-sm'>
+																	{profile.email}
+																</p>
+															</div>
+														</div>
+														<div className='flex items-center space-x-4 p-3 bg-white rounded-lg shadow-sm border border-gray-100'>
+															<div className='p-2 bg-purple-100 rounded-full'>
+																<Phone className='w-4 h-4 text-purple-600' />
+															</div>
+															<div>
+																<p className='text-sm text-gray-500'>Phone</p>
+																<p className='font-medium text-gray-900'>{profile.phone}</p>
+															</div>
 														</div>
 													</div>
 												</div>
-											))}
+
+												{/* Professional Details Card */}
+												<div className='bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl p-8 shadow-lg border border-indigo-100'>
+													<h3 className='text-lg font-bold text-gray-900 mb-6 flex items-center'>
+														<Briefcase className='w-5 h-5 mr-2 text-indigo-600' />
+														Professional Details
+													</h3>
+													<div className='space-y-4'>
+														{role === "medical" && (
+															<div className='flex items-center justify-between p-3 bg-white rounded-lg shadow-sm border border-gray-100'>
+																<span className='text-gray-600 font-medium'>Doctor Code</span>
+																<span className='font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full text-sm'>
+																	{profile.code}
+																</span>
+															</div>
+														)}
+														<div className='flex items-center justify-between p-3 bg-white rounded-lg shadow-sm border border-gray-100'>
+															<span className='text-gray-600 font-medium'>Age</span>
+															<span className='font-bold text-gray-900'>
+																{profile.Age || profile.age} years
+															</span>
+														</div>
+														<div className='flex items-center justify-between p-3 bg-white rounded-lg shadow-sm border border-gray-100'>
+															<span className='text-gray-600 font-medium'>Speciality</span>
+															<span className='font-bold text-gray-900'>
+																{profile.profession}, {profile.specialty}
+															</span>
+														</div>
+													</div>
+												</div>
+											</div>
+
+											{/* Bottom Section - Patient Overview Full Width */}
+											<div className='bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-8 shadow-lg border border-emerald-100'>
+												<h3 className='text-lg font-bold text-gray-900 mb-6 flex items-center'>
+													<Users className='w-5 h-5 mr-2 text-emerald-600' />
+													Patient Overview
+												</h3>
+												<div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
+													<div className='bg-white rounded-xl p-6 shadow-sm border border-gray-100'>
+														<div className='flex items-center justify-between mb-2'>
+															<span className='text-gray-600 font-medium'>Total Patients</span>
+															<div className='p-2 bg-blue-100 rounded-full'>
+																<Users className='w-4 h-4 text-blue-600' />
+															</div>
+														</div>
+														<div className='text-3xl font-bold text-blue-600'>
+															{displayPatients.length}
+														</div>
+														<p className='text-sm text-gray-500 mt-1'>Registered patients</p>
+													</div>
+
+													<div className='bg-white rounded-xl p-6 shadow-sm border border-gray-100'>
+														<div className='flex items-center justify-between mb-2'>
+															<span className='text-gray-600 font-medium'>Active Cases</span>
+															<div className='p-2 bg-orange-100 rounded-full'>
+																<Briefcase className='w-4 h-4 text-orange-600' />
+															</div>
+														</div>
+														<div className='text-3xl font-bold text-orange-600'>
+															{displayPatients.reduce(
+																(total: number, patient: DoctorPatient) =>
+																	total +
+																	(patient.cases?.reduce(
+																		(caseTotal: number, c: any) => caseTotal + c.diagnosis.length,
+																		0
+																	) || 0),
+																0
+															)}
+														</div>
+														<p className='text-sm text-gray-500 mt-1'>Ongoing treatments</p>
+													</div>
+
+													<div className='bg-white rounded-xl p-6 shadow-sm border border-gray-100'>
+														<div className='flex items-center justify-between mb-2'>
+															<span className='text-gray-600 font-medium'>
+																Upcoming Appointments
+															</span>
+															<div className='p-2 bg-green-100 rounded-full'>
+																<Calendar className='w-4 h-4 text-green-600' />
+															</div>
+														</div>
+														<div className='text-3xl font-bold text-green-600'>
+															{displayPatients.reduce(
+																(total: number, patient: DoctorPatient) =>
+																	total +
+																	(patient.cases?.reduce(
+																		(caseTotal: number, c: any) => caseTotal + c.diagnosis.length,
+																		0
+																	) || 0),
+																0
+															)}
+														</div>
+														<p className='text-sm text-gray-500 mt-1'>Scheduled visits</p>
+													</div>
+												</div>
+											</div>
 										</div>
 									</div>
 
-									<div>
-										<h4 className='font-semibold text-gray-900 mb-3'>Medical Approach</h4>
-										<div className='bg-blue-50 p-4 rounded-lg'>
-											<p className='text-blue-800 italic'>
-												"Combining traditional medical expertise with modern data science to
-												provide evidence-based, personalized healthcare solutions. My
-												approach focuses on leveraging technology to enhance patient care
-												and improve health outcomes."
-											</p>
+									{/* <div>
+                    <h4 className="font-semibold text-gray-900 mb-4">
+                      Medical & Technical Services
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {services.map((service, index) => (
+                        <div
+                          key={index}
+                          className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow"
+                        >
+                          <div className="flex items-start space-x-3">
+                            {service.icon}
+                            <div>
+                              <h5 className="font-medium text-gray-900 mb-2">
+                                {service.name}
+                              </h5>
+                              <p className="text-gray-600 text-sm">
+                                {service.description}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div> */}
+
+									{/* <div>
+                    <h4 className="font-semibold text-gray-900 mb-3">
+                      Medical Approach
+                    </h4>
+                    <div className="bg-blue-50 p-4 rounded-lg">
+                      <p className="text-blue-800 italic">
+                        "Combining traditional medical expertise with modern
+                        data science to provide evidence-based, personalized
+                        healthcare solutions. My approach focuses on leveraging
+                        technology to enhance patient care and improve health
+                        outcomes."
+                      </p>
+                    </div>
+                  </div> */}
+								</div>
+							)}
+
+							{/* Patient about page */}
+							{activeTab === "about" && role === "patient" && (
+								<div className='space-y-6'>
+									<div className='w-full bg-white shadow-lg border-b border-gray-200'>
+										<div className='max-w-7xl mx-auto'>
+											<div className='flex gap-2'>
+												<div className='bg-gray-50 rounded-xl p-6'>
+													<div className='space-y-4'>
+														<div className='flex items-center space-x-3 text-gray-600'>
+															<MapPin className='w-5 h-5' />
+															<span>{profile.country}</span>
+														</div>
+														<div className='flex items-center space-x-3 text-gray-600'>
+															<Mail className='w-5 h-5' />
+															<span className='text-sm'>{profile.email}</span>
+														</div>
+														<div className='flex items-center space-x-3 text-gray-600'>
+															<Phone className='w-5 h-5' />
+															<span>{profile.phone}</span>
+														</div>
+													</div>
+
+													<div className='mt-6 pt-6 border-t'>
+														<h3 className='font-semibold text-gray-900 mb-3'>
+															Professional Details
+														</h3>
+														<div className='space-y-2 text-sm'>
+															<div className='flex justify-between'>
+																<span className='text-gray-600'>Age:</span>
+																<span className='font-medium'>
+																	{profile.Age || profile.age} years
+																</span>
+															</div>
+															<div className='flex justify-between'>
+																<span className='text-gray-600'>Country:</span>
+																<span className='font-medium'>{profile.country}</span>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
 										</div>
 									</div>
 								</div>
@@ -160,34 +490,38 @@ export default function ProfileManage({
 									<h3 className='text-xl font-bold text-gray-900 mb-6'>
 										Professional Experience
 									</h3>
-									{experiences.map((exp, index) => (
-										<div key={index} className='border-l-4 border-blue-500 pl-6 pb-6'>
-											<div className='flex flex-col md:flex-row md:items-center md:justify-between mb-2'>
-												<h4 className='text-lg font-semibold text-gray-900'>{exp.title}</h4>
-												<span className='text-sm text-gray-500 font-medium'>
-													{exp.period}
-												</span>
-											</div>
-											<p className='text-blue-600 font-medium mb-3'>{exp.institution}</p>
-											<ul className='space-y-2 mb-4'>
-												{exp.description.map((desc, i) => (
-													<li key={i} className='text-gray-600 text-sm'>
-														• {desc}
-													</li>
-												))}
-											</ul>
-											<div className='flex flex-wrap gap-2'>
-												{exp.specializations.map((spec, i) => (
-													<span
-														key={i}
-														className='px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm'
-													>
-														{spec}
+									{getProfessionExperiences(profile.profession || "").map(
+										(exp, index) => (
+											<div key={index} className='border-l-4 border-blue-500 pl-6 pb-6'>
+												<div className='flex flex-col md:flex-row md:items-center md:justify-between mb-2'>
+													<h4 className='text-lg font-semibold text-gray-900'>
+														{exp.title}
+													</h4>
+													<span className='text-sm text-gray-500 font-medium'>
+														{exp.period}
 													</span>
-												))}
+												</div>
+												<p className='text-blue-600 font-medium mb-3'>{exp.institution}</p>
+												<ul className='space-y-2 mb-4'>
+													{exp.description.map((desc, i) => (
+														<li key={i} className='text-gray-600 text-sm'>
+															• {desc}
+														</li>
+													))}
+												</ul>
+												<div className='flex flex-wrap gap-2'>
+													{exp.specializations.map((spec, i) => (
+														<span
+															key={i}
+															className='px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm'
+														>
+															{spec}
+														</span>
+													))}
+												</div>
 											</div>
-										</div>
-									))}
+										)
+									)}
 								</div>
 							)}
 

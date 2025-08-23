@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import {
 	Search,
 	User,
@@ -10,6 +10,7 @@ import {
 	ChevronDown,
 	Hash,
 } from "lucide-react";
+import { getAllDoctors } from "@/app/funcs/ProfileFunc";
 
 interface Doctor {
 	id: string;
@@ -22,234 +23,6 @@ interface Doctor {
 }
 
 const ITEMS_PER_PAGE = 20;
-const sampleDoctors: Doctor[] = [
-	{
-		id: "1",
-		name: "Dr. Sarah Johnson",
-		code: "DOC001",
-		city: "New York",
-		country: "USA",
-		profession: "Cardiologist",
-		specialty: "Interventional Cardiology",
-	},
-	{
-		id: "2",
-		name: "Dr. Ahmed Hassan",
-		code: "DOC002",
-		city: "Cairo",
-		country: "Egypt",
-		profession: "Neurologist",
-		specialty: "Pediatric Neurology",
-	},
-	{
-		id: "3",
-		name: "Dr. Maria Rodriguez",
-		code: "DOC003",
-		city: "Madrid",
-		country: "Spain",
-		profession: "Dermatologist",
-		specialty: "Cosmetic Dermatology",
-	},
-	{
-		id: "4",
-		name: "Dr. James Wilson",
-		code: "DOC004",
-		city: "London",
-		country: "UK",
-		profession: "Orthopedic Surgeon",
-		specialty: "Sports Medicine",
-	},
-	{
-		id: "5",
-		name: "Dr. Priya Sharma",
-		code: "DOC005",
-		city: "Mumbai",
-		country: "India",
-		profession: "Pediatrician",
-		specialty: "Neonatal Care",
-	},
-	{
-		id: "6",
-		name: "Dr. Chen Wei",
-		code: "DOC006",
-		city: "Shanghai",
-		country: "China",
-		profession: "Radiologist",
-		specialty: "MRI Imaging",
-	},
-	{
-		id: "7",
-		name: "Dr. Lisa Anderson",
-		code: "DOC007",
-		city: "Toronto",
-		country: "Canada",
-		profession: "Psychiatrist",
-		specialty: "Adult Psychiatry",
-	},
-	{
-		id: "8",
-		name: "Dr. Omar Al-Rashid",
-		code: "DOC008",
-		city: "Dubai",
-		country: "UAE",
-		profession: "Cardiologist",
-		specialty: "Cardiac Surgery",
-	},
-	// Additional doctors for Load More functionality
-	{
-		id: "9",
-		name: "Dr. Emma Thompson",
-		code: "DOC009",
-		city: "Sydney",
-		country: "Australia",
-		profession: "Oncologist",
-		specialty: "Medical Oncology",
-	},
-	{
-		id: "10",
-		name: "Dr. Roberto Silva",
-		code: "DOC010",
-		city: "São Paulo",
-		country: "Brazil",
-		profession: "Gastroenterologist",
-		specialty: "Hepatology",
-	},
-	{
-		id: "11",
-		name: "Dr. Yuki Tanaka",
-		code: "DOC011",
-		city: "Tokyo",
-		country: "Japan",
-		profession: "Endocrinologist",
-		specialty: "Diabetes Care",
-	},
-	{
-		id: "12",
-		name: "Dr. Klaus Mueller",
-		code: "DOC012",
-		city: "Berlin",
-		country: "Germany",
-		profession: "Pulmonologist",
-		specialty: "Critical Care",
-	},
-	{
-		id: "13",
-		name: "Dr. Sophie Dubois",
-		code: "DOC013",
-		city: "Paris",
-		country: "France",
-		profession: "Rheumatologist",
-		specialty: "Autoimmune Disorders",
-	},
-	{
-		id: "14",
-		name: "Dr. Mikhail Petrov",
-		code: "DOC014",
-		city: "Moscow",
-		country: "Russia",
-		profession: "Neurosurgeon",
-		specialty: "Brain Tumors",
-	},
-	{
-		id: "15",
-		name: "Dr. Fatima Al-Zahra",
-		code: "DOC015",
-		city: "Riyadh",
-		country: "Saudi Arabia",
-		profession: "Gynecologist",
-		specialty: "Reproductive Medicine",
-	},
-	{
-		id: "16",
-		name: "Dr. Giovanni Rossi",
-		code: "DOC016",
-		city: "Rome",
-		country: "Italy",
-		profession: "Urologist",
-		specialty: "Robotic Surgery",
-	},
-	{
-		id: "17",
-		name: "Dr. Ingrid Larsson",
-		code: "DOC017",
-		city: "Stockholm",
-		country: "Sweden",
-		profession: "Ophthalmologist",
-		specialty: "Retinal Surgery",
-	},
-	{
-		id: "18",
-		name: "Dr. David Kim",
-		code: "DOC018",
-		city: "Seoul",
-		country: "South Korea",
-		profession: "Plastic Surgeon",
-		specialty: "Reconstructive Surgery",
-	},
-	{
-		id: "19",
-		name: "Dr. Ana Martinez",
-		code: "DOC019",
-		city: "Mexico City",
-		country: "Mexico",
-		profession: "Hematologist",
-		specialty: "Blood Disorders",
-	},
-	{
-		id: "20",
-		name: "Dr. Ravi Patel",
-		code: "DOC020",
-		city: "Delhi",
-		country: "India",
-		profession: "Emergency Medicine",
-		specialty: "Trauma Care",
-	},
-	{
-		id: "21",
-		name: "Dr. Helena Costa",
-		code: "DOC021",
-		city: "Lisbon",
-		country: "Portugal",
-		profession: "Pathologist",
-		specialty: "Molecular Pathology",
-	},
-	{
-		id: "22",
-		name: "Dr. Alexandros Dimitriou",
-		code: "DOC022",
-		city: "Athens",
-		country: "Greece",
-		profession: "Anesthesiologist",
-		specialty: "Cardiac Anesthesia",
-	},
-	{
-		id: "23",
-		name: "Dr. Noor Abdullah",
-		code: "DOC023",
-		city: "Amman",
-		country: "Jordan",
-		profession: "Family Medicine",
-		specialty: "Preventive Care",
-	},
-	{
-		id: "24",
-		name: "Dr. Erik Nielsen",
-		code: "DOC024",
-		city: "Copenhagen",
-		country: "Denmark",
-		profession: "Infectious Disease",
-		specialty: "Tropical Medicine",
-	},
-	{
-		id: "25",
-		name: "Dr. Leila Mansouri",
-		code: "DOC025",
-		city: "Tehran",
-		country: "Iran",
-		profession: "Nephrologist",
-		specialty: "Kidney Transplant",
-	},
-];
 
 // Card Component
 const DoctorCard: React.FC<{ doctor: Doctor }> = ({ doctor }) => {
@@ -386,13 +159,14 @@ const EmptyState: React.FC = () => {
 export default function DoctorsPage() {
 	const [searchTerm, setSearchTerm] = useState("");
 	const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
+	const [sampleDoctors, setSampleDoctors] = useState<Doctor[]>([]);
 
 	// Filter doctors based on search term
 	const filteredDoctors = useMemo(() => {
-		if (!searchTerm.trim()) return sampleDoctors;
+		if (!searchTerm.trim()) return sampleDoctors || [];
 
 		const lowercaseSearch = searchTerm.toLowerCase().trim();
-		return sampleDoctors.filter(
+		return (sampleDoctors || []).filter(
 			(doctor) =>
 				doctor.name.toLowerCase().includes(lowercaseSearch) ||
 				doctor.city.toLowerCase().includes(lowercaseSearch) ||
@@ -400,7 +174,7 @@ export default function DoctorsPage() {
 				doctor.profession.toLowerCase().includes(lowercaseSearch) ||
 				doctor.specialty.toLowerCase().includes(lowercaseSearch)
 		);
-	}, [searchTerm]);
+	}, [searchTerm, sampleDoctors]);
 
 	// Get visible doctors for current page
 	const visibleDoctors = useMemo(() => {
@@ -420,6 +194,21 @@ export default function DoctorsPage() {
 	const handleLoadMore = () => {
 		setVisibleCount((prev) => prev + ITEMS_PER_PAGE);
 	};
+
+	useEffect(() => {
+		const fetchDoctors = async () => {
+			try {
+				const doctors = await getAllDoctors();
+				if (doctors && doctors.length > 0) {
+					setSampleDoctors(doctors);
+				}
+			} catch (error) {
+				console.error("Error fetching doctors:", error);
+			}
+		};
+
+		fetchDoctors();
+	}, []);
 
 	return (
 		<div className='min-h-screen bg-gray-50'>
