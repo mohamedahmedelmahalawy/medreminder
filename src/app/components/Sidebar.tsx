@@ -8,6 +8,7 @@ import {
 	LogOut,
 	ClipboardList,
 	UserPlus,
+	HeartPulse,
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -63,6 +64,12 @@ export default function Sidebar() {
 			label: "Doctor's Code",
 			icon: <UserPlus className='w-5 h-5' />,
 			href: "/profile/code",
+		},
+		{
+			id: "all-doctors",
+			label: "All Doctors",
+			icon: <HeartPulse className='w-5 h-5' />,
+			href: "/profile/doctors",
 		},
 	];
 
