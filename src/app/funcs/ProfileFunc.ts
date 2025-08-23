@@ -2,26 +2,6 @@ import { AxiosInterceptor } from "@/interceptor/interceptor";
 import { Doctor } from "@/lib/interfaces/Doctor";
 import { DoctorPatient } from "@/lib/interfaces/DoctorPatient";
 
-// export async function getProfile(): Promise<DoctorPatient> {
-// 	const auth = JSON.parse(localStorage.getItem("auth") || "{}");
-// 	let code: string = "";
-// 	let url: string = "";
-
-// 	if (auth.role === "medical") {
-// 		code = auth.code || "";
-// 		url = "/doctors/";
-// 	} else if (auth.role === "patient") {
-// 		code = auth.userDetails?.phone || "";
-// 		url = "/patients/";
-// 	}
-// 	const profile = AxiosInterceptor.get(url + code)
-// 		.then((res) => {
-// 			return res.data;
-// 		})
-// 		.catch((error) => console.log(error));
-// 	return profile;
-// }
-
 export async function getProfile(
   auth: DoctorPatient
 ): Promise<DoctorPatient | null> {
@@ -49,6 +29,41 @@ export async function getDoctor(code: string): Promise<Doctor | null> {
   } catch (error) {
     console.error("Error fetching profile:", error);
     return null;
+  }
+}
+
+export async function getAllDoctors(phone: string): Promise<Doctor[]> {
+  try {
+    // Step 1: Get patient data using phone to extract drCodes
+    const patientUrl = `/patients/phone/${phone}`;
+    const patientRes = await AxiosInterceptor.get(patientUrl);
+    const patientData = patientRes.data;
+
+    if (!patientData.drCodes || patientData.drCodes.length === 0) {
+      console.log("No doctor codes found for patient");
+      return [];
+    }
+
+    const doctors: Doctor[] = [];
+
+    // Step 2: Loop through each doctor code and get doctor details
+    for (const doctorCode of patientData.drCodes) {
+      try {
+        const doctor = await getDoctor(doctorCode);
+        if (doctor) {
+          doctors.push(doctor);
+        }
+      } catch (doctorError) {
+        console.error(`Error fetching doctor ${doctorCode}:`, doctorError);
+        // Continue with other doctors even if one fails
+      }
+    }
+
+    console.log("All doctors fetched:", doctors);
+    return doctors;
+  } catch (error) {
+    console.error("Error fetching all doctors:", error);
+    return [];
   }
 }
 
@@ -262,34 +277,23 @@ export async function getCode(
   phone: string
 ): Promise<string | null> {
   try {
+    const patientURL = `/doctors/${newDrCode}/patients/${phone}`;
+    const res = await AxiosInterceptor.get(patientURL);
+    console.log("Patient API response:", res.data);
 
-    try {
-      const patientURL = `/doctors/${newDrCode}/patients/${phone}`;
-      console.log(patientURL);
-      const res = await AxiosInterceptor.get(patientURL);
-      if (res.data.phone === phone) {
-
-        try {
-          const addDrCodeURL = `/patients/${phone}/drCodes`;
-          const addDrCodeRes = await AxiosInterceptor.post(addDrCodeURL, null, {
-            params: {
-              doctor_code: newDrCode,
-            },
-          });
-          return addDrCodeRes.data;
-        } catch (error) {
-          console.log("You are not found in doctor's list");
-          return null;
-        }
-      }
-    } catch (error) {
+    if (res.data && res.data.phone === phone) {
+      const addDrCodeURL = `/patients/${phone}/drCodes`;
+      const addDrCodeRes = await AxiosInterceptor.post(addDrCodeURL, null, {
+        params: { doctor_code: newDrCode },
+      });
+      console.log("Add doctor code response:", addDrCodeRes.data);
+      return addDrCodeRes.data;
+    } else {
       console.log("You are not found in doctor's list");
       return null;
     }
-
-    return null;
   } catch (error) {
-    console.error("Error adding doctor code:", error);
+    console.error("Error in getCode:", error);
     return null;
   }
 }
@@ -298,11 +302,9 @@ export const formatDate = (dateString: string) => {
   try {
     const date = new Date(dateString);
 
-
     if (isNaN(date.getTime())) {
       return "Invalid Date";
     }
-
 
     const options: Intl.DateTimeFormatOptions = {
       year: "numeric",
