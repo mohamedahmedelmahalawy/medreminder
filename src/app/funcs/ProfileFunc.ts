@@ -32,7 +32,7 @@ export async function getDoctor(code: string): Promise<Doctor | null> {
   }
 }
 
-export async function getAllDoctors(phone: string): Promise<Doctor[]> {
+export async function getPatientDoctors(phone: string): Promise<Doctor[]> {
   try {
     // Step 1: Get patient data using phone to extract drCodes
     const patientUrl = `/patients/phone/${phone}`;
@@ -277,7 +277,6 @@ export async function getCode(
   phone: string
 ): Promise<string | null> {
   try {
-
     const patientURL = `/doctors/${newDrCode}/patients/${phone}`;
     const res = await AxiosInterceptor.get(patientURL);
     console.log("Patient API response:", res.data);
@@ -290,13 +289,43 @@ export async function getCode(
       console.log("Add doctor code response:", addDrCodeRes.data);
       return addDrCodeRes.data;
     } else {
-
       console.log("You are not found in doctor's list");
       return null;
     }
   } catch (error) {
     console.error("Error in getCode:", error);
     return null;
+  }
+}
+
+interface NewDoctor {
+  id: string;
+  name: string;
+  code: string;
+  city: string;
+  country: string;
+  profession: string;
+  specialty: string;
+}
+
+export async function getAllDoctors(): Promise<NewDoctor[]> {
+  try {
+    const patientURL = `/doctors`;
+    const res = await AxiosInterceptor.get(patientURL);
+    const doctors = res.data.map((doc: NewDoctor, index: number) => ({
+      id: String(index + 1),
+      name: doc.name,
+      code: doc.code,
+      city: doc.city,
+      country: doc.country,
+      profession: doc.profession,
+      specialty: doc.specialty,
+    }));
+
+    return doctors;
+  } catch (error) {
+    console.error("Error fetching all doctors:", error);
+    return [];
   }
 }
 
