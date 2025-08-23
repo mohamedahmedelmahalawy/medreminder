@@ -8,10 +8,10 @@ import { DoctorPatient } from "@/lib/interfaces/DoctorPatient";
 import React, { useEffect, useState } from "react";
 
 export default function SchedulePage() {
-  const [profile, setProfile] = useState<DoctorPatient | null>(null);
-  const [doctorsPatient, setDoctorsPatient] = useState<DoctorPatient[] | null>(
-    null
-  );
+  // const [profile, setProfile] = useState<DoctorPatient | null>(null);
+  // const [doctorsPatient, setDoctorsPatient] = useState<DoctorPatient[] | null>(
+  //   null
+  // );
   const [role, setRole] = useState<string>("");
 
   useEffect(() => {
@@ -20,12 +20,12 @@ export default function SchedulePage() {
       try {
         const profileRole = auth.role;
         setRole(profileRole);
-        const fetchedProfile = await getProfile(auth);
-        setProfile(fetchedProfile);
+        // const fetchedProfile = await getProfile(auth);
+        // setProfile(fetchedProfile);
 
         if (profileRole === "medical") {
           const DoctorsPatient = await getPatients(auth);
-          setDoctorsPatient(DoctorsPatient);
+          // setDoctorsPatient(DoctorsPatient);
         }
       } catch (error) {
         console.error("Failed to fetch profile:", error);
@@ -37,7 +37,7 @@ export default function SchedulePage() {
 
   return (
     <>
-      <header className="bg-white shadow-sm border-b border-gray-200 px-6 py-4">
+      {/* <header className="bg-white shadow-sm border-b border-gray-200 px-6 py-4">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 capitalize">
@@ -55,9 +55,9 @@ export default function SchedulePage() {
             </p>
           </div>
 
-          {/* we can add a search to the schedule later*/}
+          // we can add a search to the schedule later
 
-          {/* <div className='flex items-center space-x-4'>
+          <div className='flex items-center space-x-4'>
 						<button className='p-2 text-gray-400 hover:text-gray-600 transition-colors'>
 							<Search className='w-5 h-5' />
 						</button>
@@ -68,9 +68,9 @@ export default function SchedulePage() {
 						<button className='p-2 text-gray-400 hover:text-gray-600 transition-colors'>
 							<Settings className='w-5 h-5' />
 						</button>
-					</div> */}
+					</div>
         </div>
-      </header>
+      </header> */}
       <div className="">
         {/* Today's Schedule */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200">

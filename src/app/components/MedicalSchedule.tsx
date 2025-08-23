@@ -1,119 +1,44 @@
 "use client";
-import { DoctorPatient } from "@/lib/interfaces/DoctorPatient";
-import { getPatients, formatDate } from "@/app/funcs/ProfileFunc";
+import {
+  getMedicalSchedule,
+  formatDate,
+  MedicalAppointment,
+} from "@/app/funcs/ProfileFunc";
+import { Calendar } from "lucide-react";
 import React, { useEffect, useState } from "react";
 
 export default function MedicalSchedule() {
-  const [patients, setPatients] = useState<DoctorPatient[]>([]);
+  const [appointments, setAppointments] = useState<MedicalAppointment[]>([]);
   const [loading, setLoading] = useState(true);
-  const [appointments, setAppointments] = useState<
-    Array<{
-      id: string;
-      patientName: string;
-      patientPhone: string;
-      patientAge: number;
-      patientCountry: string;
-      patientGender: string;
-      patientProfession: string;
-      diagnosis: string;
-      medicalTreatment: string;
-      schedule: string;
-      complaint: string;
-      prognosis?: string;
-      medicalReport?: string;
-    }>
-  >([]);
 
   useEffect(() => {
-    const fetchDoctorData = async () => {
+    const fetchSchedule = async () => {
+      setLoading(true);
       try {
-        // Get auth data from localStorage
-        const auth = JSON.parse(localStorage.getItem("auth") || "{}");
-
-        if (auth && auth.role === "medical" && auth.code) {
-          // Create a profile object with the auth data
-          const profileData: DoctorPatient = {
-            role: auth.role,
-            code: auth.code,
-            name: auth.name || "",
-            phone: auth.phone || "",
-            email: auth.email || "",
-            specialty: auth.specialty || "",
-          };
-
-          const data = await getPatients(profileData);
-          const validPatients = (data || []).filter(
-            (p: any) => p && (p.id || p.name || p.phone)
-          ) as DoctorPatient[];
-          setPatients(validPatients);
-        } else {
-          console.error("No valid medical profile found in localStorage");
+        // Safe parse for auth
+        let auth: any = {};
+        try {
+          auth = JSON.parse(localStorage.getItem("auth") || "{}");
+        } catch {
+          console.error("Invalid auth object in localStorage");
         }
+
+        if (!(auth && auth.role === "medical" && auth.code)) {
+          console.error("No valid medical profile found in localStorage");
+          return;
+        }
+        // Fetch medical schedule using the new function
+        const medicalAppointments = await getMedicalSchedule(auth);
+        setAppointments(medicalAppointments || []);
       } catch (error) {
-        console.error("Error fetching doctor data:", error);
+        console.error("Error fetching medical schedule:", error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchDoctorData();
+    fetchSchedule();
   }, []);
-
-  // Prepare appointments once patients are loaded
-  useEffect(() => {
-    if (!patients || patients.length === 0) {
-      setAppointments([]);
-      return;
-    }
-
-    const all: Array<{
-      id: string;
-      patientName: string;
-      patientPhone: string;
-      patientAge: number;
-      patientCountry: string;
-      patientGender: string;
-      patientProfession: string;
-      diagnosis: string;
-      medicalTreatment: string;
-      schedule: string;
-      complaint: string;
-      prognosis?: string;
-      medicalReport?: string;
-    }> = [];
-
-    patients.forEach((patient) => {
-      if (patient.cases && patient.cases.length > 0) {
-        patient.cases.forEach((caseRecord) => {
-          if (caseRecord.diagnosis && caseRecord.diagnosis.length > 0) {
-            caseRecord.diagnosis.forEach((diag) => {
-              all.push({
-                id: `${patient.id}-${diag.schedule}`,
-                patientName: patient.name,
-                patientPhone: patient.phone,
-                patientAge: patient.age || 0,
-                patientCountry: patient.country || "",
-                patientGender: patient.gender || "",
-                patientProfession: patient.profession || "",
-                diagnosis: diag.diagnosis,
-                medicalTreatment: diag["medical-treatment"],
-                schedule: diag.schedule,
-                complaint: diag.complaint,
-                prognosis: diag.prognosis,
-                medicalReport: diag["medical-report"],
-              });
-            });
-          }
-        });
-      }
-    });
-
-    all.sort(
-      (a, b) => new Date(a.schedule).getTime() - new Date(b.schedule).getTime()
-    );
-
-    setAppointments(all);
-  }, [patients]);
 
   if (loading) {
     return (
@@ -123,10 +48,10 @@ export default function MedicalSchedule() {
     );
   }
 
-  if (!patients || patients.length === 0) {
+  if (!appointments || appointments.length === 0) {
     return (
       <div className="flex items-center justify-center p-8">
-        <div className="text-gray-600">No patients found in schedule.</div>
+        <div className="text-gray-600">No appointments found in schedule.</div>
       </div>
     );
   }
@@ -168,12 +93,14 @@ export default function MedicalSchedule() {
   return (
     <div>
       <div className="mb-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">
-          Medical Schedule
-        </h2>
+        <div className="flex items-center justify-between">
+          <h3 className="text-xl font-bold text-gray-900 flex items-center">
+            <Calendar className="w-5 h-5 mr-2 text-blue-600" />
+            My Appointments
+          </h3>
+        </div>
         <p className="text-sm text-gray-500">
-          Total Patients: {patients.length} | Total Appointments:{" "}
-          {appointments.length}
+          Total Appointments: {appointments.length}
         </p>
       </div>
 
