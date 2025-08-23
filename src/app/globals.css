@@ -120,3 +120,51 @@
     @apply bg-background text-foreground;
   }
 }
+/* Fixed animation for whole application*/
+@layer utilities {
+  /* Finishes typing ~3s, then holds full text ~20s, then snaps to 0 and restarts */
+  @keyframes type-hold {
+    0% {
+      width: 0;
+    }
+    13% {
+      width: var(--n, 30ch);
+    } /* typing done (~3 / 23 ≈ 13%) */
+    99.9% {
+      width: var(--n, 20ch);
+    } /* hold full text */
+    100% {
+      width: 0;
+    } /* instant reset */
+  }
+}
+
+@layer utilities {
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  /* Like Tailwind's pulse but with a higher opacity floor */
+  @keyframes pulse-moderate {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.75;
+    } /* default pulse uses .5 */
+  }
+
+  /* Single class: fade in after 3.5s, then start pulsing */
+  .animate-enter-pulse-3_5s {
+    opacity: 0; /* hidden during the 3.5s delay */
+    animation: fade-in 0.6s ease 2s both,
+      /* smooth entrance */ pulse-moderate 2s cubic-bezier(0.4, 0, 0.6, 1) 4.1s
+        infinite; /* pulse starts after fade */
+  }
+}
