@@ -4,7 +4,7 @@ import { Patient } from "./Patient";
 import { Role } from "./Role";
 
 export interface DoctorPatient {
-	id?: string; // your patient id in doctor list
+	id?: string;
 	name: string;
 	phone: string;
 	country?: string;

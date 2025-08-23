@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
+
 import { Loader2, FileX, Trash2, PlusCircle } from "lucide-react";
 
 export default function PatientPage() {
@@ -16,6 +17,7 @@ export default function PatientPage() {
     "medical-report": "",
     "medical-treatment": "",
     schedule: ""
+
   });
 
   const patient_phone = params?.patient ? decodeURIComponent(params.patient) : undefined;
@@ -107,9 +109,11 @@ export default function PatientPage() {
 
   if (!diagnoses || diagnoses.detail)
     return (
+
       <div className="flex flex-col justify-center items-center min-h-screen bg-blue-900 text-white p-6">
         <FileX className="w-14 h-14 mb-4 text-blue-300" />
         <p className="text-lg font-semibold">No patient data found</p>
+
       </div>
     );
 
@@ -124,6 +128,7 @@ export default function PatientPage() {
   }
 
   return (
+
     <div className="min-h-screen bg-gray-100 p-8">
       <h1 className="text-4xl font-bold text-blue-900 mb-8 text-center">
         Patient: {diagnoses.patient_name || "Unknown"}
@@ -160,6 +165,7 @@ export default function PatientPage() {
                   className="border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
                   required={key !== "prognosis"}
                 />
+
               </div>
             ))}
           </div>
