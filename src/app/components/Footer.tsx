@@ -32,20 +32,17 @@ function Footer() {
 							<Social href='#' label='TikTok' icon='/tiktoklogo.svg' />
 							<Social href='#' label='X' icon='/twitterlogo.svg' />
 						</div>
-						<p className='text-xs text-gray-400 mt-4'>
-							© {year} MedReminder. All rights reserved.
-						</p>
 					</div>
 					<div className='space-y-3'>
-						<h4 className='text-xl font-semibold tracking-wide text-white'>CARE</h4>
+						<h4 className='text-xl font-semibold tracking-wide text-white'>SUPPORT</h4>
 						<ul className='space-y-2 text-gray-200 text-sm md:text-base'>
-							<li>📞 +20 127 847 4336</li>
-							<li>📧 MedReminder@gmail.com</li>
-							<li>📍 Alexandria, Egypt</li>
+							<li><span className="text-[12px]">📞</span> +20 127 847 4336</li>
+							<li><span className="text-[12px]">📧 </span>MedReminder@gmail.com</li>
+							<li><span className="text-[12px]">📍</span> Alexandria, Egypt</li>
 						</ul>
 					</div>
 					<div className='space-y-3 max-w-sm'>
-						<h4 className='text-xl font-semibold tracking-wide text-white'>TRUST</h4>
+						<h4 className='text-xl font-semibold tracking-wide text-white'>JOIN US</h4>
 						<p className='text-gray-300 text-sm'>
 							Subscribe for the latest updates & insights.
 						</p>
@@ -67,6 +64,11 @@ function Footer() {
 							</button>
 						</div>
 					</div>
+				</div>
+				<div className="mt-8 border-t border-white/10 pt-6">
+					<p className="text-xs text-gray-400 text-left md:text-center">
+						© {year} MedReminder. All rights reserved.
+					</p>
 				</div>
 			</div>
 		</footer>

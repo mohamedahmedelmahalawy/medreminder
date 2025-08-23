@@ -40,8 +40,15 @@ const items = [
 
 export default function AskedQuestions() {
   return (
-    <div className="space-y-4 mx-auto pb-16 max-w-[1280px]">
+    <div className="space-y-4 mx-auto pb-16 max-w-[1280px] " id="FAQ">
       <div className="flex flex-col gap-5">
+    <div className="flex items-center justify-center mb-2 text-xl">
+      <div className="bg-green-400 mr-2 rounded-full w-2 h-2"></div>
+      <span className="font-semibold text-green-500 md:text-base text-xl tracking-wider">
+        FAQ
+      </span>
+      <div className="bg-green-400 ml-2 rounded-full w-2 h-2"></div>
+    </div>
         <h2 className="font-extrabold text-blue-900 text-5xl text-center animate-pulse">
           Frequently asked questions
         </h2>
@@ -61,14 +68,14 @@ export default function AskedQuestions() {
           <AccordionItem
             value={item.id}
             key={item.id}
-            className="px-5 py-2 border-[#0609181f] border-2 rounded-lg"
+            className="px-5 py-2 border-[#0609181f] border-2 rounded-lg bg-white"
           >
             <AccordionPrimitive.Header className="flex">
               <AccordionPrimitive.Trigger className="flex flex-1 justify-between items-center [&[data-state=open]>svg>path:last-child]:opacity-0 py-2 focus-visible:border-ring rounded-md outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 font-semibold text-[15px] text-left leading-6 [&[data-state=open]>svg]:rotate-180 [&[data-state=open]>svg>path:last-child]:rotate-90 [&>svg>path:last-child]:origin-center transition-all [&>svg>path:last-child]:transition-all [&>svg>path:last-child]:duration-200">
                 <span className="flex flex-col space-y-1">
-                  <span>{item.title}</span>
+                  <span className=" text-blue-900 text-lg ">{item.title}</span>
                   {item.sub && (
-                    <span className="font-normal text-sm">{item.sub}</span>
+                    <span className="font-normal text-blue-900 opacity-90  text-sm">{item.sub}</span>
                   )}
                 </span>
                 <PlusIcon

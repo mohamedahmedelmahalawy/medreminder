@@ -168,3 +168,6 @@
         infinite; /* pulse starts after fade */
   }
 }
+html {
+  scroll-behavior: smooth;
+}

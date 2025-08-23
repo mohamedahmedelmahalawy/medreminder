@@ -24,6 +24,7 @@ export default function LoginPage() {
   if (showLogin) {
     return <LoginComponent />;
   }
+  
 
 
   return (
@@ -38,15 +39,15 @@ export default function LoginPage() {
             className="object-cover"
             priority
           />
-          <div className="absolute inset-0 flex justify-center items-center bg-blue-800/80 p-6">
+          <div className="absolute inset-0 flex justify-center items-center bg-blue-800/50 p-6">
             <p className="font-semibold text-white text-xl md:text-2xl text-center leading-relaxed">
               &quot;For the heroes in white coats and the patients they care for
               — <br />
               &quot;
-              <span className="font-bold text-blue-200">
+              <span className="font-bold text-white">
                 MedReminder
               </span>{" "}
-              makes communication effortless and care stronger.
+              makes communication effortless and care stronger.&rdquo;
             </p>
           </div>
         </div>

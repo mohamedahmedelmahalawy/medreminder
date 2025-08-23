@@ -101,59 +101,70 @@ const SpecialistsSlider = () => {
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-6 py-18">
-      {/* Header with Navigation */}
-      <div className="flex justify-between items-start mb-12">
-        <div className="flex-1">
-          <div className="flex items-center gap-2 mb-4">
-            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-            <p className="text-green-500 text-xl font-semibold uppercase tracking-wide">
-              OUR DOCTORS
-            </p>
-            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-          </div>
-          <h2 className="text-4xl font-bold text-blue-900">
-            Meet The specialist Team
-          </h2>
-        </div>
-
-        <div className="flex space-x-3">
-          <button
-            onClick={prevSlide}
-            className="w-12 h-12 bg-blue-600 cursor-pointer hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed rounded-full flex items-center justify-center shadow-md transition-all duration-200"
-          >
-            <ChevronLeft size={20} className="text-white" />
-          </button>
-
-          <button
-            onClick={nextSlide}
-            className="w-12 h-12 bg-blue-600 cursor-pointer hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed rounded-full flex items-center justify-center shadow-md transition-all duration-200"
-          >
-            <ChevronRight size={20} className="text-white" />
-          </button>
-        </div>
+<div className="w-full max-w-7xl mx-auto px-6 py-18">
+  {/* Header */}
+  <div className="flex justify-between items-start mb-12">
+    <div className="flex-1">
+      <div className="flex items-center gap-2 mb-4">
+        <div className="w-2 h-2 bg-green-500 rounded-full" />
+        <p className="font-semibold text-green-500 md:text-base text-xl tracking-wider">
+          OUR DOCTORS
+        </p>
+        <div className="w-2 h-2 bg-green-500 rounded-full" />
       </div>
+      <h2 className="text-4xl font-bold text-blue-900">Meet The Specialist Team</h2>
+    </div>
+    {/* remove the old buttons from here */}
+  </div>
 
-      {/* Cards Container */}
-      <div className="relative overflow-hidden">
-        <div
-          className="flex transition-transform duration-900 ease-in-out"
-          style={{
-            transform: `translateX(-${currentIndex * (100 / cardsPerView)}%)`,
-          }}
-        >
-          {doctors.map((doctor) => (
-            <div
-              key={doctor.id}
-              className="flex-shrink-0"
-              style={{ width: `${100 / cardsPerView}%` }}
-            >
-              <DoctorCard doctor={doctor} />
-            </div>
-          ))}
-        </div>
+  {/* Slider with overlaid nav */}
+  <div className="relative">
+    {/* Left button */}
+    <button
+      onClick={prevSlide}
+      aria-label="Previous"
+      className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10
+                 bg-white hover:bg-blue-700 text-blue-600 hover:text-white rounded-full p-3
+                 shadow-md transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+   
+    >
+      <ChevronLeft className="w-5 h-5" />
+    </button>
+
+    {/* Right button */}
+    <button
+      onClick={nextSlide}
+      aria-label="Next"
+      className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10
+                 bg-white hover:bg-blue-700 text-blue-600 hover:text-white rounded-full p-3
+                 shadow-md transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+    
+    >
+      <ChevronRight className="w-5 h-5" />
+    </button>
+
+    {/* Cards Container */}
+    <div className="overflow-hidden">
+      <div
+        className="flex transition-transform duration-900 ease-in-out"
+        style={{
+          transform: `translateX(-${currentIndex * (100 / cardsPerView)}%)`,
+        }}
+      >
+        {doctors.map((doctor) => (
+          <div
+            key={doctor.id}
+            className="flex-shrink-0 px-2"
+            style={{ width: `${100 / cardsPerView}%` }}
+          >
+            <DoctorCard doctor={doctor} />
+          </div>
+        ))}
       </div>
     </div>
+  </div>
+</div>
+
   );
 };
 

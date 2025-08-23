@@ -1,11 +1,13 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { redirect, useParams } from 'next/navigation';
+
 
 import { Loader2, FileX, Trash2, PlusCircle } from "lucide-react";
 
 export default function PatientPage() {
+  
   const params = useParams<{ patient: string }>();
   const [diagnoses, setDiagnoses] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -135,12 +137,27 @@ export default function PatientPage() {
       </h1>
 
       {/*  Add Button */}
-      <div className="flex justify-center mb-6">
+      <div className="flex justify-center mb-6 gap-3">
         <button
           onClick={() => setFormOpen(!formOpen)}
-          className="flex items-center gap-2 bg-blue-600 text-white px-5 py-2 rounded-lg shadow hover:bg-blue-950 transition"
+          className="flex items-center gap-2 bg-blue-600 text-white px-5 py-2 rounded-lg shadow hover:bg-blue-950  transition-colors duration-250"
         >
           <PlusCircle size={20} /> {formOpen ? "Cancel" : "Add Diagnosis"}
+        </button>
+
+         <button
+          className="flex items-center gap-2 bg-gray-200 text-gray-700 px-5 py-2 rounded-lg shadow hover:bg-red-400 hover:text-white  transition-colors duration-250"
+          onClick={()=>redirect('/dashboard')}
+        >
+          
+         Go To Dashboard &rarr;
+        </button>
+         <button
+          className="flex items-center gap-2 bg-gray-200 text-gray-700 px-5 py-2 rounded-lg shadow hover:bg-red-400 hover:text-white  transition-colors duration-250"
+          onClick={()=>redirect('/profile')}
+        >
+          
+         Go To Profile &rarr;
         </button>
       </div>
 

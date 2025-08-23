@@ -8,13 +8,14 @@ import FeaturesSection from "./components/FeaturesSection";
 import MedicalSlider from "./components/MedicalSlider";
 import SpecialistsSlider from "./components/SpecialistsSlider";
 import MedicalNetwork from "./components/MedicalNetwork";
+import { Link } from "lucide-react";
 
 export default function Home() {
 
   return (
     <>
       <main>
-        <section className="mx-auto px-8 py-18 md:py-24 min-h-screen overflow-hidden text-white">
+        <section className=" relative mx-auto px-8 py-18 md:py-24 min-h-screen overflow-hidden text-white ">
           <BackGroundVideo />
           <div className="flex flex-col items-center gap-4 mb-4 text-center">
             <h1
@@ -26,9 +27,13 @@ export default function Home() {
             <p className="inline-block w-2/3 text-2xl animate-enter-pulse-3_5s md:1/3">
               One Powerful App for Every Step of Care
             </p>
-            <button className="inline-block bg-transparent mt-8 px-14 py-4 border-2 border-white rounded-full font-semibold text-white animate-enter-pulse-3_5s">
+			<a href="#features">
+			
+			  <button className="inline-block bg-transparent mt-8 px-14 py-4 border-2 border-white rounded-full font-semibold text-white animate-enter-pulse-3_5s">
               Learn More
             </button>
+			</a>
+          
           </div>
           <div>
             <Cards />

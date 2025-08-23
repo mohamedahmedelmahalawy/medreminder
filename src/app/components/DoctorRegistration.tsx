@@ -112,7 +112,7 @@ export default function DoctorRegistration() {
 					className='object-cover'
 					priority
 				/>
-				<div className='absolute inset-0 bg-blue-900/70 flex flex-col justify-center items-center p-6 text-center'>
+				<div className='absolute inset-0 flex flex-col justify-center items-center p-6 text-center'>
 					<h2 className='absolute inset-0 flex items-center justify-center text-3xl md:text-4xl font-extrabold text-white text-center px-6 drop-shadow-lg leading-tight'>
 						Helping You Reach, Treat, <br /> and Inspire Your Patients
 					</h2>
