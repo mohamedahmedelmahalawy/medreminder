@@ -19,7 +19,7 @@ type SavedAuth = {
 };
 
 function Navbar() {
-  const [isClicked, setIsClicked] = useState("");
+  const [activeItem, setActiveItem] = useState("Home");
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const pathName = usePathname();
@@ -40,6 +40,42 @@ function Navbar() {
   const router = useRouter();
   const dispatch = useDispatch();
   const [authLS, setAuthLS] = useState<SavedAuth | null>(null);
+
+  // Set active item based on current path and hash
+  useEffect(() => {
+    if (pathName === "/about") {
+      setActiveItem("Contact Us");
+    } else if (pathName === "/") {
+      // Check for hash in URL
+      const hash = window.location.hash;
+      if (hash === "#features") {
+        setActiveItem("Features");
+      } else if (hash === "#faq") {
+        setActiveItem("FAQ");
+      } else {
+        setActiveItem("Home");
+      }
+    }
+  }, [pathName]);
+
+  // Listen for hash changes to update active item
+  useEffect(() => {
+    const handleHashChange = () => {
+      if (pathName === "/") {
+        const hash = window.location.hash;
+        if (hash === "#features") {
+          setActiveItem("Features");
+        } else if (hash === "#faq") {
+          setActiveItem("FAQ");
+        } else {
+          setActiveItem("Home");
+        }
+      }
+    };
+
+    window.addEventListener("hashchange", handleHashChange);
+    return () => window.removeEventListener("hashchange", handleHashChange);
+  }, [pathName]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -97,19 +133,26 @@ function Navbar() {
     router.refresh();
   };
 
+  const handleNavClick = (item: { label: string; path: string }) => {
+    setActiveItem(item.label);
+    setMenuOpen(false);
+  };
+
   return (
-    <div className="top-0 left-0 z-20 fixed bg-[#000D44] shadow-md mb-20 pt-4 w-full">
+    <div className="top-0 left-0 z-20 fixed bg-[#000D44] shadow-md py-2 w-full">
       <div className="flex justify-between items-center mx-auto px-4 sm:px-6 md:px-8 py-3 md:py-0 max-w-screen-xl">
-        <Link href="/" onClick={() => setIsClicked("Home")}>
+        <Link
+          href="/"
+          onClick={() => setActiveItem("Home")}
+          className="flex items-center gap-2 -mt-2 py-4 font-bold text-white text-2xl"
+        >
           <Image
             className="w-16 sm:w-20 md:w-24 h-auto cursor-pointer"
-            src="/Medlogo.png"
+            src="/Medlogo-notext.png"
             alt="MedReminder logo"
             width={100}
             height={90}
-            // width={200}
-            // height={200}
-            // style={{ width: "65px", height: "auto" }}
+            style={{ width: "55px", height: "auto" }}
             priority
           />
         </Link>
@@ -119,8 +162,9 @@ function Navbar() {
             <Link
               href={item.path}
               key={item.label}
-              className={`cursor-pointer underline-offset-8 transition-all duration-200 ${
-                pathName === item.path
+              onClick={() => handleNavClick(item)}
+              className={`cursor-pointer underline-offset-8 transition-all duration-200 text-xl font-semibold ${
+                activeItem === item.label
                   ? "underline decoration-2"
                   : "hover:underline"
               }`}
@@ -136,14 +180,14 @@ function Navbar() {
             <>
               <Link
                 href="/login"
-                onClick={() => setIsClicked("")}
+                onClick={() => setActiveItem("")}
                 className="flex-1 bg-white hover:bg-gray-300 px-3 lg:px-4 py-2 lg:py-2 border border-gray-200 rounded-xl font-semibold text-[#000D44] text-sm lg:text-base text-center transition"
               >
                 Login
               </Link>
               <Link
                 href="/signup"
-                onClick={() => setIsClicked("")}
+                onClick={() => setActiveItem("")}
                 className="flex-1 bg-blue-600 hover:bg-blue-700 shadow-md px-3 lg:px-4 py-2 lg:py-2 rounded-xl font-medium text-white text-sm lg:text-base text-center transition"
               >
                 SignUp
@@ -196,16 +240,6 @@ function Navbar() {
                     </Link>
                   )}
 
-                  {/* {effectiveRole === "patient" && (
-                    <Link
-                      href="/my-doctors"
-                      className="block hover:bg-gray-100 px-4 py-2 text-gray-700 text-sm"
-                      onClick={() => setProfileOpen(false)}
-                    >
-                      My Doctors
-                    </Link>
-                  )} */}
-
                   <button
                     onClick={handleLogout}
                     className="hover:bg-gray-100 px-4 py-2 w-full text-red-600 text-sm text-left"
@@ -236,27 +270,18 @@ function Navbar() {
         }`}
       >
         <ul className="flex flex-col space-y-3 text-sm sm:text-base">
-          {["Home", "Features", "Contact Us"].map((item) => (
+          {navItems.map((item) => (
             <Link
-              href={
-                item === "Home"
-                  ? "/"
-                  : item === "Contact Us"
-                  ? "/about"
-                  : `/${item.toLowerCase()}`
-              }
-              key={item}
+              href={item.path}
+              key={item.label}
               className={`cursor-pointer underline-offset-8 transition-all duration-200 ${
-                isClicked === item
+                activeItem === item.label
                   ? "underline decoration-2"
                   : "hover:underline"
               }`}
-              onClick={() => {
-                setIsClicked(item);
-                setMenuOpen(false);
-              }}
+              onClick={() => handleNavClick(item)}
             >
-              {item}
+              {item.label}
             </Link>
           ))}
         </ul>
@@ -267,7 +292,7 @@ function Navbar() {
               <Link
                 href="/login"
                 onClick={() => {
-                  setIsClicked("");
+                  setActiveItem("");
                   setMenuOpen(false);
                 }}
                 className="bg-white hover:bg-gray-100 px-4 py-2 border border-gray-200 rounded-xl w-full font-semibold text-[#000D44] text-center transition"
@@ -277,7 +302,7 @@ function Navbar() {
               <Link
                 href="/signup"
                 onClick={() => {
-                  setIsClicked("");
+                  setActiveItem("");
                   setMenuOpen(false);
                 }}
                 className="bg-[#4B4EFC] hover:bg-[#3737e8] px-4 py-2 border border-[#4B4EFC] rounded-xl w-full font-semibold text-white text-center transition"
@@ -290,7 +315,6 @@ function Navbar() {
               <div className="flex items-center gap-2 mb-3">
                 <Image
                   src="/profileimg.svg"
-                  // {user.avatar || "profileimg.svg"}
                   alt="Profile"
                   width={36}
                   height={36}

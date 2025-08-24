@@ -21,10 +21,10 @@ export default function RootLayout({
       <body className="bg-gray-50">
         <ClientProvider>
           <Navbar />
-          <div className="pt-23.5 ">{children}</div>
+          <div className="pt-22.5">{children}</div>
           <Footer />
         </ClientProvider>
-         <ToastProvider />
+        <ToastProvider />
       </body>
     </html>
   );

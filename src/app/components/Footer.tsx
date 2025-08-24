@@ -18,7 +18,7 @@ function Footer() {
                 alt="MedReminder Logo"
                 width={100}
                 height={100}
-                className="w-12 h-12"
+                className="w-10 h-10"
               />
               <span className="font-semibold text-white text-xl tracking-wide">
                 MedReminder
@@ -36,7 +36,7 @@ function Footer() {
             </div>
           </div>
           <div className="space-y-3">
-            <h4 className="mt-3 mb-8 font-semibold text-white text-xl tracking-wide">
+            <h4 className="mt-3 mb-6 font-semibold text-white text-xl tracking-wide">
               SUPPORT
             </h4>
             <ul className="space-y-5 text-gray-200 text-sm md:text-base">
@@ -61,7 +61,7 @@ function Footer() {
             </ul>
           </div>
           <div className="space-y-3 max-w-sm">
-            <h4 className="mt-3 mb-7 font-semibold text-white text-xl tracking-wide">
+            <h4 className="mt-3 mb-5 font-semibold text-white text-xl tracking-wide">
               JOIN US
             </h4>
             <p className="font-medium text-white text-base">

@@ -30,6 +30,7 @@ export default function Home() {
             >
               Connecting Medical <br /> Staff and Patients
             </h1>
+
             <p className="inline-block w-2/3 text-2xl animate-enter-pulse-3_5s md:1/3">
               One Powerful App for Every Step of Care
             </p>

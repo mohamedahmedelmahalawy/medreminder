@@ -12,7 +12,7 @@ function FooterSubscribe() {
 
   return (
     <form
-      action="mailto:MedReminder@gmail.com"
+      action="mailto:support@medreminder.com"
       method="POST"
       encType="text/plain"
       className="flex w-full"
