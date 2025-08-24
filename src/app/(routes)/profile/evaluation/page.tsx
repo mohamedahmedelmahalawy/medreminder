@@ -39,18 +39,6 @@ export default function EvaluationPage() {
               Comprehensive medical assessment and treatment plan
             </p>
           </div>
-          <div className="flex items-center space-x-4">
-            <button className="p-2 text-gray-400 hover:text-gray-600 transition-colors">
-              <Search className="w-5 h-5" />
-            </button>
-            <button className="p-2 text-gray-400 hover:text-gray-600 transition-colors relative">
-              <Bell className="w-5 h-5" />
-              <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
-            </button>
-            <button className="p-2 text-gray-400 hover:text-gray-600 transition-colors">
-              <Settings className="w-5 h-5" />
-            </button>
-          </div>
         </div>
       </header>
 

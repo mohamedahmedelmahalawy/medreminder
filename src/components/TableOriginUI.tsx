@@ -238,7 +238,7 @@ const columns: ColumnDef<Item>[] = [
       <Badge
         className={cn(
           row.getValue("gender") === "female" &&
-          "bg-red-400 text-primary-foreground"
+            "bg-red-400 text-primary-foreground"
         )}
       >
         {String(row.getValue("gender"))[0].toUpperCase()}
@@ -266,7 +266,7 @@ type Props = {
 export default function TableOriginUI({ filters }: Props) {
   const id = useId();
   const [viewOpen, setViewOpen] = useState(false);
-
+  const [loading, setLoading] = useState(true);
   const { current } = useSelector((s: RootState) => s.doctor);
   const [dateRange, setDateRange] = useState<DateRange | undefined>();
 
@@ -275,17 +275,17 @@ export default function TableOriginUI({ filters }: Props) {
   const code: string =
     typeof window !== "undefined"
       ? (() => {
-        const raw = localStorage.getItem("auth");
-        if (!raw) return null;
-        try {
-          const parsed = JSON.parse(raw);
-          // works whether you saved a string or an object { code: "..." }
-          return typeof parsed === "string" ? parsed : parsed?.code ?? null;
-        } catch {
-          // if you stored plain string without JSON.stringify
-          return raw;
-        }
-      })()
+          const raw = localStorage.getItem("auth");
+          if (!raw) return null;
+          try {
+            const parsed = JSON.parse(raw);
+            // works whether you saved a string or an object { code: "..." }
+            return typeof parsed === "string" ? parsed : parsed?.code ?? null;
+          } catch {
+            // if you stored plain string without JSON.stringify
+            return raw;
+          }
+        })()
       : null;
 
   const dispatch = useDispatch<AppDispatch>();
@@ -310,17 +310,21 @@ export default function TableOriginUI({ filters }: Props) {
   useEffect(() => {
     async function fetchPosts() {
       if (!code) return;
-      const res = await fetch(
-        `https://fast-api-dnk5.vercel.app/doctors/${code}/patients`
-      );
 
-      const data = await res.json();
-      console.log(data);
-
-      setData(data);
-      console.log(current);
-      console.log(code);
+      setLoading(true); // <- set loading before fetch
+      try {
+        const res = await fetch(
+          `https://fast-api-dnk5.vercel.app/doctors/${code}/patients`
+        );
+        const data = await res.json();
+        setData(data);
+      } catch (err) {
+        console.error("Failed to fetch data", err);
+      } finally {
+        setLoading(false);
+      }
     }
+
     fetchPosts();
   }, [current, code]);
 
@@ -352,10 +356,11 @@ export default function TableOriginUI({ filters }: Props) {
     // apply date range if provided
     if (dateRange?.from || dateRange?.to) {
       const start = dateRange?.from ? startOfDay(dateRange.from) : new Date(0);
-      const end = dateRange?.to ? endOfDay(dateRange.to) : endOfDay(new Date(8640000000000000));
+      const end = dateRange?.to
+        ? endOfDay(dateRange.to)
+        : endOfDay(new Date(8640000000000000));
 
       rows = rows.filter((row) => {
-
         const d = toDate(row.dateOfAdmission);
         return d ? isWithinInterval(d, { start, end }) : false;
       });
@@ -363,7 +368,6 @@ export default function TableOriginUI({ filters }: Props) {
 
     return rows;
   }, [data, dateRange]);
-
 
   const table = useReactTable({
     data: filteredData,
@@ -385,7 +389,6 @@ export default function TableOriginUI({ filters }: Props) {
       columnVisibility,
     },
   });
-
 
   return (
     <div className="space-y-4">
@@ -431,12 +434,11 @@ export default function TableOriginUI({ filters }: Props) {
           </div>
           {/* Filter by status */}
           <Popover modal={false}>
-            <PopoverTrigger asChild>
-
-            </PopoverTrigger>
-            <PopoverContent className="p-3 w-auto min-w-36" align="start">
-
-            </PopoverContent>
+            <PopoverTrigger asChild></PopoverTrigger>
+            <PopoverContent
+              className="p-3 w-auto min-w-36"
+              align="start"
+            ></PopoverContent>
           </Popover>
           {/* Toggle columns visibility */}
           <DropdownMenu
@@ -445,9 +447,12 @@ export default function TableOriginUI({ filters }: Props) {
             modal={false}
           >
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="bg-background hover:bg-blue-600 hover:text-white  transition-colors duration-250">
+              <Button
+                variant="outline"
+                className="bg-background hover:bg-blue-600 hover:text-white transition-colors duration-250"
+              >
                 <Columns3Icon
-                  className="opacity-60 -ms-1 "
+                  className="opacity-60 -ms-1"
                   size={16}
                   aria-hidden="true"
                 />
@@ -561,13 +566,13 @@ export default function TableOriginUI({ filters }: Props) {
                     <TableHead
                       key={header.id}
                       style={{ width: `${header.getSize()}px` }}
-                      className="h-11 align-middle text-center "
+                      className="h-11 text-center align-middle"
                     >
                       {header.isPlaceholder ? null : header.column.getCanSort() ? (
                         <div
                           className={cn(
                             header.column.getCanSort() &&
-                            "flex w-full h-full  items-center justify-center gap-2 select-none"
+                              "flex w-full h-full  items-center justify-center gap-2 select-none"
                           )}
                           onClick={header.column.getToggleSortingHandler()}
                           onKeyDown={(e) => {
@@ -623,10 +628,7 @@ export default function TableOriginUI({ filters }: Props) {
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell
-                      key={cell.id}
-                      className="last:py-0  text-center"
-                    >
+                    <TableCell key={cell.id} className="last:py-0 text-center">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -641,7 +643,7 @@ export default function TableOriginUI({ filters }: Props) {
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  {loading ? "Loading Patients data..." : "No Patients."}
                 </TableCell>
               </TableRow>
             )}
@@ -693,8 +695,8 @@ export default function TableOriginUI({ filters }: Props) {
               {Math.min(
                 Math.max(
                   table.getState().pagination.pageIndex *
-                  table.getState().pagination.pageSize +
-                  table.getState().pagination.pageSize,
+                    table.getState().pagination.pageSize +
+                    table.getState().pagination.pageSize,
 
                   0
                 ),
@@ -784,17 +786,17 @@ function RowActions({ row }: { row: Row<Item> }) {
   const code: string =
     typeof window !== "undefined"
       ? (() => {
-        const raw = localStorage.getItem("auth");
-        if (!raw) return null;
-        try {
-          const parsed = JSON.parse(raw);
-          // works whether you saved a string or an object { code: "..." }
-          return typeof parsed === "string" ? parsed : parsed?.code ?? null;
-        } catch {
-          // if you stored plain string without JSON.stringify
-          return raw;
-        }
-      })()
+          const raw = localStorage.getItem("auth");
+          if (!raw) return null;
+          try {
+            const parsed = JSON.parse(raw);
+            // works whether you saved a string or an object { code: "..." }
+            return typeof parsed === "string" ? parsed : parsed?.code ?? null;
+          } catch {
+            // if you stored plain string without JSON.stringify
+            return raw;
+          }
+        })()
       : null;
 
   const handleEdit = () => {
@@ -888,13 +890,8 @@ function RowActions({ row }: { row: Row<Item> }) {
               Add Diagnostic
             </DropdownMenuItem>
 
-
-
             <DropdownMenuItem className="focus:bg-amber-950 focus:text-white">
-              <Link href={`/patients/${row.original.phone}`}>
-
-                Show Details
-              </Link>
+              <Link href={`/patients/${row.original.phone}`}>Show Details</Link>
             </DropdownMenuItem>
             <AlertDialog open={openConfirmDelete} onOpenChange={setOpenConfirmDelete}>
               <AlertDialogTrigger asChild>

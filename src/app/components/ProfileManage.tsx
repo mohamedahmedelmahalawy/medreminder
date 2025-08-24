@@ -1,9 +1,11 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Experience, Service } from "../(routes)/profile/page";
 import { DoctorPatient } from "@/lib/interfaces/DoctorPatient";
 import { DiagnosisEntry } from "@/lib/interfaces/DiagnosisEntry";
+import { Doctor } from "@/lib/interfaces/Doctor";
+import { getPatientDoctors } from "../funcs/ProfileFunc";
 import {
 	Briefcase,
 	Calendar,
@@ -12,9 +14,11 @@ import {
 	Phone,
 	User,
 	Users,
+	UserPlus,
 } from "lucide-react";
 import { formatDate } from "../funcs/ProfileFunc";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 export default function ProfileManage({
 	role,
@@ -35,9 +39,35 @@ export default function ProfileManage({
 		if (role === "medical") {
 			setActiveTab("about");
 		} else if (role === "patient") {
-			setActiveTab("doctors");
+			setActiveTab("about");
 		}
 	}, [role]);
+
+	const [myDoctors, setMyDoctors] = useState<Doctor[]>([]);
+	const [doctorsLoading, setDoctorsLoading] = useState(true);
+
+	// Fetch doctors when component mounts
+	useEffect(() => {
+		const fetchDoctors = async () => {
+			try {
+				if (role === "patient" && profile.phone) {
+					const doctors = await getPatientDoctors(profile.phone);
+					setMyDoctors(doctors);
+				}
+			} catch (error) {
+				console.error("Error fetching doctors:", error);
+			} finally {
+				setDoctorsLoading(false);
+			}
+		};
+
+		fetchDoctors();
+	}, [role, profile.phone]); // ✅ no dependency on myDoctors
+
+	// Example: memoize derived list (filtering or sorting)
+	const sortedDoctors = useMemo(() => {
+		return [...myDoctors].sort((a, b) => a.name.localeCompare(b.name));
+	}, [myDoctors]);
 
 	const [selectedPatient, setSelectedPatient] = useState<DoctorPatient | null>(
 		null
@@ -204,7 +234,7 @@ export default function ProfileManage({
 		<div>
 			{" "}
 			<div className='flex-1 bg-gray-50'>
-				<div className='max-w-7xl mx-auto p-8'>
+				<div className='max-w-7xl mx-auto'>
 					<div className='bg-white rounded-xl shadow-lg'>
 						{/* Tab Navigation */}
 						<div className='border-b p-6'>
@@ -233,6 +263,11 @@ export default function ProfileManage({
 								{role === "patient" && (
 									<>
 										<TabButton
+											tab='about'
+											label='About'
+											icon={<User className='w-4 h-4' />}
+										/>
+										<TabButton
 											tab='doctors'
 											label='Doctors'
 											icon={<Users className='w-4 h-4' />}
@@ -248,7 +283,7 @@ export default function ProfileManage({
 							</div>
 						</div>
 
-						<div className='p-6'>
+						<div className='p-12'>
 							{/* Doctor About Page */}
 							{activeTab === "about" && role === "medical" && (
 								<div className='space-y-6'>
@@ -442,42 +477,39 @@ export default function ProfileManage({
 							{/* Patient about page */}
 							{activeTab === "about" && role === "patient" && (
 								<div className='space-y-6'>
-									<div className='w-full bg-white shadow-lg border-b border-gray-200'>
-										<div className='max-w-7xl mx-auto'>
-											<div className='flex gap-2'>
-												<div className='bg-gray-50 rounded-xl p-6'>
-													<div className='space-y-4'>
-														<div className='flex items-center space-x-3 text-gray-600'>
-															<MapPin className='w-5 h-5' />
-															<span>{profile.country}</span>
-														</div>
-														<div className='flex items-center space-x-3 text-gray-600'>
-															<Mail className='w-5 h-5' />
-															<span className='text-sm'>{profile.email}</span>
-														</div>
-														<div className='flex items-center space-x-3 text-gray-600'>
-															<Phone className='w-5 h-5' />
-															<span>{profile.phone}</span>
-														</div>
-													</div>
-
-													<div className='mt-6 pt-6 border-t'>
-														<h3 className='font-semibold text-gray-900 mb-3'>
-															Professional Details
-														</h3>
-														<div className='space-y-2 text-sm'>
-															<div className='flex justify-between'>
-																<span className='text-gray-600'>Age:</span>
-																<span className='font-medium'>
-																	{profile.Age || profile.age} years
-																</span>
-															</div>
-															<div className='flex justify-between'>
-																<span className='text-gray-600'>Country:</span>
-																<span className='font-medium'>{profile.country}</span>
-															</div>
-														</div>
-													</div>
+									<div className='bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-8 shadow-lg border border-blue-100'>
+										<h3 className='text-lg font-bold text-gray-900 mb-6 flex items-center'>
+											<User className='w-5 h-5 mr-2 text-blue-600' />
+											Contact Information
+										</h3>
+										<div className='space-y-4'>
+											<div className='flex items-center space-x-4 p-3 bg-white rounded-lg shadow-sm border border-gray-100'>
+												<div className='p-2 bg-blue-100 rounded-full'>
+													<MapPin className='w-4 h-4 text-blue-600' />
+												</div>
+												<div>
+													<p className='text-sm text-gray-500'>Location</p>
+													<p className='font-medium text-gray-900'>{profile.country}</p>
+												</div>
+											</div>
+											<div className='flex items-center space-x-4 p-3 bg-white rounded-lg shadow-sm border border-gray-100'>
+												<div className='p-2 bg-green-100 rounded-full'>
+													<Mail className='w-4 h-4 text-green-600' />
+												</div>
+												<div>
+													<p className='text-sm text-gray-500'>Email</p>
+													<p className='font-medium text-gray-900 text-sm'>
+														{profile.email}
+													</p>
+												</div>
+											</div>
+											<div className='flex items-center space-x-4 p-3 bg-white rounded-lg shadow-sm border border-gray-100'>
+												<div className='p-2 bg-purple-100 rounded-full'>
+													<Phone className='w-4 h-4 text-purple-600' />
+												</div>
+												<div>
+													<p className='text-sm text-gray-500'>Phone</p>
+													<p className='font-medium text-gray-900'>{profile.phone}</p>
 												</div>
 											</div>
 										</div>
@@ -565,7 +597,13 @@ export default function ProfileManage({
 																? formatDate(patient.dateOfAdmission)
 																: "N/A"}
 														</span>
-														<button className='text-blue-600 hover:text-blue-800'>
+														<button
+															className='text-blue-600 hover:text-blue-800'
+															onClick={(e) => {
+																e.stopPropagation();
+																redirect(`/patients/${patient.phone}`);
+															}}
+														>
 															View Details →
 														</button>
 													</div>
@@ -722,20 +760,114 @@ export default function ProfileManage({
 
 							{activeTab === "doctors" && (
 								<div className='space-y-6'>
-									<h3 className='text-xl font-bold text-gray-900 mb-6'>My Doctors</h3>
-
-									{/* Center content */}
-									<div className='flex flex-col items-center justify-center py-8 space-y-4'>
-										<p className='text-gray-500 text-lg'>
-											You don't have any assigned doctors yet.
-										</p>
+									<div className='flex items-center justify-between'>
+										<h3 className='text-xl font-bold text-gray-900'>
+											My Connected Doctors
+										</h3>
 										<Link
 											href='/profile/code'
-											className='bg-blue-600 text-white px-8 py-2 rounded-lg hover:bg-blue-700 transition-colors'
+											className='bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium'
 										>
-											Find a Doctor
+											+ Add Doctor
 										</Link>
 									</div>
+
+									{doctorsLoading ? (
+										<div className='bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-8 shadow-lg border border-blue-100'>
+											<div className='text-center'>
+												<div className='w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4'>
+													<UserPlus className='w-8 h-8 text-blue-600' />
+												</div>
+												<h4 className='font-semibold text-gray-900 mb-2 text-lg'>
+													Loading Your Doctors
+												</h4>
+												<p className='text-gray-600 max-w-md mx-auto'>
+													Please wait while we fetch your connected healthcare providers.
+												</p>
+											</div>
+										</div>
+									) : myDoctors.length === 0 ? (
+										<div className='bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-8 shadow-lg border border-amber-100'>
+											<div className='text-center'>
+												<div className='w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4'>
+													<UserPlus className='w-8 h-8 text-amber-600' />
+												</div>
+												<h4 className='font-semibold text-gray-900 mb-2 text-lg'>
+													No Doctors Connected Yet
+												</h4>
+												<p className='text-gray-600 mb-6 max-w-md mx-auto'>
+													Connect with your healthcare providers to access your medical
+													records, schedule appointments, and stay updated on your health.
+												</p>
+												<Link
+													href='/profile/code'
+													className='inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium shadow-md hover:shadow-lg'
+												>
+													<UserPlus className='w-4 h-4 mr-2' />
+													Connect Your First Doctor
+												</Link>
+											</div>
+										</div>
+									) : (
+										<div className='grid gap-6'>
+											{sortedDoctors.map((doctor) => (
+												<div
+													key={doctor.code}
+													className='bg-gradient-to-br from-white to-gray-50 shadow-lg rounded-2xl p-6 border border-gray-200 '
+												>
+													<div className='flex items-center justify-between'>
+														<div className='flex items-center space-x-4'>
+															<div className='w-16 h-16 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-2xl flex items-center justify-center shadow-md'>
+																<User className='w-8 h-8 text-blue-600' />
+															</div>
+															<div className='space-y-1'>
+																<h4 className='font-bold text-gray-900 text-lg'>
+																	Dr. {doctor.name}
+																</h4>
+																<div className='flex items-center space-x-2'>
+																	<span className='px-3 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded-full'>
+																		{doctor.profession}
+																	</span>
+																	<span className='px-3 py-1 bg-indigo-100 text-indigo-800 text-sm font-medium rounded-full'>
+																		{doctor.specialty}
+																	</span>
+																</div>
+																<div className='flex items-center space-x-4 text-sm text-gray-600'>
+																	<div className='flex items-center space-x-1'>
+																		<MapPin className='w-4 h-4 text-gray-400' />
+																		<span>
+																			{doctor.city}, {doctor.country}
+																		</span>
+																	</div>
+																</div>
+															</div>
+														</div>
+														<div className='flex flex-col items-end space-y-3'>
+															<div className='flex items-center space-x-2'>
+																<div className='w-2 h-2 bg-green-500 rounded-full animate-pulse'></div>
+																<span className='text-green-700 text-sm font-medium'>
+																	Connected
+																</span>
+															</div>
+														</div>
+													</div>
+
+													{/* Additional Info Section */}
+													<div className='mt-6 pt-6 border-t border-gray-200'>
+														<div className='grid grid-cols-2 gap-4 text-sm'>
+															<div className='flex items-center space-x-2'>
+																<div className='w-2 h-2 bg-blue-500 rounded-full'></div>
+																<span className='text-gray-600'>Doctor Code:</span>
+																<span className='font-mono font-medium text-gray-900'>
+																	{doctor.code}
+																</span>
+															</div>
+														</div>
+													</div>
+												</div>
+											))}
+										</div>
+									)}
 								</div>
 							)}
 						</div>
