@@ -14,8 +14,6 @@ export default function RegisterPage() {
   );
   const dispatch = useDispatch();
 
-
-
   useEffect(() => {
     if (signupRole) {
       dispatch(setRole(signupRole));
@@ -33,7 +31,9 @@ export default function RegisterPage() {
     <div className="flex justify-center items-center bg-gradient-to-br from-blue-100 via-white to-blue-50 min-h-screen">
       <div className="flex md:flex-row flex-col bg-white shadow-2xl border border-gray-200 rounded-2xl w-full max-w-5xl overflow-hidden">
         {/* Left side */}
+
         <div className="relative w-full md:w-1/2 h-72 md:h-auto">
+          <div className="absolute inset-0 bg-black/40" />
           <Image
             src="/midpage.jpg"
             alt="Doctor and Patient"
@@ -46,10 +46,8 @@ export default function RegisterPage() {
               &quot;For the heroes in white coats and the patients they care for
               — <br />
               &quot;
-              <span className="font-bold text-white">
-                MedReminder
-              </span>{" "}
-              makes communication effortless and care stronger.&rdquo;
+              <span className="font-bold text-white">MedReminder</span> makes
+              communication effortless and care stronger.&rdquo;
             </p>
           </div>
         </div>
@@ -62,14 +60,14 @@ export default function RegisterPage() {
 
           <button
             onClick={() => setSignupRole("medical")}
-            className="bg-gradient-to-r from-blue-700 to-blue-900 shadow-lg hover:shadow-blue-400/50 mb-5 py-4 rounded-xl w-56 font-semibold text-white text-lg text-center hover:scale-105 transition duration-300 ease-in-out transform cursor-pointer"
+            className="bg-gradient-to-r from-blue-700 to-blue-900 shadow-lg hover:shadow-blue-400/50 mb-5 py-4 rounded-xl w-56 font-semibold text-white text-lg text-center hover:scale-105 transition duration-300 ease-in-out cursor-pointer transform"
           >
             Medical Crew
           </button>
 
           <button
             onClick={() => setSignupRole("patient")}
-            className="bg-gradient-to-r from-blue-700 to-blue-900 shadow-lg hover:shadow-blue-400/50 py-4 rounded-xl w-56 font-semibold text-white text-lg text-center hover:scale-105 transition duration-300 ease-in-out transform cursor-pointer"
+            className="bg-gradient-to-r from-blue-700 to-blue-900 shadow-lg hover:shadow-blue-400/50 py-4 rounded-xl w-56 font-semibold text-white text-lg text-center hover:scale-105 transition duration-300 ease-in-out cursor-pointer transform"
           >
             Patient
           </button>
