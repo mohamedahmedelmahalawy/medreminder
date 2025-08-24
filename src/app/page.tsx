@@ -14,7 +14,11 @@ export default function Home() {
   return (
     <>
       <main>
-        <section className="relative mx-auto px-8 py-18 md:py-24 min-h-screen overflow-hidden text-white">
+        <section className="relative mx-auto px-8 py-18 md:py-24 min-h-screen overflow-hidden text-white
+    flex flex-col
+    [@media(min-width:1900px)]:justify-center
+    [@media(min-width:1900px)]:py-0
+  ">
           <BackGroundVideo />
           <div className="flex flex-col items-center gap-4 mb-4 text-center">
             <h1

@@ -46,7 +46,7 @@ const medicalManagementPosts: MedicalManagementPost[] = [
 
 function FeaturesSection() {
   return (
-      <section className="mx-auto pt-8 max-w-[1280px]" id="features">
+      <section className="mx-auto pt-8 max-w-[1280px] " id="features">
       <div className="flex flex-col justify-center gap-5 pb-7 w-full">
         <div className="flex flex-col gap-5">
           <div className="flex items-center justify-center mb-2 text-xl">

@@ -50,7 +50,7 @@ function Footer() {
                 <span className="text-[12px]">
                   <Mail className="w-5 h-5" />
                 </span>
-                <span>MedReminder@gmail.com</span>
+                <span>support@medreminder.com</span>
               </li>
               <li className="flex items-center gap-2">
                 <span className="text-[12px]">
