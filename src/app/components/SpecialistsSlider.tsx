@@ -125,7 +125,7 @@ const SpecialistsSlider = () => {
       aria-label="Previous"
       className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10
                  bg-white hover:bg-blue-700 text-blue-600 hover:text-white rounded-full p-3
-                 shadow-md transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+                 shadow-md transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed cursor-pointer"
    
     >
       <ChevronLeft className="w-5 h-5" />
@@ -137,7 +137,7 @@ const SpecialistsSlider = () => {
       aria-label="Next"
       className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10
                  bg-white hover:bg-blue-700 text-blue-600 hover:text-white rounded-full p-3
-                 shadow-md transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+                 shadow-md transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed cursor-pointer"
     
     >
       <ChevronRight className="w-5 h-5" />

@@ -18,6 +18,7 @@ import {
   VisibilityState,
 } from "@tanstack/react-table";
 import { BriefcaseMedical } from "lucide-react";
+import { toast } from "react-toastify";
 
 import {
   ChevronDownIcon,
@@ -268,6 +269,7 @@ export default function TableOriginUI({ filters }: Props) {
   const [loading, setLoading] = useState(true);
   const { current } = useSelector((s: RootState) => s.doctor);
   const [dateRange, setDateRange] = useState<DateRange | undefined>();
+
   console.log(current);
 
   const code: string =
@@ -341,7 +343,7 @@ export default function TableOriginUI({ filters }: Props) {
         console.log(row.original.phone);
       }
     } catch (error) {
-      console.error("failed to delete patient", error);
+      toast.error("failed to delete patient");
     }
 
     table.resetRowSelection();
@@ -776,6 +778,7 @@ function RowActions({ row }: { row: Row<Item> }) {
   const [openDialog, setOpenDialog] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const { register, handleSubmit, reset } = useForm<DiagnosisEntry>();
+    const [openConfirmDelete, setOpenConfirmDelete] = useState(false); 
 
   const dispatch = useDispatch<AppDispatch>();
   const doctor = useSelector((state: RootState) => state.doctor.current);
@@ -852,11 +855,10 @@ function RowActions({ row }: { row: Row<Item> }) {
       ).unwrap();
       console.log("delete patient");
     } catch (error) {
-      console.error("failed to delete patient", error);
+       toast.error("failed to delete patient");
     }
     console.log(row);
 
-    // dispatch(removePatient({doctorCode:"EGP12Hop676",patientPhone:}))
   };
   return (
     <>
@@ -891,12 +893,52 @@ function RowActions({ row }: { row: Row<Item> }) {
             <DropdownMenuItem className="focus:bg-amber-950 focus:text-white">
               <Link href={`/patients/${row.original.phone}`}>Show Details</Link>
             </DropdownMenuItem>
-            <DropdownMenuItem
-              onSelect={handleDeleteSingleRow}
-              className="focus:bg-red-600 focus:text-white"
-            >
-              <span>Delete Patient</span>
-            </DropdownMenuItem>
+            <AlertDialog open={openConfirmDelete} onOpenChange={setOpenConfirmDelete}>
+              <AlertDialogTrigger asChild>
+                <DropdownMenuItem
+                  className="focus:bg-red-600 focus:text-white"
+                  // Prevent DropdownMenu from hijacking the click so the dialog opens reliably
+                  onSelect={(e) => {
+                    e.preventDefault();
+                    setOpenConfirmDelete(true);
+                  }}
+                >
+                  <span>Delete Patient</span>
+                </DropdownMenuItem>
+              </AlertDialogTrigger>
+
+              <AlertDialogContent>
+                <div className="flex sm:flex-row flex-col max-sm:items-center gap-2 sm:gap-4">
+                  <div
+                    className="flex justify-center items-center border rounded-full size-9 shrink-0"
+                    aria-hidden="true"
+                  >
+                    <CircleAlertIcon className="opacity-80" size={16} />
+                  </div>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Delete this patient?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This action cannot be undone. This will permanently remove{" "}
+                      <strong>{row.original.name}</strong> ({row.original.phone})
+                      from your patients list.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                </div>
+
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={() => {
+                      // call your existing delete function for this row
+                      handleDeleteSingleRow();
+                      setOpenConfirmDelete(false);
+                    }}
+                  >
+                    Delete
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </DropdownMenuGroup>
         </DropdownMenuContent>
       </DropdownMenu>

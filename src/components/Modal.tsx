@@ -1,4 +1,4 @@
-import { ReactNode, useId, useState } from "react";
+import { ReactNode, useEffect, useId, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -25,6 +25,7 @@ import { addPatient } from "@/lib/store/Slices/MedicalSlicer";
 import { DoctorPatient } from "@/lib/interfaces/DoctorPatient";
 import CountryInput from "./CountryInput";
 import { parse } from "date-fns";
+import { toast } from "react-toastify";
 interface ModalProps {
 	name?: string;
 }
@@ -45,6 +46,7 @@ export default function Modal({ name }: ModalProps) {
 	const [selectedGender, setSelectedGender] = useState<string>("");
 	const [closeModal, setCloseModal] = useState(false);
 	const dispatch = useDispatch<AppDispatch>();
+	const [user, setUser] = useState<any>(null);
 
 	const {
 		register,
@@ -55,6 +57,13 @@ export default function Modal({ name }: ModalProps) {
 		reset,
 		formState: { errors },
 	} = useForm<FormVals>();
+
+			useEffect(() => {
+			const storedAuth = localStorage.getItem("auth");
+			if (storedAuth) {
+				setUser(JSON.parse(storedAuth));
+			}
+		}, []);
 
 	const onSubmit = async (data: FormVals) => {
 		try {
@@ -69,38 +78,40 @@ export default function Modal({ name }: ModalProps) {
 				profession: data.profession,
 				age: Number(data.age),
 				dateOfAdmission:
-  typeof data.dateOfAdmission === "string"
-    ? (
-        // handle "YYYY-MM-DD" from <input type="date"> OR "DD/MM/YYYY"
-        /\d{4}-\d{2}-\d{2}/.test(data.dateOfAdmission)
-          ? new Date(data.dateOfAdmission + "T00:00:00").toISOString()
-          : parse(data.dateOfAdmission, "dd/MM/yyyy", new Date()).toISOString()
-      )
-    : data.dateOfAdmission.toISOString(),
+					typeof data.dateOfAdmission === "string"
+						? (
+							// handle "YYYY-MM-DD" from <input type="date"> OR "DD/MM/YYYY"
+							/\d{4}-\d{2}-\d{2}/.test(data.dateOfAdmission)
+								? new Date(data.dateOfAdmission + "T00:00:00").toISOString()
+								: parse(data.dateOfAdmission, "dd/MM/yyyy", new Date()).toISOString()
+						)
+						: data.dateOfAdmission.toISOString(),
 				cases: [{ diagnosis: [] }],
 			};
 			console.log(patient);
-			
+
 			const updated = await dispatch(addPatient({ patient })).unwrap();
 
 			console.log("Updated doctor:", updated);
-			alert("Patient added ✅");
+			toast.success(`"Patient: ${patient.name} has been added to your list ✅"`);
 			setCloseModal(false);
 			reset();
 		} catch (err: unknown) {
 			if (err instanceof Error) alert(err?.message ?? "Failed to add patient");
-			else alert("Failed");
+			else toast.error("Something Went Wrong ❌");
 		}
+	
+
 	};
 	return (
-		<Dialog    open={closeModal} onOpenChange={setCloseModal}>
+		<Dialog open={closeModal} onOpenChange={setCloseModal}>
 			<DialogTrigger asChild>
 				<Button variant="outline" className=" bg-background hover:bg-blue-600 hover:text-white  transition-colors duration-250">
 					<PlusIcon className="-ms-1 opacity-60" size={20} aria-hidden="true" />
 					{name}
 				</Button>
 			</DialogTrigger>
-			<DialogContent  className="w-full max-w-[90vw] sm:max-w-[625px] lg:max-w-[700px]">
+			<DialogContent className="w-full max-w-[90vw] sm:max-w-[625px] lg:max-w-[700px]">
 				<div className="flex flex-col items-center gap-2">
 					<div className="flex size-11 shrink-0 items-center justify-center rounded-full border" aria-hidden="true">
 						<svg
@@ -114,7 +125,7 @@ export default function Modal({ name }: ModalProps) {
 						</svg>
 					</div>
 					<DialogHeader>
-						<DialogTitle className="sm:text-center">Welcome Dr,Amr</DialogTitle>
+						<DialogTitle className="sm:text-center">Hello Dr. {user?.userDetails?.name}</DialogTitle>
 						<DialogDescription className="sm:text-center">
 							Please enter the patient&apos;s information to add them to your list.
 						</DialogDescription>

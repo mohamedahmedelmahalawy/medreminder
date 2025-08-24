@@ -171,3 +171,16 @@
 html {
   scroll-behavior: smooth;
 }
+
+.Toastify__toast {
+  background: #0b0b12 !important; /* black-ish */
+  color: #fff !important;
+  border-radius: 12px !important;
+}
+.Toastify__progress-bar { height: 2px !important; }
+.Toastify__progress-bar--success { background: #22c55e !important; } /* green */
+.Toastify__progress-bar--error   { background: #ef4444 !important; } /* red */
+
+/* Ensure above everything */
+.Toastify__toast-container { z-index: 99999 !important; }
+

@@ -5,6 +5,7 @@ import { Role } from "@/lib/interfaces/Role";
 //   Feha doctor role w el patient role w logged user details
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { generateCode } from "@/app/components/RandomcodeGenerator";
+import { toast } from "react-toastify";
 
 const BASE_URL = "https://fast-api-dnk5.vercel.app"; //hna 7ansta5dm url beta3na
 
@@ -258,6 +259,7 @@ const authSlice = createSlice({
       state.status = "idle";
       state.error = undefined;
       state.isLoggedIn = false;
+      	toast.success(`"You have successfully logged out. Stay healthy and see you soon!"`);
     },
     setUserDetails(state, action: PayloadAction<UserDetails>) {
       state.userDetails = action.payload;

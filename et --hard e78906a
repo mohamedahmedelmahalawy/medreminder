@@ -1,0 +1,87 @@
+[33mce4b98c[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfawaz[m[33m)[m HEAD@{0}: reset: moving to HEAD~1
+[33me78906a[m HEAD@{1}: commit: Toasters installed
+[33mce4b98c[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfawaz[m[33m)[m HEAD@{2}: pull origin main: Fast-forward
+[33md509db8[m[33m ([m[1;31morigin/fawaz[m[33m)[m HEAD@{3}: commit: dashboard fixes
+[33m8768657[m HEAD@{4}: pull origin main: Merge made by the 'ort' strategy.
+[33m8a5e527[m HEAD@{5}: commit: test
+[33ma5fd06b[m HEAD@{6}: commit: test
+[33mb27858e[m HEAD@{7}: commit (merge): Merge branch 'main' of https://github.com/mohamedahmedelmahalawy/medreminder into fawaz
+[33m4961f58[m HEAD@{8}: commit: test
+[33m69056b3[m HEAD@{9}: commit: test
+[33m970cb1f[m HEAD@{10}: commit: safe copy
+[33m1b44b87[m HEAD@{11}: pull origin main: Fast-forward
+[33m5974516[m HEAD@{12}: commit: navbar fixed useeffect
+[33m8773efa[m HEAD@{13}: pull origin main: Fast-forward
+[33mbd71d82[m HEAD@{14}: commit: navbar with its routes fixed
+[33me6ee40f[m HEAD@{15}: pull origin main: Merge made by the 'ort' strategy.
+[33m45bbae4[m HEAD@{16}: commit: edit profile first steps
+[33mdde101b[m HEAD@{17}: pull origin main: Fast-forward
+[33m01d848e[m HEAD@{18}: commit: code got from local storage
+[33m4b7b649[m HEAD@{19}: commit: fixed dashboard logic
+[33m8194d30[m HEAD@{20}: pull origin main: Merge made by the 'ort' strategy.
+[33m6caf4d1[m HEAD@{21}: pull origin main: Merge made by the 'ort' strategy.
+[33m233af97[m HEAD@{22}: pull origin main: Merge made by the 'ort' strategy.
+[33ma6eb506[m HEAD@{23}: commit: diagnosis part
+[33ma804e5a[m HEAD@{24}: commit: local storage
+[33m6a183f1[m HEAD@{25}: commit (merge): Merge branch 'main' of https://github.com/mohamedahmedelmahalawy/medreminder into fawaz
+[33me359b72[m HEAD@{26}: commit: edit functions
+[33ma1bb679[m HEAD@{27}: commit: dashboardadd and delete
+[33mceff6cc[m HEAD@{28}: commit: dashboardtryingtofix
+[33m22a9646[m HEAD@{29}: commit: dashboarddelete
+[33m12e6232[m HEAD@{30}: commit: dashboardfixed
+[33m9a09e38[m HEAD@{31}: pull origin main: Fast-forward
+[33mab1b44d[m HEAD@{32}: commit: dashboardtrial2
+[33ma390d07[m HEAD@{33}: commit: dashboardtrial
+[33m8c4679a[m HEAD@{34}: commit: dateOfAdmission
+[33m2216ada[m HEAD@{35}: pull origin main: Fast-forward
+[33m927866b[m HEAD@{36}: pull origin main: Fast-forward
+[33me5ae7c6[m HEAD@{37}: pull origin main: Merge made by the 'ort' strategy.
+[33mc98a4d3[m HEAD@{38}: pull origin main: Merge made by the 'ort' strategy.
+[33m9e09727[m HEAD@{39}: commit: register for patient & modification to searchbycode2
+[33mc9a4688[m HEAD@{40}: commit: register for patient & modification to searchbycode
+[33m0ae6ad1[m HEAD@{41}: pull origin main: Fast-forward
+[33m947feab[m HEAD@{42}: pull origin fawaz --rebase (finish): returning to refs/heads/fawaz
+[33m947feab[m HEAD@{43}: pull origin fawaz --rebase (pick): Login Dr/patient & register for doctor only
+[33m9564d9c[m HEAD@{44}: pull origin fawaz --rebase (start): checkout 9564d9c4483eaf60c97cb2fa03f9bb28d6e8fd51
+[33m052711d[m HEAD@{45}: commit: Login Dr/patient & register for doctor only
+[33m65b7feb[m HEAD@{46}: pull origin main: Fast-forward
+[33m6e608ab[m HEAD@{47}: commit: set Roles from reducers are active
+[33me9239c1[m HEAD@{48}: pull origin main: Fast-forward
+[33m8a9a32c[m HEAD@{49}: pull origin main: Fast-forward
+[33m804e1a9[m HEAD@{50}: pull origin main: Fast-forward
+[33m2063f0f[m HEAD@{51}: commit: change username of patient to email
+[33mb8a4864[m HEAD@{52}: commit: Interfaces & Auth/DR/patient slicers with hooks and store
+[33m325933f[m HEAD@{53}: pull origin main: Fast-forward
+[33m85a165a[m HEAD@{54}: pull origin main: Fast-forward
+[33m6716c93[m HEAD@{55}: commit: last update 16/8 morning
+[33m59b1db4[m HEAD@{56}: commit: HomePage & globalCSS & Features changed
+[33mab4b945[m HEAD@{57}: commit: Fixed the Sign up and login after its deletion
+[33m5a77b83[m HEAD@{58}: reset: moving to ORIG_HEAD
+[33m5a77b83[m HEAD@{59}: reset: moving to ORIG_HEAD
+[33m5a77b83[m HEAD@{60}: reset: moving to ORIG_HEAD
+[33m5a77b83[m HEAD@{61}: checkout: moving from main to fawaz
+[33m48c4fe1[m[33m ([m[1;32mmain[m[33m)[m HEAD@{62}: checkout: moving from abdelrahman to main
+[33m68e8259[m[33m ([m[1;31morigin/mahalawy[m[33m, [m[1;31morigin/abdelrahman[m[33m, [m[1;32maly[m[33m, [m[1;32mabdelrahman[m[33m)[m HEAD@{63}: checkout: moving from aly to abdelrahman
+[33m68e8259[m[33m ([m[1;31morigin/mahalawy[m[33m, [m[1;31morigin/abdelrahman[m[33m, [m[1;32maly[m[33m, [m[1;32mabdelrahman[m[33m)[m HEAD@{64}: checkout: moving from aly to aly
+[33m68e8259[m[33m ([m[1;31morigin/mahalawy[m[33m, [m[1;31morigin/abdelrahman[m[33m, [m[1;32maly[m[33m, [m[1;32mabdelrahman[m[33m)[m HEAD@{65}: checkout: moving from fawaz to aly
+[33m5a77b83[m HEAD@{66}: pull origin main: Fast-forward
+[33m27ee42b[m HEAD@{67}: pull origin main: Fast-forward
+[33md3168e9[m HEAD@{68}: commit: slight ui changes
+[33mf11564a[m HEAD@{69}: pull origin main: Fast-forward
+[33m3c69f04[m HEAD@{70}: reset: moving to ORIG_HEAD
+[33m3d82d1c[m HEAD@{71}: pull origin main: Fast-forward
+[33m3c69f04[m HEAD@{72}: commit: Routes for login and signup
+[33m76f896e[m HEAD@{73}: pull origin main: Fast-forward
+[33m3dc3c7f[m HEAD@{74}: commit: Navbar & Footer padding
+[33mea83df8[m HEAD@{75}: pull origin main: Fast-forward
+[33mb548229[m HEAD@{76}: commit: Features & About
+[33mdcf9846[m HEAD@{77}: pull origin main: Fast-forward
+[33m48c4fe1[m[33m ([m[1;32mmain[m[33m)[m HEAD@{78}: pull origin main: Fast-forward
+[33ma9005cf[m HEAD@{79}: checkout: moving from main to fawaz
+[33m48c4fe1[m[33m ([m[1;32mmain[m[33m)[m HEAD@{80}: pull: Fast-forward
+[33m2727cf2[m[33m ([m[1;32mmaster[m[33m)[m HEAD@{81}: checkout: moving from fawaz to main
+[33ma9005cf[m HEAD@{82}: commit: Home Page
+[33m68e8259[m[33m ([m[1;31morigin/mahalawy[m[33m, [m[1;31morigin/abdelrahman[m[33m, [m[1;32maly[m[33m, [m[1;32mabdelrahman[m[33m)[m HEAD@{83}: checkout: moving from master to fawaz
+[33m2727cf2[m[33m ([m[1;32mmaster[m[33m)[m HEAD@{84}: checkout: moving from master to master
+[33m2727cf2[m[33m ([m[1;32mmaster[m[33m)[m HEAD@{85}: pull origin main: Fast-forward
+[33m574cfe6[m HEAD@{86}: initial pull

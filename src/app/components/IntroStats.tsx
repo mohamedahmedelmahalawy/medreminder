@@ -17,10 +17,10 @@ export default function IntroStats() {
           <div>
             <h2
               id="intro-stats"
-              className="font-extrabold text-blue-900 text-5xl xl:text-6xl lg:text-left text-center tracking-tight"
+              className="font-bold text-blue-900 text-2xl sm:text-3xl md:text-4xl lg:text-5xl lg:text-left text-center tracking-tight"
             >
               <span className="block">Innovative Solutions</span>
-              <span className="block">for Patient Safety</span>
+              <span className="block">For Patient Safety</span>
             </h2>
           </div>
 

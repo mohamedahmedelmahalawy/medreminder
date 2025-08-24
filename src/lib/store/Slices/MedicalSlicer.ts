@@ -3,6 +3,7 @@ import type { Doctor } from "@/lib/interfaces/Doctor";
 import type { DiagnosisEntry } from "@/lib/interfaces/DiagnosisEntry";
 import type { DoctorPatient } from "@/lib/interfaces/DoctorPatient";
 import type { Role } from "@/lib/interfaces/Role";
+import { toast } from "react-toastify";
 
 //Hna feha doctore methods zai add patient add diagnosis w later 7anzawod 
 //   add doctor and genrate new code in register
@@ -134,6 +135,7 @@ export const addPatient = createAsyncThunk<
       `${BASE_URL}/doctors/${encodeURIComponent(doctorCode)}/patients`,
       patient
     );
+    
     return updated;
   }
 );
@@ -163,8 +165,9 @@ export const removePatient = createAsyncThunk<
   const doc = await fetchDoctorByCode(doctorCode);
   const url = `${BASE_URL}/doctors/${encodeURIComponent(doctorCode)}/patients/${patientPhone}`;
   const maybeUpdated = await deleteJSON<Doctor>(url);
-
+toast.success(`"Patient has been removed from your list ✅"`);
   if (maybeUpdated) return maybeUpdated;
+
   return await fetchDoctorByCode(doctorCode);
 });
 
@@ -246,10 +249,11 @@ export const updatePatient = createAsyncThunk(
         `${BASE_URL}/doctors/${doctorCode}/patients/${patientPhone}`,
         updatedData
       );
-
+    toast.success(`"Patient details have been edited successfully"`);
       return updated;
     } catch (error) {
-      throw error;
+      toast.error("Something went wrong");
+      throw new Error(error instanceof Error ? error.message : "Unknown error");
     }
   }
 );
