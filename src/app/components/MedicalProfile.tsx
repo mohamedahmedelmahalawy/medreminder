@@ -7,7 +7,6 @@ import { getPatients, getProfile } from "@/app/funcs/ProfileFunc";
 import type { Service } from "../(routes)/profile/page";
 import { DoctorPatient } from "@/lib/interfaces/DoctorPatient";
 import ProfileManage from "./ProfileManage";
-// import PatientReport from "./PatientReport";
 import { downloadPatientReport } from "@/app/funcs/PatientReportUtils";
 import { jsPDF } from "jspdf";
 
@@ -17,8 +16,6 @@ export default function MedicalProfile({ services }: { services: Service[] }) {
     null
   );
   const [role, setRole] = useState<string>("");
-  const [showPatientReport, setShowPatientReport] = useState<boolean>(false);
-
   const displayPatients =
     role === "medical" && doctorsPatient ? doctorsPatient : [];
 
