@@ -7,6 +7,7 @@ import { Loader2, FileX, Trash2, PlusCircle } from "lucide-react";
 import { DNA } from "react-loader-spinner";
 
 export default function PatientPage() {
+
 	const params = useParams<{ patient: string }>();
 	const [diagnoses, setDiagnoses] = useState<any>(null);
 	const [loading, setLoading] = useState(true);
@@ -244,4 +245,5 @@ export default function PatientPage() {
 			</div>
 		</div>
 	);
+
 }
