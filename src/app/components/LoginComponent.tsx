@@ -8,6 +8,7 @@ import { loginDoctor, loginPatient } from "@/lib/store/Slices/Auth";
 import type { AppDispatch, RootState } from "@/lib/store/Slices/Store";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 // import login from "/public/login.webp";
 
 
@@ -48,7 +49,8 @@ function LoginComponent() {
 						isLoggedIn: true,
 					}));
 				}
-				alert("Login successful!");
+				// alert("Login successful!");
+				toast.success(`Login successful, Welcome Back`);
 				   router.push("/"); 
 			} else if (role === "patient") {
 				const patient = await dispatch(loginPatient({ email: data.email, password: data.password })).unwrap();
@@ -61,7 +63,8 @@ function LoginComponent() {
 						isLoggedIn: true,
 					}));
 				}
-				alert("Login successful!");
+				// alert("Login successful!");
+				toast.success(`Login successful, Welcome Back`);
 				   router.push("/"); 
 			}
 		} catch (err: any) {
