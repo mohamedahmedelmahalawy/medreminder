@@ -15,9 +15,12 @@ export default function Home() {
     <>
       <main>
         <section className="relative mx-auto px-8 py-18 md:py-24 min-h-screen overflow-hidden text-white
-    flex flex-col
-    [@media(min-width:1900px)]:justify-center
-    [@media(min-width:1900px)]:py-0
+   flex flex-col
+    [@media(min-width:920px)]:justify-center
+    [@media(min-width:1280px)]:justify-center
+    [@media(min-width:1280px)]:py-0
+    [@media(min-width:2440px)]:justify-start
+    [@media(min-width:2440px)]:py-9
   ">
           <BackGroundVideo />
           <div className="flex flex-col items-center gap-4 mb-4 text-center">
@@ -31,7 +34,7 @@ export default function Home() {
               One Powerful App for Every Step of Care
             </p>
             <a href="#features">
-              <button className="inline-block bg-transparent mt-8 px-14 py-4 border-2 border-white rounded-full font-semibold text-white animate-enter-pulse-3_5s">
+              <button className="inline-block bg-transparent mt-8 px-14 py-4 border-2 border-white rounded-full font-semibold text-white hover:border-blue-600 animate-enter-pulse-3_5s">
                 Learn More
               </button>
             </a>
