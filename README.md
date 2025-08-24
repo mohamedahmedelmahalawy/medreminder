@@ -1,33 +1,38 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🩺 Med-Reminder App
 
-## Getting Started
+A modern healthcare web application that helps doctors and patients manage medical schedules and reminders with ease.  
+Built with **Next.js**, **TypeScript**, and **Tailwind CSS** for a fast, scalable, and beautiful user experience.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## ✨ Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 👨‍⚕️ For Doctors
+- View and manage patient schedules and appointments.
+- Access patient cases, diagnoses, and treatment details.
+- Stay organized with a daily and weekly overview of consultations.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 🧑‍🦰 For Patients
+- See all upcoming doctor appointments in one place.
+- Get reminders for schedules, treatments, and follow-ups.
+- Access medical records, diagnoses, and prescribed treatments.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### ⚡ General
+- Secure API communication with Axios interceptors.
+- Role-based access (`doctor` / `patient`).
+- Mobile-first, responsive design with Tailwind CSS.
+- Built with **Next.js** for SSR/SSG performance.
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 🛠️ Tech Stack
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Framework:** [Next.js](https://nextjs.org/) (React + SSR + Routing)
+- **Language:** [TypeScript](https://www.typescriptlang.org/)
+- **Styling:** [Tailwind CSS](https://tailwindcss.com/)
+- **HTTP Client:** Axios (with interceptors for authentication)
+- **State Management:** React Hooks (`useState`, `useEffect`, `useMemo`)
+- **Backend API:** FastAPI (serverless-ready, deployable on Vercel/Railway/etc.)
 
 ## Deploy on Vercel
 
