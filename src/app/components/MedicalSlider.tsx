@@ -160,7 +160,7 @@ const MedicalSlider: React.FC = () => {
   };
 
   return (
-    <div className="mx-auto px-4 py-18 w-full max-w-7xl">
+    <div className="mx-auto px-4 pt-18 w-full max-w-7xl">
       <div className="flex-1 pb-12">
         <div className="flex items-center gap-2 mb-4">
           <div className="bg-green-500 rounded-full w-2 h-2"></div>
@@ -187,14 +187,14 @@ const MedicalSlider: React.FC = () => {
 
         <button
           onClick={nextSlide}
-          className="top-1/2 right-0 z-10 absolute bg-white hover:bg-blue-700 text-blue-600 hover:text-white disabled:opacity-50 shadow-lg hover:shadow-lg p-3 rounded-full transition-colors -translate-y-1/2 translate-x-4 duration-200 cursor-pointer disabled:cursor-not-allowed"
+          className="top-1/2 right-0 z-10 absolute bg-white hover:bg-blue-700 disabled:opacity-50 shadow-lg hover:shadow-lg p-3 rounded-full text-blue-600 hover:text-white transition-colors -translate-y-1/2 translate-x-4 duration-200 cursor-pointer disabled:cursor-not-allowed"
           disabled={categories.length <= itemsPerView}
         >
           <ChevronRight className="w-5 h-5" />
         </button>
 
         {/* Slider Container */}
-        <div className="overflow-hidden py-7">
+        <div className="py-7 overflow-hidden">
           <div
             className="flex transition-transform duration-900 ease-in-out"
             style={{
