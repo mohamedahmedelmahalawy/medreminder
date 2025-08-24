@@ -6,7 +6,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/lib/store/Slices/Store";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { clearAuth } from "@/lib/store/Slices/Auth";
 
@@ -19,9 +19,16 @@ type SavedAuth = {
 };
 
 function Navbar() {
-  const [isClicked, setIsClicked] = useState("Home");
+  const [isClicked, setIsClicked] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const pathName = usePathname();
+  const navItems = [
+    { label: "Home", path: "/" },
+    { label: "Features", path: "/#features" },
+    { label: "FAQ", path: "/#faq" },
+    { label: "Contact Us", path: "/about" },
+  ];
 
   const {
     role: roleRedux,
@@ -90,18 +97,19 @@ function Navbar() {
     router.refresh();
   };
 
-  const navItems = ["Home", "Features", "Contact Us"];
-
   return (
-    <div className="top-0 left-0 z-20 fixed bg-[#000D44] shadow-md mb-20 w-full">
+    <div className="top-0 left-0 z-20 fixed bg-[#000D44] shadow-md mb-20 pt-4 w-full">
       <div className="flex justify-between items-center mx-auto px-4 sm:px-6 md:px-8 py-3 md:py-0 max-w-screen-xl">
-        <Link href="/" onClick={() => setIsClicked("")}>
+        <Link href="/" onClick={() => setIsClicked("Home")}>
           <Image
             className="w-16 sm:w-20 md:w-24 h-auto cursor-pointer"
             src="/Medlogo.png"
             alt="MedReminder logo"
             width={100}
             height={90}
+            // width={200}
+            // height={200}
+            // style={{ width: "65px", height: "auto" }}
             priority
           />
         </Link>
@@ -109,22 +117,15 @@ function Navbar() {
         <ul className="hidden md:flex items-center space-x-6 lg:space-x-10 font-medium text-white text-sm lg:text-base">
           {navItems.map((item) => (
             <Link
-              href={
-                item === "Home"
-                  ? "/"
-                  : item === "Contact Us"
-                  ? "/about"
-                  : `/${item.toLowerCase()}`
-              }
-              key={item}
+              href={item.path}
+              key={item.label}
               className={`cursor-pointer underline-offset-8 transition-all duration-200 ${
-                isClicked === item
+                pathName === item.path
                   ? "underline decoration-2"
                   : "hover:underline"
               }`}
-              onClick={() => setIsClicked(item)}
             >
-              {item}
+              {item.label}
             </Link>
           ))}
         </ul>

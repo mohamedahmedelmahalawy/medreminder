@@ -73,24 +73,20 @@ const MedicalNetwork: React.FC = () => {
             </div>
 
             {/* Action Buttons */}
-         
+
             <div className="flex sm:flex-row flex-col gap-4 pt-6 sm:pt-8">
               {/* Read More Button */}
-              
+
               <button className="group relative flex justify-center items-center space-x-2 bg-blue-500 hover:bg-blue-600 px-4 py-4 rounded-lg overflow-hidden font-medium text-white transition-all duration-300 cursor-pointer">
-                <a href="#FAQ" className="flex gap-2  items-center">
-               <span className="z-10 relative">Read More</span> 
-                <div className="z-10 relative transition-transform group-hover:translate-x-1 duration-600 transform">
-                  <ArrowRight className="w-5 h-5" />
-                </div> 
-                {/* Hover gradient effect */}
-                <div className="absolute inset-0 bg-gradient-to-r from-[#000D44] to-blue-500 transition-transform translate-x-full group-hover:translate-x-0 duration-600 ease-in-out transform"></div>
+                <a href="#FAQ" className="flex items-center gap-2">
+                  <span className="z-10 relative">Read More</span>
+                  <div className="z-10 relative transition-transform group-hover:translate-x-1 duration-600 transform">
+                    <ArrowRight className="w-5 h-5" />
+                  </div>
+                  {/* Hover gradient effect */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#000D44] to-blue-500 transition-transform translate-x-full group-hover:translate-x-0 duration-600 ease-in-out transform"></div>
                 </a>
               </button>
-              
-              
-
-              
 
               {/* Support Email Button */}
               <button className="group relative flex justify-center items-center space-x-3 bg-white hover:bg-gray-50 px-4 py-3 border border-gray-200 rounded-lg overflow-hidden font-medium text-gray-700 transition-all duration-300">
@@ -121,13 +117,14 @@ const MedicalNetwork: React.FC = () => {
             </div>
 
             {/* Smaller overlay image */}
-            <div className="hidden  lg:block bottom-0 left-2 sm:-left-6 md:-left-8 z-15 absolute bg-white shadow-lg p-2 rounded-2xl">
+            <div className="hidden lg:block bottom-0 left-2 sm:-left-6 md:-left-8 z-15 absolute bg-white shadow-lg p-2 rounded-2xl">
               <Image
                 src="/wh-img-3.jpg"
                 alt="Healthcare service"
                 className="rounded-lg w-40 md:w-56 lg:w-72 h-auto object-cover"
-                width={72}
-                height={70}
+                width={288}
+                height={180}
+                priority
               />
             </div>
 
