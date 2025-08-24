@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import {
 	User,
 	Calendar,
@@ -10,24 +9,18 @@ import {
 	ClipboardList,
 	UserPlus,
 	HeartPulse,
-	FileText,
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useDispatch, UseDispatch } from "react-redux";
+import { clearAuth } from "@/lib/store/Slices/Auth";
 
 export default function Sidebar() {
 	const pathname = usePathname();
 	const router = useRouter();
 	const [role, setRole] = useState<string | null>(null);
 
-	const handleLogout = () => {
-		// nemsa7 el storage
-		if (typeof window !== "undefined") {
-			localStorage.removeItem("auth");
-		}
-		router.replace("/");
-		router.refresh();
-	};
+	const dispatch = useDispatch();
 
 	useEffect(() => {
 		try {
@@ -88,15 +81,28 @@ export default function Sidebar() {
 	if (role === "medical") sidebarItems = [...sidebarItems, ...medicalTabs];
 	if (role === "patient") sidebarItems = [...sidebarItems, ...patientTabs];
 
+	const onLogout = () => {
+		{
+			// nemsa7 el storage
+			if (typeof window !== "undefined") {
+				localStorage.removeItem("auth");
+			}
+
+			// 2) nemsa7 Redux
+			dispatch(clearAuth());
+
+			router.replace("/");
+			router.refresh();
+		}
+	};
+
 	useEffect(() => {
 		if (role === null) return;
 		if (pathname === "/profile/dashboard" && role !== "medical") {
 			router.replace("/profile");
 		}
 		if (
-			(pathname === "/profile/code" ||
-				pathname === "/profile/evaluation" ||
-				pathname === "/profile/medical-report") &&
+			(pathname === "/profile/code" || pathname === "/profile/evaluation") &&
 			role !== "patient"
 		) {
 			router.replace("/profile");
@@ -104,60 +110,36 @@ export default function Sidebar() {
 	}, [pathname, role, router]);
 
 	return (
-		<div className='w-72 bg-gradient-to-b from-blue-50 to-white shadow-xl border-r border-blue-200 flex flex-col h-screen'>
+		<div className='w-64 bg-white shadow-lg border-r border-gray-200 flex flex-col'>
 			{/* Navigation Items */}
-			<nav className='flex-1 px-4 py-6 space-y-1'>
-				<div className='mb-6'>
-					<h3 className='text-xs font-semibold text-blue-500 uppercase tracking-wider mb-3 px-3'>
-						Navigation
-					</h3>
-					<ul className='space-y-1'>
-						{sidebarItems.map((item) => (
-							<li key={item.id}>
-								<Link
-									href={item.href}
-									className={`group relative w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-left transition-all duration-200 no-underline ${
-										pathname === item.href
-											? "bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-lg shadow-blue-600/25"
-											: "text-blue-700 hover:bg-blue-50 hover:text-blue-900 hover:shadow-md"
-									}`}
-								>
-									<div
-										className={`transition-transform duration-200 ${
-											pathname === item.href ? "scale-110" : "group-hover:scale-110"
-										}`}
-									>
-										{item.icon}
-									</div>
-									<span
-										className={`font-medium transition-all duration-200 ${
-											pathname === item.href ? "text-white" : "group-hover:text-blue-900"
-										}`}
-									>
-										{item.label}
-									</span>
-									{pathname === item.href && (
-										<div className='absolute right-2 w-2 h-2 bg-white rounded-full'></div>
-									)}
-								</Link>
-							</li>
-						))}
-					</ul>
-				</div>
+			<nav className='flex-1 px-4 py-6'>
+				<ul className='space-y-2'>
+					{sidebarItems.map((item) => (
+						<li key={item.id}>
+							<Link
+								href={item.href}
+								className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-colors no-underline ${
+									pathname === item.href
+										? "bg-blue-50 text-blue-700 border border-blue-200"
+										: "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+								}`}
+							>
+								{item.icon}
+								<span className='font-medium'>{item.label}</span>
+							</Link>
+						</li>
+					))}
+				</ul>
 			</nav>
 
 			{/* Logout Button */}
-			<div className='p-4 border-t border-blue-200 bg-white/50 backdrop-blur-sm'>
+			<div className='px-4 py-4 border-t border-gray-200'>
 				<button
-					onClick={handleLogout}
-					className='group w-full flex items-center space-x-3 px-4 py-3 text-red-600 hover:bg-gradient-to-r hover:from-red-50 hover:to-red-100 rounded-xl transition-all duration-200 hover:shadow-md'
+					onClick={onLogout}
+					className='w-full flex items-center space-x-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg transition-colors'
 				>
-					<div className='transition-transform duration-200 group-hover:scale-110'>
-						<LogOut className='w-5 h-5' />
-					</div>
-					<span className='font-medium group-hover:text-red-700 transition-colors duration-200'>
-						Logout
-					</span>
+					<LogOut className='w-5 h-5' />
+					<span className='font-medium'>Logout</span>
 				</button>
 			</div>
 		</div>
