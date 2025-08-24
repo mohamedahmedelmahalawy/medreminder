@@ -16,13 +16,12 @@ export default function MedicalSchedule() {
       setLoading(true);
       try {
         // Safe parse for auth
-        let auth: any = {};
+        let auth: any;
         try {
           auth = JSON.parse(localStorage.getItem("auth") || "{}");
         } catch {
           console.error("Invalid auth object in localStorage");
         }
-
         if (!(auth && auth.role === "medical" && auth.code)) {
           console.error("No valid medical profile found in localStorage");
           return;
@@ -57,7 +56,6 @@ export default function MedicalSchedule() {
   }
 
   // appointments are computed in the effect above
-
   const getStatusColor = (schedule: string) => {
     const now = new Date();
     const appointmentDate = new Date(schedule);
@@ -92,17 +90,21 @@ export default function MedicalSchedule() {
 
   return (
     <div>
-      <div className="mb-6">
+      <header className="bg-white shadow-sm border-b border-gray-200 px-6 py-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-xl font-bold text-gray-900 flex items-center">
-            <Calendar className="w-5 h-5 mr-2 text-blue-600" />
-            My Appointments
-          </h3>
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900 mb-2 items-center">
+              My Appointments
+            </h1>
+            <p className="text-gray-600">
+              Stay on top of your patient schedule.
+            </p>
+            <p className="text-gray-600">
+              Total Appointments: {appointments.length}
+            </p>
+          </div>
         </div>
-        <p className="text-sm text-gray-500">
-          Total Appointments: {appointments.length}
-        </p>
-      </div>
+      </header>
 
       <div className="space-y-4">
         {appointments.map((appointment) => (

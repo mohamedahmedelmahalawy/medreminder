@@ -34,7 +34,6 @@ export async function getDoctor(code: string): Promise<Doctor | null> {
 
 export async function getPatientDoctors(phone: string): Promise<Doctor[]> {
   try {
-    // Step 1: Get patient data using phone to extract drCodes
     const patientUrl = `/patients/phone/${phone}`;
     const patientRes = await AxiosInterceptor.get(patientUrl);
     const patientData = patientRes.data;
@@ -44,20 +43,20 @@ export async function getPatientDoctors(phone: string): Promise<Doctor[]> {
       return [];
     }
 
-    const doctors: Doctor[] = [];
-
-    // Step 2: Loop through each doctor code and get doctor details
-    for (const doctorCode of patientData.drCodes) {
-      try {
-        const doctor = await getDoctor(doctorCode);
-        if (doctor) {
-          doctors.push(doctor);
+    const doctorPromises = patientData.drCodes.map(
+      async (doctorCode: string) => {
+        try {
+          return await getDoctor(doctorCode);
+        } catch (doctorError) {
+          console.error(`Error fetching doctor ${doctorCode}:`, doctorError);
+          return null;
         }
-      } catch (doctorError) {
-        console.error(`Error fetching doctor ${doctorCode}:`, doctorError);
-        // Continue with other doctors even if one fails
       }
-    }
+    );
+
+    const doctors = (await Promise.all(doctorPromises)).filter(
+      Boolean
+    ) as Doctor[];
 
     console.log("All doctors fetched:", doctors);
     return doctors;
@@ -121,52 +120,52 @@ export async function getPatientSchedule(
       return [];
     }
 
-    const schedules: PatientSchedule[] = [];
+    // Step 2: Fetch all doctor schedules in parallel
+    const schedulePromises = patientData.drCodes.map(
+      async (doctorCode: string) => {
+        try {
+          // Doctor details
+          const doctorUrl = `/doctors/${doctorCode}`;
+          const doctorRes = await AxiosInterceptor.get(doctorUrl);
+          const doctorData = doctorRes.data;
 
-    // Step 2: Loop through each doctor code
-    for (const doctorCode of patientData.drCodes) {
-      try {
-        // Step 3: Get doctor details
-        const doctorUrl = `/doctors/${doctorCode}`;
-        const doctorRes = await AxiosInterceptor.get(doctorUrl);
-        const doctorData = doctorRes.data;
+          // Patient's diagnoses for this doctor
+          const diagnosisUrl = `/doctors/${doctorCode}/patients/${auth.userDetails?.phone}/diagnosis`;
+          const diagnosisRes = await AxiosInterceptor.get(diagnosisUrl);
+          const diagnosisData = diagnosisRes.data;
 
-        // Step 4: Get patient's diagnoses for this doctor
-        const diagnosisUrl = `/doctors/${doctorCode}/patients/${auth.userDetails?.phone}/diagnosis`;
-        const diagnosisRes = await AxiosInterceptor.get(diagnosisUrl);
-        const diagnosisData = diagnosisRes.data;
+          // Extract schedule & treatment
+          const doctorSchedules =
+            diagnosisData.diagnoses?.map((diag: any) => ({
+              schedule: diag.schedule,
+              medicalTreatment: diag["medical-treatment"],
+              diagnosis: diag.diagnosis,
+            })) || [];
 
-        // Step 5: Extract schedule and medical-treatment from diagnoses
-        const doctorSchedules =
-          diagnosisData.diagnoses?.map((diag: any) => ({
-            schedule: diag.schedule,
-            medicalTreatment: diag["medical-treatment"],
-            diagnosis: diag.diagnosis,
-          })) || [];
-
-        // Create schedule object for this doctor
-        const doctorSchedule: PatientSchedule = {
-          doctorName: doctorData.name,
-          doctorProfession: doctorData.profession,
-          doctorSpecialty: doctorData.specialty,
-          doctorCode: doctorCode,
-          schedules: doctorSchedules,
-        };
-
-        schedules.push(doctorSchedule);
-      } catch (doctorError) {
-        console.error(
-          `Error fetching data for doctor ${doctorCode}:`,
-          doctorError
-        );
-        // Continue with other doctors even if one fails
+          return {
+            doctorName: doctorData.name,
+            doctorProfession: doctorData.profession,
+            doctorSpecialty: doctorData.specialty,
+            doctorCode,
+            schedules: doctorSchedules,
+          } as PatientSchedule;
+        } catch (doctorError) {
+          console.error(
+            `Error fetching data for doctor ${doctorCode}:`,
+            doctorError
+          );
+          return null; // Skip failed doctors
+        }
       }
-    }
+    );
+
+    const schedules = (await Promise.all(schedulePromises)).filter(
+      (item): item is PatientSchedule => item !== null
+    );
 
     console.log("Patient schedules:", schedules);
     return schedules;
   } catch (error) {
-    // If patient not found or endpoint missing, return empty list to avoid UI error
     if (
       typeof error === "object" &&
       error !== null &&
@@ -293,7 +292,7 @@ export async function getCode(
       return null;
     }
   } catch (error) {
-    console.error("Error in getCode:", error);
+    console.log("Error in getCode:", error);
     return null;
   }
 }
