@@ -19,6 +19,8 @@ import {
   clearAuth,
 } from "@/lib/store/Slices/Auth";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+
 
 type Option = { id: number; name: string };
 
@@ -102,10 +104,11 @@ export default function DoctorRegistration() {
         localStorage.removeItem("auth");
       }
 
-      alert(`Welcome Dr. ${created.name}! Your code is ${created.code}`);
+      toast.success(`Welcome Dr. ${created.name}! Your code is ${created.code}`);
+
       router.push("/login");
     } catch (err: any) {
-      alert(err?.message ?? "Registration failed");
+      toast.error("Registration failed")
     }
   };
 

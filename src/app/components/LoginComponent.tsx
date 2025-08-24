@@ -54,7 +54,7 @@ function LoginComponent() {
             })
           );
         }
-        alert("Login successful!");
+        	toast.success(`Login successful, Welcome Back`);
         router.push("/");
       } else if (role === "patient") {
         const patient = await dispatch(
@@ -72,11 +72,11 @@ function LoginComponent() {
             })
           );
         }
-        alert("Login successful!");
+       	toast.success(`Login successful, Welcome Back`);
         router.push("/");
       }
     } catch (err: any) {
-      alert(err?.message ?? "Login failed");
+      	toast.error(`Something Went Wrong`);
     }
   };
 

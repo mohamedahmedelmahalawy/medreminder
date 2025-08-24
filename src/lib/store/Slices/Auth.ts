@@ -259,7 +259,7 @@ const authSlice = createSlice({
       state.status = "idle";
       state.error = undefined;
       state.isLoggedIn = false;
-      	toast.success(`"You have successfully logged out. Stay healthy and see you soon!"`);
+      toast.success(`"You have successfully logged out. Stay healthy and see you soon!"`);
     },
     setUserDetails(state, action: PayloadAction<UserDetails>) {
       state.userDetails = action.payload;
