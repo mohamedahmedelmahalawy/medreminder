@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { formatDate } from "../funcs/ProfileFunc";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 export default function ProfileManage({
 	role,
@@ -596,7 +597,13 @@ export default function ProfileManage({
 																? formatDate(patient.dateOfAdmission)
 																: "N/A"}
 														</span>
-														<button className='text-blue-600 hover:text-blue-800'>
+														<button
+															className='text-blue-600 hover:text-blue-800'
+															onClick={(e) => {
+																e.stopPropagation();
+																redirect(`/patients/${patient.phone}`);
+															}}
+														>
 															View Details →
 														</button>
 													</div>
