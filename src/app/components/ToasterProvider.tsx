@@ -5,7 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 export function ToastProvider() {
   return (
     <ToastContainer
-      position="bottom-left"
+      position="bottom-right"
       autoClose={3000}
       newestOnTop
       closeOnClick
