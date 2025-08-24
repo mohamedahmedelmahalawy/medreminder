@@ -78,6 +78,25 @@ function Navbar() {
   }, [pathName]);
 
   useEffect(() => {
+    if (pathName === "/about") {
+      setActiveItem("Contact Us");
+    } else if (pathName === "/") {
+      // Check for hash in URL
+      const hash = window.location.hash;
+      if (hash === "#features") {
+        setActiveItem("Features");
+      } else if (hash === "#faq") {
+        setActiveItem("FAQ");
+      } else {
+        setActiveItem("Home");
+      }
+    } else {
+      // Reset active item when navigating to routes not in navbar
+      setActiveItem("");
+    }
+  }, [pathName]);
+
+  useEffect(() => {
     if (typeof window === "undefined") return;
     const raw = localStorage.getItem("auth");
     setAuthLS(raw ? (JSON.parse(raw) as SavedAuth) : null);
