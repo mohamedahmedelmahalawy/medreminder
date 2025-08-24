@@ -99,10 +99,10 @@ export default function about() {
                   <div>
                     <p className="font-medium text-gray-900">Support</p>
                     <a
-                      href="mailto:MedReminder@gmail.com"
+                      href="mailto:support@medreminder.com"
                       className="text-green-600 hover:text-green-700"
                     >
-                      MedReminder@gmail.com
+                      support@medreminder.com
                     </a>
                   </div>
                 </div>

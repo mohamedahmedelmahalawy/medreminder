@@ -103,7 +103,7 @@ function Navbar() {
         <Link href="/" onClick={() => setIsClicked("Home")}>
           <Image
             className="w-16 sm:w-20 md:w-24 h-auto cursor-pointer"
-            src="/Medlogo.png"
+            src="/Medlogo-notext.png"
             alt="MedReminder logo"
             width={100}
             height={90}
