@@ -88,6 +88,8 @@ export interface PatientSchedule {
     schedule: string;
     medicalTreatment: string;
     diagnosis: string;
+    prognosis?: string;
+    "medical-report"?: string;
   }>;
 }
 
@@ -140,6 +142,8 @@ export async function getPatientSchedule(
               schedule: diag.schedule,
               medicalTreatment: diag["medical-treatment"],
               diagnosis: diag.diagnosis,
+              prognosis: diag.prognosis,
+              "medical-report": diag["medical-report"],
             })) || [];
 
           return {

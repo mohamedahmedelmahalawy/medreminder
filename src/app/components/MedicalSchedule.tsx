@@ -6,6 +6,8 @@ import {
 } from "@/app/funcs/ProfileFunc";
 import { redirect } from "next/navigation";
 import React, { useEffect, useState, useMemo } from "react";
+import CalenderENInput from "@/components/CalenderENInput";
+import { DateRange } from "react-day-picker";
 
 export default function MedicalSchedule() {
   const [appointments, setAppointments] = useState<MedicalAppointment[]>([]);
@@ -13,8 +15,7 @@ export default function MedicalSchedule() {
 
   // filters
   const [search, setSearch] = useState("");
-  const [startDate, setStartDate] = useState<string>("");
-  const [endDate, setEndDate] = useState<string>("");
+  const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
 
   useEffect(() => {
     const fetchSchedule = async () => {
@@ -91,14 +92,14 @@ export default function MedicalSchedule() {
 
       const appointmentDate = new Date(appointment.schedule);
 
-      const matchesStart = startDate
-        ? appointmentDate >= new Date(startDate)
+      const matchesDateRange = dateRange
+        ? (!dateRange.from || appointmentDate >= dateRange.from) &&
+          (!dateRange.to || appointmentDate <= dateRange.to)
         : true;
-      const matchesEnd = endDate ? appointmentDate <= new Date(endDate) : true;
 
-      return matchesName && matchesStart && matchesEnd;
+      return matchesName && matchesDateRange;
     });
-  }, [appointments, search, startDate, endDate]);
+  }, [appointments, search, dateRange]);
 
   if (loading) {
     return (
@@ -144,18 +145,7 @@ export default function MedicalSchedule() {
             onChange={(e) => setSearch(e.target.value)}
             className="border border-gray-300 rounded px-3 py-2 text-sm w-64"
           />
-          <input
-            type="date"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-            className="border border-gray-300 rounded px-3 py-2 text-sm"
-          />
-          <input
-            type="date"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-            className="border border-gray-300 rounded px-3 py-2 text-sm"
-          />
+          <CalenderENInput value={dateRange} onChange={setDateRange} />
         </div>
       </header>
 
