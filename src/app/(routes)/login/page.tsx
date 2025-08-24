@@ -1,13 +1,12 @@
 "use client";
 
-import { useForm } from "react-hook-form";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
 import { setRole } from "@/lib/store/Slices/Auth";
 import LoginComponent from "@/app/components/LoginComponent";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function LoginPage() {
   const [showLogin, setShowLogin] = useState<null | "medical" | "patient">(
@@ -15,7 +14,7 @@ export default function LoginPage() {
   );
   const dispatch = useDispatch();
 
- useEffect(() => {
+  useEffect(() => {
     if (showLogin) {
       dispatch(setRole(showLogin));
     }
@@ -24,8 +23,6 @@ export default function LoginPage() {
   if (showLogin) {
     return <LoginComponent />;
   }
-  
-
 
   return (
     <div className="flex justify-center items-center bg-gradient-to-br from-blue-100 via-white to-blue-50 min-h-screen">
@@ -44,34 +41,30 @@ export default function LoginPage() {
               &quot;For the heroes in white coats and the patients they care for
               — <br />
               &quot;
-              <span className="font-bold text-white">
-                MedReminder
-              </span>{" "}
-              makes communication effortless and care stronger.&rdquo;
+              <span className="font-bold text-white">MedReminder</span> makes
+              communication effortless and care stronger.&rdquo;
             </p>
           </div>
         </div>
         {/* Right side */}
         <div className="flex flex-col flex-1 justify-center items-center bg-white p-10">
-          <h2 className="mb-8 font-extrabold text-gray-800 text-3xl">
-            Join as
-          </h2>
+          <h2 className="mb-8 font-extrabold text-gray-800 text-3xl">Login</h2>
           <button
             onClick={() => setShowLogin("medical")}
-            className="bg-gradient-to-r from-blue-700 to-blue-900 shadow-lg hover:shadow-blue-400/50 mb-5 py-4 rounded-xl w-56 font-semibold text-white text-lg text-center hover:scale-105 transition duration-300 ease-in-out transform cursor-pointer"
+            className="bg-gradient-to-r from-blue-700 to-blue-900 shadow-lg hover:shadow-blue-400/50 mb-5 py-4 rounded-xl w-56 font-semibold text-white text-lg text-center hover:scale-105 transition duration-300 ease-in-out cursor-pointer transform"
           >
             Medical Crew
           </button>
 
           <button
             onClick={() => setShowLogin("patient")}
-            className="bg-gradient-to-r from-blue-700 to-blue-900 shadow-lg hover:shadow-blue-400/50 py-4 rounded-xl w-56 font-semibold text-white text-lg text-center hover:scale-105 transition duration-300 ease-in-out transform cursor-pointer"
+            className="bg-gradient-to-r from-blue-700 to-blue-900 shadow-lg hover:shadow-blue-400/50 py-4 rounded-xl w-56 font-semibold text-white text-lg text-center hover:scale-105 transition duration-300 ease-in-out cursor-pointer transform"
           >
             Patient
           </button>
 
           <p className="mt-8 text-gray-500 text-sm text-center">
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
             <a
               href="/signup"
               className="font-semibold text-blue-700 hover:underline"
