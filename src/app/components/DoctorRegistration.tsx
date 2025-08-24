@@ -117,7 +117,8 @@ export default function DoctorRegistration() {
       {/* Left Side */}
       <div className="hidden relative md:flex md:w-4/10 text-white bg">
         <Image
-          src="/signup.jpg"
+          // src="/signup.jpg"
+          src="/deregister.jpg"
           alt="Doctor Register"
           fill
           className="object-cover"

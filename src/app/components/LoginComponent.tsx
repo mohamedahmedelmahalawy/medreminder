@@ -80,9 +80,9 @@ function LoginComponent() {
   };
 
   return (
-    <div className="flex md:flex-row flex-col min-h-screen font-sans">
+    <div className="flex md:flex-row flex-col md:mt-0 min-h-screen font-sans">
       {/* Left Section (Image, smaller width) */}
-      <div className="relative md:w-4/10">
+      <div className="hidden md:block relative md:w-4/10">
         <div
           className={`absolute inset-0 transform transition-all duration-700 ease-out ${
             imgVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"
@@ -104,7 +104,7 @@ function LoginComponent() {
       </div>
 
       {/* Right Section (Form, larger width) */}
-      <div className="flex flex-col justify-center items-center bg-white p-8 md:p-16 w-full md:w-6/10">
+      <div className="flex flex-col justify-center items-center bg-white p-8 md:p-16 w-full md:w-6/10 h-screen">
         <h1 className="mb-2 font-bold text-gray-800 text-3xl md:text-4xl">
           Sign In
         </h1>
