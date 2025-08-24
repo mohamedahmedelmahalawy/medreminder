@@ -1,13 +1,12 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { redirect, useParams } from 'next/navigation';
-
+import { useEffect, useState } from "react";
+import { redirect, useParams } from "next/navigation";
 
 import { Loader2, FileX, Trash2, PlusCircle } from "lucide-react";
+import { DNA } from "react-loader-spinner";
 
 export default function PatientPage() {
-  
   const params = useParams<{ patient: string }>();
   const [diagnoses, setDiagnoses] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -18,13 +17,13 @@ export default function PatientPage() {
     prognosis: "",
     "medical-report": "",
     "medical-treatment": "",
-    schedule: ""
-
+    schedule: "",
   });
 
-  const patient_phone = params?.patient ? decodeURIComponent(params.patient) : undefined;
+  const patient_phone = params?.patient
+    ? decodeURIComponent(params.patient)
+    : undefined;
 
- 
   let doctor_code: string | undefined = undefined;
   if (typeof window !== "undefined") {
     const urlDoctor = new URLSearchParams(window.location.search).get("doctor");
@@ -35,7 +34,7 @@ export default function PatientPage() {
       if (authData) {
         try {
           const parsed = JSON.parse(authData);
-          doctor_code = parsed.code; 
+          doctor_code = parsed.code;
         } catch (err) {
           console.error("❌ Error parsing auth from localStorage", err);
         }
@@ -78,7 +77,7 @@ export default function PatientPage() {
         prognosis: "",
         "medical-report": "",
         "medical-treatment": "",
-        schedule: ""
+        schedule: "",
       });
       setFormOpen(false);
       fetchData();
@@ -94,7 +93,10 @@ export default function PatientPage() {
       await fetch(url, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ diagnosis: diag.diagnosis, complaint: diag.complaint }),
+        body: JSON.stringify({
+          diagnosis: diag.diagnosis,
+          complaint: diag.complaint,
+        }),
       });
       fetchData();
     } catch (err) {
@@ -104,18 +106,23 @@ export default function PatientPage() {
 
   if (loading)
     return (
-      <div className="flex justify-center items-center min-h-screen bg-blue-900">
-        <Loader2 className="w-10 h-10 animate-spin text-white" />
+      <div className="flex justify-center items-center min-h-screen">
+        <DNA
+          visible={true}
+          height="200"
+          width="200"
+          ariaLabel="dna-loading"
+          wrapperStyle={{}}
+          wrapperClass="dna-wrapper"
+        />
       </div>
     );
 
   if (!diagnoses || diagnoses.detail)
     return (
-
-      <div className="flex flex-col justify-center items-center min-h-screen bg-blue-900 text-white p-6">
-        <FileX className="w-14 h-14 mb-4 text-blue-300" />
-        <p className="text-lg font-semibold">No patient data found</p>
-
+      <div className="flex flex-col justify-center items-center bg-blue-900 p-6 min-h-screen text-white">
+        <FileX className="mb-4 w-14 h-14 text-blue-300" />
+        <p className="font-semibold text-lg">No patient data found</p>
       </div>
     );
 
@@ -130,34 +137,31 @@ export default function PatientPage() {
   }
 
   return (
-
-    <div className="min-h-screen bg-gray-100 p-8">
-      <h1 className="text-4xl font-bold text-blue-900 mb-8 text-center">
+    <div className="bg-gray-100 p-8 min-h-screen">
+      <h1 className="mb-8 font-bold text-blue-900 text-4xl text-center">
         Patient: {diagnoses.patient_name || "Unknown"}
       </h1>
 
       {/*  Add Button */}
-      <div className="flex justify-center mb-6 gap-3">
+      <div className="flex justify-center gap-3 mb-6">
         <button
           onClick={() => setFormOpen(!formOpen)}
-          className="flex items-center gap-2 bg-blue-600 text-white px-5 py-2 rounded-lg shadow hover:bg-blue-950  transition-colors duration-250"
+          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-950 shadow px-5 py-2 rounded-lg text-white transition-colors duration-250"
         >
           <PlusCircle size={20} /> {formOpen ? "Cancel" : "Add Diagnosis"}
         </button>
 
-         <button
-          className="flex items-center gap-2 bg-gray-200 text-gray-700 px-5 py-2 rounded-lg shadow hover:bg-red-400 hover:text-white  transition-colors duration-250"
-          onClick={()=>redirect('/dashboard')}
+        <button
+          className="flex items-center gap-2 bg-gray-200 hover:bg-red-400 shadow px-5 py-2 rounded-lg text-gray-700 hover:text-white transition-colors duration-250"
+          onClick={() => redirect("/dashboard")}
         >
-          
-         Go To Dashboard &rarr;
+          Go To Dashboard &rarr;
         </button>
-         <button
-          className="flex items-center gap-2 bg-gray-200 text-gray-700 px-5 py-2 rounded-lg shadow hover:bg-red-400 hover:text-white  transition-colors duration-250"
-          onClick={()=>redirect('/profile')}
+        <button
+          className="flex items-center gap-2 bg-gray-200 hover:bg-red-400 shadow px-5 py-2 rounded-lg text-gray-700 hover:text-white transition-colors duration-250"
+          onClick={() => redirect("/profile")}
         >
-          
-         Go To Profile &rarr;
+          Go To Profile &rarr;
         </button>
       </div>
 
@@ -165,12 +169,12 @@ export default function PatientPage() {
       {formOpen && (
         <form
           onSubmit={handleAdd}
-          className="max-w-3xl mx-auto bg-white shadow rounded-xl p-6 mb-8 space-y-4 border border-blue-200"
+          className="space-y-4 bg-white shadow mx-auto mb-8 p-6 border border-blue-200 rounded-xl max-w-3xl"
         >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="gap-4 grid grid-cols-1 md:grid-cols-2">
             {Object.keys(newDiag).map((key) => (
               <div key={key} className="flex flex-col">
-                <label className="text-sm font-medium text-blue-900 mb-1">
+                <label className="mb-1 font-medium text-blue-900 text-sm">
                   {key.replace("medical-", "").replace("-", " ")}
                 </label>
                 <input
@@ -179,16 +183,15 @@ export default function PatientPage() {
                   onChange={(e) =>
                     setNewDiag({ ...newDiag, [key]: e.target.value })
                   }
-                  className="border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                  className="px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
                   required={key !== "prognosis"}
                 />
-
               </div>
             ))}
           </div>
           <button
             type="submit"
-            className="w-full bg-blue-900 text-white py-2 rounded-lg shadow hover:bg-blue-950 transition"
+            className="bg-blue-900 hover:bg-blue-950 shadow py-2 rounded-lg w-full text-white transition"
           >
             Save Diagnosis
           </button>
@@ -196,35 +199,50 @@ export default function PatientPage() {
       )}
 
       {/*  Diagnoses List */}
-      <div className="grid gap-6 max-w-4xl mx-auto">
+      <div className="gap-6 grid mx-auto max-w-4xl">
         {diagnosisList.length > 0 ? (
           diagnosisList.map((diag: any, i: number) => (
             <div
               key={i}
-              className="relative bg-white border border-blue-300 text-gray-800 shadow rounded-xl p-6 space-y-3"
+              className="relative space-y-3 bg-white shadow p-6 border border-blue-300 rounded-xl text-gray-800"
             >
-              <h2 className="text-2xl font-semibold text-blue-900">
+              <h2 className="font-semibold text-blue-900 text-2xl">
                 {diag.diagnosis || "N/A"}
               </h2>
-              <p><strong>Complaint:</strong> {diag.complaint || "N/A"}</p>
-              <p><strong>Prognosis:</strong> {diag.prognosis || "N/A"}</p>
-              <p><strong>Report:</strong> {diag["medical-report"] || diag.report || "N/A"}</p>
-              <p><strong>Treatment:</strong> {diag["medical-treatment"] || diag.treatment || "N/A"}</p>
-              <p><strong>Schedule:</strong> {diag.schedule ? new Date(diag.schedule).toLocaleString() : "N/A"}</p>
+              <p>
+                <strong>Complaint:</strong> {diag.complaint || "N/A"}
+              </p>
+              <p>
+                <strong>Prognosis:</strong> {diag.prognosis || "N/A"}
+              </p>
+              <p>
+                <strong>Report:</strong>{" "}
+                {diag["medical-report"] || diag.report || "N/A"}
+              </p>
+              <p>
+                <strong>Treatment:</strong>{" "}
+                {diag["medical-treatment"] || diag.treatment || "N/A"}
+              </p>
+              <p>
+                <strong>Schedule:</strong>{" "}
+                {diag.schedule
+                  ? new Date(diag.schedule).toLocaleString()
+                  : "N/A"}
+              </p>
 
               {/* Delete button */}
               <button
                 onClick={() => handleDelete(diag)}
-                className="absolute top-4 right-4 text-red-500 hover:text-red-700 transition"
+                className="top-4 right-4 absolute text-red-500 hover:text-red-700 transition"
               >
                 <Trash2 size={22} />
               </button>
             </div>
           ))
         ) : (
-          <div className="flex flex-col items-center justify-center bg-white shadow rounded-xl p-8 border border-blue-200">
-            <FileX className="w-12 h-12 text-blue-700 mb-3" />
-            <p className="text-blue-900 font-medium">No diagnoses found</p>
+          <div className="flex flex-col justify-center items-center bg-white shadow p-8 border border-blue-200 rounded-xl">
+            <FileX className="mb-3 w-12 h-12 text-blue-700" />
+            <p className="font-medium text-blue-900">No diagnoses found</p>
           </div>
         )}
       </div>
