@@ -110,7 +110,7 @@ export default function Sidebar() {
 	}, [pathname, role, router]);
 
 	return (
-		<div className='w-64 bg-white shadow-lg border-r border-gray-200 '>
+		<div className='w-full sm:w-64 bg-white shadow-lg border-r border-gray-200 pt-3'>
 			{/* Navigation Items */}
 			<nav className='flex-1 px-4 py-10'>
 				<ul className='space-y-2'>
