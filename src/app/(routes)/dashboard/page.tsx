@@ -20,6 +20,7 @@ export default function page() {
 		<>
 			{/* bg-[#000D44]/5 */}
 
+<<<<<<< HEAD
 			<PrivateRoute requiredRoles={["medical"]}>
 				<div className='mx-auto mt-10 pb-3 w-3/4 min-h-screen'>
 					<div className='mb-4 pt-10 rounded-md font-semibold text-[#000D44] text-2xl text-center'>
@@ -38,4 +39,24 @@ export default function page() {
 			</PrivateRoute>
 		</>
 	);
+=======
+      <PrivateRoute requiredRoles={["medical"]}>
+        <div className="mx-auto mt-10 pb-3 w-3/4 min-h-screen">
+          <div className="mb-4 pt-10 rounded-md font-semibold text-[#000D44] text-2xl text-center">
+            <p>All Patients</p>
+          </div>
+
+          <div className="flex flex-row justify-between align-middle">
+            <div className="w-1/4">{/* <SearchInput /> */}</div>
+
+            <div className="flex flex-row gap-5"></div>
+          </div>
+          <div className="mt-10">
+            <TableOriginUI filters={filters} />
+          </div>
+        </div>
+      </PrivateRoute>
+    </>
+  );
+>>>>>>> 97963eab81248953c6f7628b14f041f251b5859f
 }

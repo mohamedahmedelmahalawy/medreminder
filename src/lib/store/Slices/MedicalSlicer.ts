@@ -164,8 +164,9 @@ export const removePatient = createAsyncThunk<
   // Optional: you can skip this fetch if doctorCode is already the code you need
   const doc = await fetchDoctorByCode(doctorCode);
   const url = `${BASE_URL}/doctors/${encodeURIComponent(doctorCode)}/patients/${patientPhone}`;
+  const patient= await getJSON<DoctorPatient>(url);
   const maybeUpdated = await deleteJSON<Doctor>(url);
-toast.success(`"Patient has been removed from your list ✅"`);
+toast.success(`"Patient: ${patient.name} has been removed from your list ✅"`);
   if (maybeUpdated) return maybeUpdated;
 
   return await fetchDoctorByCode(doctorCode);
