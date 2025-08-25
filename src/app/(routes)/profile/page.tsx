@@ -1,4 +1,7 @@
+"use client";
+
 import MedicalProfile from "@/app/components/MedicalProfile";
+import PrivateRoute from "@/app/private-route/PrivateRoutes";
 export interface Experience {
   title: string;
   institution: string;
@@ -13,6 +16,10 @@ export interface Service {
   icon: React.ReactNode;
 }
 
-export default async function ProfilePage() {
-  return <MedicalProfile />;
+export default function ProfilePage() {
+  return (
+    <PrivateRoute requiredRoles={["medical", "patient"]}>
+      <MedicalProfile />
+    </PrivateRoute>
+  );
 }
