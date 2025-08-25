@@ -101,70 +101,65 @@ const SpecialistsSlider = () => {
   };
 
   return (
-<div className="w-full max-w-7xl mx-auto px-6 py-18">
-  {/* Header */}
-  <div className="flex justify-between items-start mb-12">
-    <div className="flex-1">
-      <div className="flex items-center gap-2 mb-4">
-        <div className="w-2 h-2 bg-green-500 rounded-full" />
-        <p className="font-semibold text-green-500 md:text-base text-xl tracking-wider">
-          OUR DOCTORS
-        </p>
-        <div className="w-2 h-2 bg-green-500 rounded-full" />
-      </div>
-      <h2 className="text-4xl font-bold text-blue-900">Meet The Specialist Team</h2>
-    </div>
-    {/* remove the old buttons from here */}
-  </div>
-
-  {/* Slider with overlaid nav */}
-  <div className="relative">
-    {/* Left button */}
-    <button
-      onClick={prevSlide}
-      aria-label="Previous"
-      className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10
-                 bg-white hover:bg-blue-700 text-blue-600 hover:text-white rounded-full p-3
-                 shadow-md transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed cursor-pointer"
-   
-    >
-      <ChevronLeft className="w-5 h-5" />
-    </button>
-
-    {/* Right button */}
-    <button
-      onClick={nextSlide}
-      aria-label="Next"
-      className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10
-                 bg-white hover:bg-blue-700 text-blue-600 hover:text-white rounded-full p-3
-                 shadow-md transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed cursor-pointer"
-    
-    >
-      <ChevronRight className="w-5 h-5" />
-    </button>
-
-    {/* Cards Container */}
-    <div className="overflow-hidden">
-      <div
-        className="flex transition-transform duration-900 ease-in-out"
-        style={{
-          transform: `translateX(-${currentIndex * (100 / cardsPerView)}%)`,
-        }}
-      >
-        {doctors.map((doctor) => (
-          <div
-            key={doctor.id}
-            className="flex-shrink-0 px-2"
-            style={{ width: `${100 / cardsPerView}%` }}
-          >
-            <DoctorCard doctor={doctor} />
+    <div className="mx-auto px-6 py-18 w-full max-w-7xl">
+      {/* Header */}
+      <div className="flex justify-between items-start mb-12">
+        <div className="flex-1">
+          <div className="flex items-center gap-2 mb-4">
+            <div className="bg-green-500 rounded-full w-2 h-2" />
+            <p className="font-semibold text-green-500 md:text-base text-xl tracking-wider">
+              OUR DOCTORS
+            </p>
+            <div className="bg-green-500 rounded-full w-2 h-2" />
           </div>
-        ))}
+          <h2 className="font-bold text-blue-900 text-4xl">
+            Meet The Specialist Team
+          </h2>
+        </div>
+        {/* remove the old buttons from here */}
+      </div>
+
+      {/* Slider with overlaid nav */}
+      <div className="relative">
+        {/* Left button */}
+        <button
+          onClick={prevSlide}
+          aria-label="Previous"
+          className="top-1/2 left-0 z-10 absolute bg-white hover:bg-blue-700 disabled:bg-gray-300 shadow-md p-3 rounded-full text-blue-600 hover:text-white transition-colors -translate-x-4 -translate-y-1/2 cursor-pointer disabled:cursor-not-allowed"
+        >
+          <ChevronLeft className="w-5 h-5" />
+        </button>
+
+        {/* Right button */}
+        <button
+          onClick={nextSlide}
+          aria-label="Next"
+          className="top-1/2 right-0 z-10 absolute bg-white hover:bg-blue-700 disabled:bg-gray-300 shadow-md p-3 rounded-full text-blue-600 hover:text-white transition-colors -translate-y-1/2 translate-x-4 cursor-pointer disabled:cursor-not-allowed"
+        >
+          <ChevronRight className="w-5 h-5" />
+        </button>
+
+        {/* Cards Container */}
+        <div className="overflow-hidden">
+          <div
+            className="flex transition-transform duration-900 ease-in-out"
+            style={{
+              transform: `translateX(-${currentIndex * (100 / cardsPerView)}%)`,
+            }}
+          >
+            {doctors.map((doctor) => (
+              <div
+                key={doctor.id}
+                className="flex-shrink-0 px-2"
+                style={{ width: `${100 / cardsPerView}%` }}
+              >
+                <DoctorCard doctor={doctor} />
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
-
   );
 };
 
