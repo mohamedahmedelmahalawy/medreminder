@@ -828,7 +828,9 @@ function RowActions({ row }: { row: Row<Item> }) {
       ).unwrap();
 
       setIsEditModalOpen(false);
-      alert("Patient updated successfully!");
+      // toast.success("Patient updated successfully!", {
+      //   position: "top-center",
+      // });
     } catch (error) {
       console.error("Failed to update patient:", error);
     }
