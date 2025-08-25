@@ -117,6 +117,7 @@ import { useForm } from "react-hook-form";
 import { DoctorPatient } from "@/lib/interfaces/DoctorPatient";
 import { DiagnosisEntry } from "@/lib/interfaces/DiagnosisEntry";
 import CalenderENInput from "./CalenderENInput";
+import { DNA } from "react-loader-spinner";
 
 // import { Row } from "react-aria-components";
 type Item = {
@@ -643,7 +644,20 @@ export default function TableOriginUI({ filters }: Props) {
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  {loading ? "Loading Patients data..." : "No Patients."}
+                  {loading ? (
+                    <div className="flex justify-center items-center">
+                      <DNA
+                        visible={true}
+                        height="50"
+                        width="50"
+                        ariaLabel="dna-loading"
+                        wrapperStyle={{}}
+                        wrapperClass="dna-wrapper"
+                      />
+                    </div>
+                  ) : (
+                    "No Patients."
+                  )}
                 </TableCell>
               </TableRow>
             )}
@@ -778,7 +792,7 @@ function RowActions({ row }: { row: Row<Item> }) {
   const [openDialog, setOpenDialog] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const { register, handleSubmit, reset } = useForm<DiagnosisEntry>();
-    const [openConfirmDelete, setOpenConfirmDelete] = useState(false); 
+  const [openConfirmDelete, setOpenConfirmDelete] = useState(false);
 
   const dispatch = useDispatch<AppDispatch>();
   const doctor = useSelector((state: RootState) => state.doctor.current);
@@ -855,10 +869,9 @@ function RowActions({ row }: { row: Row<Item> }) {
       ).unwrap();
       console.log("delete patient");
     } catch (error) {
-       toast.error("failed to delete patient");
+      toast.error("failed to delete patient");
     }
     console.log(row);
-
   };
   return (
     <>
@@ -893,7 +906,10 @@ function RowActions({ row }: { row: Row<Item> }) {
             <DropdownMenuItem className="focus:bg-amber-950 focus:text-white">
               <Link href={`/patients/${row.original.phone}`}>Show Details</Link>
             </DropdownMenuItem>
-            <AlertDialog open={openConfirmDelete} onOpenChange={setOpenConfirmDelete}>
+            <AlertDialog
+              open={openConfirmDelete}
+              onOpenChange={setOpenConfirmDelete}
+            >
               <AlertDialogTrigger asChild>
                 <DropdownMenuItem
                   className="focus:bg-red-600 focus:text-white"
@@ -919,8 +935,8 @@ function RowActions({ row }: { row: Row<Item> }) {
                     <AlertDialogTitle>Delete this patient?</AlertDialogTitle>
                     <AlertDialogDescription>
                       This action cannot be undone. This will permanently remove{" "}
-                      <strong>{row.original.name}</strong> ({row.original.phone})
-                      from your patients list.
+                      <strong>{row.original.name}</strong> ({row.original.phone}
+                      ) from your patients list.
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                 </div>

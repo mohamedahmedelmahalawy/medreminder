@@ -182,7 +182,7 @@ function Navbar() {
               href={item.path}
               key={item.label}
               onClick={() => handleNavClick(item)}
-              className={`cursor-pointer underline-offset-8 transition-all duration-200 text-xl font-semibold ${
+              className={`cursor-pointer underline-offset-8 transition-all duration-200 text-xl font-medium ${
                 activeItem === item.label
                   ? "underline decoration-2"
                   : "hover:underline"

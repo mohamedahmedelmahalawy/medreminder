@@ -40,7 +40,7 @@ const items = [
 
 export default function AskedQuestions() {
   return (
-    <div className="space-y-4 mx-auto pb-16 max-w-[1280px]" id="faq">
+    <div className="space-y-4 mx-auto pb-16 max-w-[1280px]">
       <div className="flex flex-col gap-5">
         <div className="flex justify-center items-center mb-2 text-xl">
           <div className="bg-green-400 mr-2 rounded-full w-2 h-2"></div>

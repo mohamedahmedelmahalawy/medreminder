@@ -5,13 +5,17 @@ const upscaleZyro = (url: string, w = 1200, h = 750) =>
 
 const FEATURES = [
   {
-    img: upscaleZyro ("https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=328,h=224,fit=crop/A85wWwx8xRiM9XZP/pexels-shkrabaanthony-5214954-YbNvQ8ENywcMaBXq.jpg"),
+    img: upscaleZyro(
+      "https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=328,h=224,fit=crop/A85wWwx8xRiM9XZP/pexels-shkrabaanthony-5214954-YbNvQ8ENywcMaBXq.jpg"
+    ),
     title: "Dosage Accuracy",
     text: "Ensure precise dosage delivery with our advanced verification systems to minimize administration errors.",
     alt: "Hands holding assorted medication pills",
   },
   {
-    img: upscaleZyro ("https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=328,h=224,fit=crop/A85wWwx8xRiM9XZP/pexels-n-voitkevich-8830716-m5KwqoN0ypUZgKqx.jpg"),
+    img: upscaleZyro(
+      "https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=328,h=224,fit=crop/A85wWwx8xRiM9XZP/pexels-n-voitkevich-8830716-m5KwqoN0ypUZgKqx.jpg"
+    ),
     title: "Medication Reminders",
     text: "Receive timely reminders for medical administration to ensure adherence and improve patient outcomes.",
     alt: "Vaccine vial placed on a calendar date",
@@ -21,9 +25,9 @@ const FEATURES = [
 export default function MedicationManagement() {
   return (
     <section className="bg-sky-50 py-18">
-      <div className="mx-auto px-4  max-w-screen-xl">
+      <div className="mx-auto px-4 max-w-screen-xl">
         <div className="flex flex-col gap-5 text-center">
-          <div className="flex items-center justify-center mb-2 text-xl">
+          <div className="flex justify-center items-center mb-2 text-xl">
             <div className="bg-green-400 mr-2 rounded-full w-2 h-2"></div>
             <span className="font-semibold text-green-500 md:text-base text-xl tracking-wider">
               WHY CHOOSE MED-REMINDER
