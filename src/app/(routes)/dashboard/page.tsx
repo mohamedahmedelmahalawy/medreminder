@@ -9,6 +9,7 @@ import React, { useState } from "react";
 import type { DateRange } from "react-day-picker";
 
 export default function page() {
+
   const [dateRange, setDateRange] = useState<DateRange | undefined>();
   const [filters, setFilters] = useState<Filters>({
     realTime: false,
@@ -37,4 +38,5 @@ export default function page() {
       </PrivateRoute>
     </>
   );
+
 }
