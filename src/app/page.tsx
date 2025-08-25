@@ -12,10 +12,9 @@ import MedicalNetwork from "./components/MedicalNetwork";
 export default function Home() {
   return (
     <>
-      <main>
+      <main >
         <section className="relative mx-auto px-8 py-18 md:py-24 min-h-screen overflow-hidden text-white
    flex flex-col
-    [@media(min-width:920px)]:justify-center
     [@media(min-width:1280px)]:justify-center
     [@media(min-width:1280px)]:py-0
     [@media(min-width:2440px)]:justify-start
