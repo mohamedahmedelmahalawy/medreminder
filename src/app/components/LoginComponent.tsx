@@ -81,7 +81,7 @@ function LoginComponent() {
   };
 
   return (
-    <div className="flex md:flex-row flex-col md:mt-0 min-h-screen font-sans">
+    <div className="flex md:flex-row flex-col md:mt-0 min-h-screen font-sans sm:">
       {/* Left Section (Image, smaller width) */}
       <div className="hidden md:block relative md:w-4/10">
         <div
@@ -95,12 +95,11 @@ function LoginComponent() {
             alt="Doctor and patient"
             className="w-full h-full object-cover"
           />
+            <div className="absolute inset-0 bg-blue-800/50" /> 
           <h2 className="absolute inset-0 flex justify-center items-center drop-shadow-lg px-6 font-extrabold text-white text-3xl md:text-4xl text-center leading-tight">
             Connecting Doctors and Patients Seamlessly.
           </h2>
-          <span className="bottom-6 left-1/2 absolute bg-black/50 px-4 py-2 rounded font-medium text-white text-sm -translate-x-1/2">
-            Your trusted platform
-          </span>
+
         </div>
       </div>
 

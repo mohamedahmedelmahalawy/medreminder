@@ -41,7 +41,7 @@ export default function RegisterPage() {
             className="object-cover"
             priority
           />
-          <div className="absolute inset-0 flex justify-center items-center bg-blue-800/50 p-6">
+          <div className="absolute inset-0 flex justify-center items-center bg-blue-800/70 p-6">
             <p className="font-semibold text-white text-xl md:text-2xl text-center leading-relaxed">
               &quot;For the heroes in white coats and the patients they care for
               — <br />

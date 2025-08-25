@@ -118,20 +118,18 @@ export default function DoctorRegistration() {
   return (
     <div className="flex md:flex-row flex-col min-h-screen">
       {/* Left Side */}
-      <div className="hidden relative md:flex md:w-4/10 text-white bg">
+      <div className="relative hidden md:block basis-2/5 text-white">
         <Image
-          // src="/signup.jpg"
-          src="/deregister.jpg"
+          src="/signup.jpg"
           alt="Doctor Register"
           fill
-          className="object-cover"
           priority
+          className="object-cover [object-position:20%_35%]"
         />
-        <div className="absolute inset-0 flex flex-col justify-center items-center p-6 text-center">
-          <h2 className="absolute inset-0 flex justify-center items-center drop-shadow-lg px-6 font-extrabold text-white text-3xl md:text-4xl text-center leading-tight">
-            Helping You Reach, Treat, <br /> and Inspire Your Patients
-          </h2>
-        </div>
+        <div className="absolute inset-0 bg-black/30" />
+        <h2 className="absolute top-6 left-6 right-6 mt-24 drop-shadow-lg px-6 font-bold text-white text-3xl md:text-4xl leading-tight">
+          Helping You Reach, Treat, <br /> and Inspire Your Patients
+        </h2>
       </div>
 
       {/* Right Side */}
