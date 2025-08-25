@@ -5,11 +5,23 @@ import { redirect, useParams } from "next/navigation";
 
 import { Loader2, FileX, Trash2, PlusCircle } from "lucide-react";
 import { DNA } from "react-loader-spinner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 export default function PatientPage() {
   const params = useParams<{ patient: string }>();
   const [diagnoses, setDiagnoses] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [pendingDelete, setPendingDelete] = useState<any | null>(null);
   const [formOpen, setFormOpen] = useState(false);
   const [newDiag, setNewDiag] = useState({
     diagnosis: "",
@@ -232,7 +244,10 @@ export default function PatientPage() {
 
               {/* Delete button */}
               <button
-                onClick={() => handleDelete(diag)}
+                onClick={() => {
+                  setPendingDelete(diag);
+                  setConfirmOpen(true);
+                }}
                 className="top-4 right-4 absolute text-red-500 hover:text-red-700 transition"
               >
                 <Trash2 size={22} />
@@ -246,6 +261,46 @@ export default function PatientPage() {
           </div>
         )}
       </div>
+      <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+  <AlertDialogContent>
+    <AlertDialogHeader>
+      <AlertDialogTitle>Delete this diagnosis?</AlertDialogTitle>
+      <AlertDialogDescription>
+        This action cannot be undone. This will permanently remove the diagnosis
+        <strong className="mx-1">
+          {pendingDelete?.diagnosis ?? "(unknown)"}
+        </strong>
+        {pendingDelete?.complaint ? (
+          <> for complaint "<em>{pendingDelete.complaint}</em>".</>
+        ) : (
+          "."
+        )}
+      </AlertDialogDescription>
+    </AlertDialogHeader>
+
+    <AlertDialogFooter>
+      <AlertDialogCancel
+        onClick={() => {
+          setPendingDelete(null);
+        }}
+      >
+        Cancel
+      </AlertDialogCancel>
+      <AlertDialogAction
+        onClick={async () => {
+          if (pendingDelete) {
+            await handleDelete(pendingDelete);
+          }
+          setPendingDelete(null);
+          setConfirmOpen(false);
+        }}
+        className="bg-red-600 hover:bg-red-700"
+      >
+        Delete
+      </AlertDialogAction>
+    </AlertDialogFooter>
+  </AlertDialogContent>
+</AlertDialog>
     </div>
   );
 }
