@@ -32,15 +32,15 @@ export default function IntroStats() {
               providers and patients alike.
             </p>
 
-            <div className="gap-6 sm:gap-10 grid grid-cols-1 sm:grid-cols-2 mx-auto mt-10 w-full md:max-w-none max-w-md">
-              <div className="sm:text-left text-left">
+            <div className="gap-6 sm:gap-10 grid grid-cols-1 sm:grid-cols-2 mx-auto mt-10 w-full md:max-w-none max-w-md ">
+              <div className="text-center lg:text-left">
                 <div className="font-semibold tabular-nums text-[#0021b4] text-4xl sm:text-5xl">
                   100%
                 </div>
                 <div className="mt-2 text-[#000D44]">Proven Results</div>
               </div>
 
-              <div className="sm:text-left text-center">
+              <div className="text-center lg:text-left">
                 <div className="font-semibold tabular-nums text-[#0021b4] text-4xl sm:text-5xl">
                   24/7
                 </div>
