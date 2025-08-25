@@ -106,7 +106,7 @@ export default function PatientPage() {
 
   if (loading)
     return (
-      <div className="flex justify-center items-center min-h-screen">
+      <div className="flex justify-center items-center bg-[#f3f4f6] h-screen">
         <DNA
           visible={true}
           height="200"

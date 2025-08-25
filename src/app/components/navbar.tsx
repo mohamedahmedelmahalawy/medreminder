@@ -78,6 +78,25 @@ function Navbar() {
   }, [pathName]);
 
   useEffect(() => {
+    if (pathName === "/about") {
+      setActiveItem("Contact Us");
+    } else if (pathName === "/") {
+      // Check for hash in URL
+      const hash = window.location.hash;
+      if (hash === "#features") {
+        setActiveItem("Features");
+      } else if (hash === "#faq") {
+        setActiveItem("FAQ");
+      } else {
+        setActiveItem("Home");
+      }
+    } else {
+      // Reset active item when navigating to routes not in navbar
+      setActiveItem("");
+    }
+  }, [pathName]);
+
+  useEffect(() => {
     if (typeof window === "undefined") return;
     const raw = localStorage.getItem("auth");
     setAuthLS(raw ? (JSON.parse(raw) as SavedAuth) : null);
@@ -163,7 +182,7 @@ function Navbar() {
               href={item.path}
               key={item.label}
               onClick={() => handleNavClick(item)}
-              className={`cursor-pointer underline-offset-8 transition-all duration-200 text-xl font-semibold ${
+              className={`cursor-pointer underline-offset-8 transition-all duration-200 text-xl font-medium ${
                 activeItem === item.label
                   ? "underline decoration-2"
                   : "hover:underline"
