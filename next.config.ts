@@ -3,7 +3,6 @@ import type { NextConfig } from "next";
 const isCI = process.env.CI === "true" || process.env.VERCEL === "1";
 
 const nextConfig: NextConfig = {
-  //  Don’t fail next build on ESLint errors in CI/Vercel
   eslint: {
     ignoreDuringBuilds: isCI,
   },
