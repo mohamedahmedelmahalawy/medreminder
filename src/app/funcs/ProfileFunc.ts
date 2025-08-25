@@ -21,6 +21,34 @@ export async function getProfile(
   }
 }
 
+export async function updatePatient(
+  auth: DoctorPatient,
+  data: DoctorPatient
+): Promise<DoctorPatient | null> {
+  try {
+    const url = `/patients/phone/${auth.userDetails?.phone}`;
+    const res = await AxiosInterceptor.put(url, data);
+    return res.data;
+  } catch (error) {
+    console.error("Error updating patient:", error);
+    return null;
+  }
+}
+
+export async function updateDoctor(
+  auth: DoctorPatient,
+  data: DoctorPatient
+): Promise<DoctorPatient | null> {
+  try {
+    const url = `/doctors/${auth.code}`;
+    const res = await AxiosInterceptor.put(url, data);
+    return res.data;
+  } catch (error) {
+    console.error("Error fetching profile:", error);
+    return null;
+  }
+}
+
 export async function getDoctor(code: string): Promise<Doctor | null> {
   try {
     let url = `/doctors/${code}`;
