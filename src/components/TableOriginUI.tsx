@@ -1010,7 +1010,7 @@ function RowActions({ row }: { row: Row<Item> }) {
               <div className="*:not-first:mt-2">
                 <Label>Schedule</Label>
 
-                <Input {...register("schedule")} type="date" required />
+                <Input {...register("schedule")} type="datetime-local" required />
               </div>
             </div>
             <Button type="submit" className="rounded-2xl w-full">

@@ -20,6 +20,12 @@ export default function page() {
     <>
       {/* bg-[#000D44]/5 */}
 
+      <div className="mx-auto mt-10 pb-3 w-3/4 min-h-screen">
+        <div className="mb-4 pt-10 rounded-md font-semibold text-[#000D44] text-2xl text-center">
+          <p>All Patients</p>
+        </div>
+
+
       <PrivateRoute requiredRole={["medical"]}>
         <div className="mx-auto mt-10 pb-3 w-3/4 min-h-screen">
           <div className="mb-4 p-4 rounded-md font-semibold text-[#000D44] text-2xl text-center">

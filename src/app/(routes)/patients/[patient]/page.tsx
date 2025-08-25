@@ -147,11 +147,13 @@ export default function PatientPage() {
 		diagnosisList = [diagnoses.diagnosis];
 	}
 
-	return (
-		<div className='bg-gray-100 p-8 min-h-screen'>
-			<h1 className='mb-8 font-bold text-blue-900 text-4xl text-center'>
-				Patient: {diagnoses.patient_name || "Unknown"}
-			</h1>
+
+  return (
+    <div className="bg-gray-100 p-8 min-h-screen pt-24">
+      <h2 className="mb-8 font-bold text-blue-900 text-4xl text-center">
+        <span className="font-semibold text-green-500 text-3xl">Patient:</span> {diagnoses.patient_name || "Unknown"}
+      </h2>
+
 
 			{/*  Add Button */}
 			<div className='flex justify-center gap-3 mb-6'>
@@ -207,98 +209,99 @@ export default function PatientPage() {
 				</form>
 			)}
 
-			{/*  Diagnoses List */}
-			<div className='gap-6 grid mx-auto max-w-4xl'>
-				{diagnosisList.length > 0 ? (
-					diagnosisList.map((diag: any, i: number) => (
-						<div
-							key={i}
-							className='relative space-y-3 bg-white shadow p-6 border border-blue-300 rounded-xl text-gray-800'
-						>
-							<h2 className='font-semibold text-blue-900 text-2xl'>
-								{diag.diagnosis || "N/A"}
-							</h2>
-							<p>
-								<strong>Complaint:</strong> {diag.complaint || "N/A"}
-							</p>
-							<p>
-								<strong>Prognosis:</strong> {diag.prognosis || "N/A"}
-							</p>
-							<p>
-								<strong>Report:</strong>{" "}
-								{diag["medical-report"] || diag.report || "N/A"}
-							</p>
-							<p>
-								<strong>Treatment:</strong>{" "}
-								{diag["medical-treatment"] || diag.treatment || "N/A"}
-							</p>
-							<p>
-								<strong>Schedule:</strong>{" "}
-								{diag.schedule ? new Date(diag.schedule).toLocaleString() : "N/A"}
-							</p>
 
-							{/* Delete button */}
-							<button
-								onClick={() => {
-									setPendingDelete(diag);
-									setConfirmOpen(true);
-								}}
-								className='top-4 right-4 absolute text-red-500 hover:text-red-700 transition'
-							>
-								<Trash2 size={22} />
-							</button>
-						</div>
-					))
-				) : (
-					<div className='flex flex-col justify-center items-center bg-white shadow p-8 border border-blue-200 rounded-xl'>
-						<FileX className='mb-3 w-12 h-12 text-blue-700' />
-						<p className='font-medium text-blue-900'>No diagnoses found</p>
-					</div>
-				)}
-			</div>
-			<AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
-				<AlertDialogContent>
-					<AlertDialogHeader>
-						<AlertDialogTitle>Delete this diagnosis?</AlertDialogTitle>
-						<AlertDialogDescription>
-							This action cannot be undone. This will permanently remove the diagnosis
-							<strong className='mx-1'>
-								{pendingDelete?.diagnosis ?? "(unknown)"}
-							</strong>
-							{pendingDelete?.complaint ? (
-								<>
-									{" "}
-									for complaint "<em>{pendingDelete.complaint}</em>".
-								</>
-							) : (
-								"."
-							)}
-						</AlertDialogDescription>
-					</AlertDialogHeader>
+      {/*  Diagnoses List */}
+      <div className="gap-6 grid mx-auto max-w-4xl">
+        {diagnosisList.length > 0 ? (
+          diagnosisList.map((diag: any, i: number) => (
+            <div
+              key={i}
+              className="relative space-y-3 bg-white shadow p-6 border border-blue-300 rounded-xl text-gray-800"
+            >
+              <h2 className="font-semibold text-blue-900 text-2xl">
+                {diag.diagnosis || "N/A"}
+              </h2>
+              <p>
+                <strong>Complaint:</strong> {diag.complaint || "N/A"}
+              </p>
+              <p>
+                <strong>Prognosis:</strong> {diag.prognosis || "N/A"}
+              </p>
+              <p>
+                <strong>Report:</strong>{" "}
+                {diag["medical-report"] ?? diag.medical_report ?? diag.medicalReport ?? diag.report ?? "N/A"}
+              </p>
+              <p>
+                <strong>Treatment:</strong>{" "}
+                {diag["medical-treatment"] ?? diag.medical_treatment ?? diag.medicalTreatment ?? diag.treatment ?? "N/A"}
+              </p>
+              <p>
+                <strong>Schedule:</strong>{" "}
+                {diag.schedule
+                  ? new Date(diag.schedule).toLocaleString()
+                  : "N/A"}
+              </p>
 
-					<AlertDialogFooter>
-						<AlertDialogCancel
-							onClick={() => {
-								setPendingDelete(null);
-							}}
-						>
-							Cancel
-						</AlertDialogCancel>
-						<AlertDialogAction
-							onClick={async () => {
-								if (pendingDelete) {
-									await handleDelete(pendingDelete);
-								}
-								setPendingDelete(null);
-								setConfirmOpen(false);
-							}}
-							className='bg-red-600 hover:bg-red-700'
-						>
-							Delete
-						</AlertDialogAction>
-					</AlertDialogFooter>
-				</AlertDialogContent>
-			</AlertDialog>
-		</div>
-	);
+              {/* Delete button */}
+              <button
+                onClick={() => {
+                  setPendingDelete(diag);
+                  setConfirmOpen(true);
+                }}
+                className="top-4 right-4 absolute text-red-500 hover:text-red-700 transition"
+              >
+                <Trash2 size={22} />
+              </button>
+            </div>
+          ))
+        ) : (
+          <div className="flex flex-col justify-center items-center bg-white shadow p-8 border border-blue-200 rounded-xl">
+            <FileX className="mb-3 w-12 h-12 text-blue-700" />
+            <p className="font-medium text-blue-900">No diagnoses found</p>
+          </div>
+        )}
+      </div>
+      <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete this diagnosis?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently remove the diagnosis
+              <strong className="mx-1">
+                {pendingDelete?.diagnosis ?? "(unknown)"}
+              </strong>
+              {pendingDelete?.complaint ? (
+                <> for complaint "<em>{pendingDelete.complaint}</em>".</>
+              ) : (
+                "."
+              )}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+
+          <AlertDialogFooter>
+            <AlertDialogCancel
+              onClick={() => {
+                setPendingDelete(null);
+              }}
+            >
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={async () => {
+                if (pendingDelete) {
+                  await handleDelete(pendingDelete);
+                }
+                setPendingDelete(null);
+                setConfirmOpen(false);
+              }}
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
+  );
+
 }
