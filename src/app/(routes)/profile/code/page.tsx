@@ -1,7 +1,7 @@
 "use client";
 
 import { getCode, getDoctor, getPatientDoctors } from "@/app/funcs/ProfileFunc";
-import { Bell, Search, Settings, User, UserPlus } from "lucide-react";
+import { User, UserPlus } from "lucide-react";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { Doctor } from "@/lib/interfaces/Doctor";
@@ -61,6 +61,23 @@ export default function CodePages() {
             hospital: doctorData.city,
             code: doctorCode,
           });
+
+          // Add the new doctor to the myDoctors list immediately
+          const newDoctor: Doctor = {
+            name: doctorData.name,
+            specialty: doctorData.specialty,
+            city: doctorData.city,
+            code: doctorCode,
+            profession: doctorData.profession || "Doctor",
+            country: doctorData.country || "Unknown",
+            phone: doctorData.phone || "",
+            email: doctorData.email || "",
+            password: doctorData.password || "",
+            patient: doctorData.patient || [],
+            id: doctorData.id || 0,
+          };
+
+          setMyDoctors((prevDoctors) => [...prevDoctors, newDoctor]);
         } else {
           setConnectionStatus("error");
         }
