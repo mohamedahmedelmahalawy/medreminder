@@ -4,15 +4,15 @@ export default function IntroStats() {
     <section aria-labelledby="intro-stats" className="bg-white py-4">
       <div className="mx-auto px-4 py-18 max-w-screen-xl">
         <div className="mb-6 text-xl">
-          <div className="flex items-center justify-center lg:justify-start mb-2 text-xl">
+          <div className="flex justify-center lg:justify-start items-center mb-2 text-xl">
             <div className="bg-green-400 mr-2 rounded-full w-2 h-2" />
             <span className="font-semibold text-green-500 md:text-base text-xl tracking-wider">
-              WHAT'S OUR SOLUTION?
+              WHAT&apos;S OUR SOLUTION?
             </span>
             <div className="bg-green-400 ml-2 rounded-full w-2 h-2" />
           </div>
         </div>
-        
+
         <div className="items-start gap-x-16 gap-y-10 grid grid-cols-1 lg:grid-cols-2">
           <div>
             <h2
@@ -32,15 +32,15 @@ export default function IntroStats() {
               providers and patients alike.
             </p>
 
-            <div className="gap-6 sm:gap-10 grid grid-cols-1 sm:grid-cols-2 mx-auto mt-10 w-full md:max-w-none max-w-md ">
-              <div className="text-center lg:text-left">
+            <div className="gap-6 sm:gap-10 grid grid-cols-1 sm:grid-cols-2 mx-auto mt-10 w-full md:max-w-none max-w-md">
+              <div className="lg:text-left text-center">
                 <div className="font-semibold tabular-nums text-[#0021b4] text-4xl sm:text-5xl">
                   100%
                 </div>
                 <div className="mt-2 text-[#000D44]">Proven Results</div>
               </div>
 
-              <div className="text-center lg:text-left">
+              <div className="lg:text-left text-center">
                 <div className="font-semibold tabular-nums text-[#0021b4] text-4xl sm:text-5xl">
                   24/7
                 </div>
