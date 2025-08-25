@@ -149,10 +149,10 @@ export default function PatientPage() {
   }
 
   return (
-    <div className="bg-gray-100 p-8 min-h-screen">
-      <h1 className="mb-8 font-bold text-blue-900 text-4xl text-center">
-        Patient: {diagnoses.patient_name || "Unknown"}
-      </h1>
+    <div className="bg-gray-100 p-8 min-h-screen pt-24">
+      <h2 className="mb-8 font-bold text-blue-900 text-4xl text-center">
+        <span className="font-semibold text-green-500 text-3xl">Patient:</span> {diagnoses.patient_name || "Unknown"}
+      </h2>
 
       {/*  Add Button */}
       <div className="flex justify-center gap-3 mb-6">
@@ -229,11 +229,11 @@ export default function PatientPage() {
               </p>
               <p>
                 <strong>Report:</strong>{" "}
-                {diag["medical-report"] || diag.report || "N/A"}
+                {diag["medical-report"] ?? diag.medical_report ?? diag.medicalReport ?? diag.report ?? "N/A"}
               </p>
               <p>
                 <strong>Treatment:</strong>{" "}
-                {diag["medical-treatment"] || diag.treatment || "N/A"}
+                {diag["medical-treatment"] ?? diag.medical_treatment ?? diag.medicalTreatment ?? diag.treatment ?? "N/A"}
               </p>
               <p>
                 <strong>Schedule:</strong>{" "}
@@ -262,45 +262,45 @@ export default function PatientPage() {
         )}
       </div>
       <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
-  <AlertDialogContent>
-    <AlertDialogHeader>
-      <AlertDialogTitle>Delete this diagnosis?</AlertDialogTitle>
-      <AlertDialogDescription>
-        This action cannot be undone. This will permanently remove the diagnosis
-        <strong className="mx-1">
-          {pendingDelete?.diagnosis ?? "(unknown)"}
-        </strong>
-        {pendingDelete?.complaint ? (
-          <> for complaint "<em>{pendingDelete.complaint}</em>".</>
-        ) : (
-          "."
-        )}
-      </AlertDialogDescription>
-    </AlertDialogHeader>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete this diagnosis?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently remove the diagnosis
+              <strong className="mx-1">
+                {pendingDelete?.diagnosis ?? "(unknown)"}
+              </strong>
+              {pendingDelete?.complaint ? (
+                <> for complaint "<em>{pendingDelete.complaint}</em>".</>
+              ) : (
+                "."
+              )}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
 
-    <AlertDialogFooter>
-      <AlertDialogCancel
-        onClick={() => {
-          setPendingDelete(null);
-        }}
-      >
-        Cancel
-      </AlertDialogCancel>
-      <AlertDialogAction
-        onClick={async () => {
-          if (pendingDelete) {
-            await handleDelete(pendingDelete);
-          }
-          setPendingDelete(null);
-          setConfirmOpen(false);
-        }}
-        className="bg-red-600 hover:bg-red-700"
-      >
-        Delete
-      </AlertDialogAction>
-    </AlertDialogFooter>
-  </AlertDialogContent>
-</AlertDialog>
+          <AlertDialogFooter>
+            <AlertDialogCancel
+              onClick={() => {
+                setPendingDelete(null);
+              }}
+            >
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={async () => {
+                if (pendingDelete) {
+                  await handleDelete(pendingDelete);
+                }
+                setPendingDelete(null);
+                setConfirmOpen(false);
+              }}
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
