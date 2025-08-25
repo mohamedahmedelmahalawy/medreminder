@@ -4,40 +4,47 @@
 import { useState, useEffect } from "react";
 import { Download, Edit, FileText } from "lucide-react";
 import { getPatients, getProfile } from "@/app/funcs/ProfileFunc";
-import type { Service } from "../(routes)/profile/page";
 import { DoctorPatient } from "@/lib/interfaces/DoctorPatient";
 import ProfileManage from "./ProfileManage";
 import { downloadPatientReport } from "@/app/funcs/PatientReportUtils";
 import { jsPDF } from "jspdf";
 import { DNA } from "react-loader-spinner";
+import EditDoctor from "./EditDoctor";
+import EditPatient from "./EditPatient";
 
-export default function MedicalProfile({ services }: { services: Service[] }) {
+export default function MedicalProfile() {
 	const [profile, setProfile] = useState<DoctorPatient | null>(null);
 	const [doctorsPatient, setDoctorsPatient] = useState<DoctorPatient[] | null>(
 		null
 	);
 	const [role, setRole] = useState<string>("");
+	const [auth, setAuth] = useState<DoctorPatient | null>(null);
 	const displayPatients =
 		role === "medical" && doctorsPatient ? doctorsPatient : [];
 
-	useEffect(() => {
-		const fetchProfile = async () => {
-			const auth = JSON.parse(localStorage.getItem("auth") || "{}");
-			try {
-				const profileRole = auth.role;
-				setRole(profileRole);
-				const fetchedProfile = await getProfile(auth);
-				setProfile(fetchedProfile);
+	const fetchProfile = async () => {
+		const auth = JSON.parse(localStorage.getItem("auth") || "{}");
+		setAuth(auth);
+		try {
+			const profileRole = auth.role;
+			setRole(profileRole);
+			const fetchedProfile = await getProfile(auth);
+			setProfile(fetchedProfile);
 
-				if (profileRole === "medical") {
-					const DoctorsPatient = await getPatients(auth);
-					setDoctorsPatient(DoctorsPatient);
-				}
-			} catch (error) {
-				console.error("Failed to fetch profile:", error);
+			if (profileRole === "medical") {
+				const DoctorsPatient = await getPatients(auth);
+				setDoctorsPatient(DoctorsPatient);
 			}
-		};
+		} catch (error) {
+			console.error("Failed to fetch profile:", error);
+		}
+	};
 
+	const handleProfileUpdate = () => {
+		fetchProfile();
+	};
+
+	useEffect(() => {
 		fetchProfile();
 	}, []);
 
@@ -212,10 +219,14 @@ export default function MedicalProfile({ services }: { services: Service[] }) {
 							</div>
 						</div>
 						<div className='flex space-x-3'>
-							<button className='flex items-center space-x-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors'>
-								<Edit className='w-4 h-4' />
-								<span>Edit Profile</span>
-							</button>
+							{role === "medical" && (
+								<EditDoctor auth={auth} onProfileUpdate={handleProfileUpdate} />
+							)}
+
+							{role === "patient" && (
+								<EditPatient auth={auth} onProfileUpdate={handleProfileUpdate} />
+							)}
+
 							{role === "medical" ? (
 								<button
 									className='flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors'
@@ -245,7 +256,6 @@ export default function MedicalProfile({ services }: { services: Service[] }) {
 				role={role}
 				profile={profile}
 				displayPatients={displayPatients}
-				services={services}
 			/>
 		</div>
 	);

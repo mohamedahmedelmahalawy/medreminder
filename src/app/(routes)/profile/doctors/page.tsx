@@ -18,6 +18,7 @@ import {
   getCode,
   getPatientDoctors,
 } from "@/app/funcs/ProfileFunc";
+import { toast } from "react-toastify";
 
 interface Doctor {
   id: string;
@@ -73,15 +74,20 @@ const DoctorCard: React.FC<{ doctor: Doctor }> = ({ doctor }) => {
 
       if (result) {
         setConnectionStatus("connected");
-        alert("Successfully connected with doctor!");
+        toast.success("Successfully connected with doctor!", {
+          position: "top-center",
+        });
       } else {
-        alert(
-          "You are not found in this doctor's patient list. Please contact the doctor to be added to their list first."
+        toast.error(
+          "You are not found in this doctor's patient list. Please contact the doctor to be added to their list first.",
+          { position: "top-center" }
         );
       }
     } catch (error) {
-      console.error("Error connecting with doctor:", error);
-      alert("Failed to connect with doctor. Please try again.");
+      console.log("Error connecting with doctor:", error);
+      toast.error("Failed to connect with doctor. Please try again.", {
+        position: "top-center",
+      });
     }
   };
 
@@ -349,7 +355,7 @@ export default function DoctorsPage() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      <main className="max-w-7xl py-6 sm:py-8">
         {/* Search Section */}
         <div className="mb-6 sm:mb-8">
           <div className="flex justify-center">
