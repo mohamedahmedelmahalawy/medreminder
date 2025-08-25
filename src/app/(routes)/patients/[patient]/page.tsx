@@ -109,6 +109,7 @@ export default function PatientPage() {
 				headers: { "Content-Type": "application/json" },
 			});
 			fetchData();
+      
 		} catch (err) {
 			console.error("❌ Error deleting diagnosis:", err);
 		}
