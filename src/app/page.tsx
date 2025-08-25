@@ -8,7 +8,6 @@ import FeaturesSection from "./components/FeaturesSection";
 import MedicalSlider from "./components/MedicalSlider";
 import SpecialistsSlider from "./components/SpecialistsSlider";
 import MedicalNetwork from "./components/MedicalNetwork";
-import { Link } from "lucide-react";
 
 export default function Home() {
   return (
@@ -56,7 +55,7 @@ export default function Home() {
         <MedicationManagement />
         <MedicalSlider />
         <FeaturesSection />
-        <section className="mx-auto py-18 max-w-[1280px]">
+        <section className="mx-auto py-18 pt-26 max-w-[1280px]" id="faq">
           <AskedQuestions />
         </section>
       </main>
