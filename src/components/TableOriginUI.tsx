@@ -856,11 +856,11 @@ function RowActions({ row }: { row: Row<Item> }) {
       ).unwrap();
 
       setOpenDialog(false);
-      alert("Diagnosis added successfully!");
+      toast.success("Diagnosis added successfully!");
       reset();
     } catch (error) {
       console.error("failed to add diagnosis", error);
-      alert("Failed to add diagnosis. Please check your input.");
+      toast.error("Failed to add diagnosis. Please check your input.");
     }
   };
 
@@ -982,7 +982,7 @@ function RowActions({ row }: { row: Row<Item> }) {
           <form onSubmit={handleSubmit(handleDiagnosis)} className="space-y-5">
             <div className="space-y-4">
               <div className="*:not-first:mt-2">
-                <Label>Diagnostic Name</Label>
+                <Label>Diagnosis</Label>
                 <Input {...register("diagnosis")} type="text" required />
               </div>
               <div className="*:not-first:mt-2">
@@ -1000,7 +1000,7 @@ function RowActions({ row }: { row: Row<Item> }) {
                 <Input {...register("medical-report")} type="text" required />
               </div>
               <div className="*:not-first:mt-2">
-                <Label>Prognosis Treatment</Label>
+                <Label>Prognosis</Label>
 
                 <Input {...register("prognosis")} type="text" required />
               </div>
@@ -1012,7 +1012,7 @@ function RowActions({ row }: { row: Row<Item> }) {
               <div className="*:not-first:mt-2">
                 <Label>Schedule</Label>
 
-                <Input {...register("schedule")} type="date" required />
+                <Input {...register("schedule")} type="datetime-local" required />
               </div>
             </div>
             <Button type="submit" className="rounded-2xl w-full">
