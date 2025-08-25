@@ -110,9 +110,9 @@ export default function Sidebar() {
 	}, [pathname, role, router]);
 
 	return (
-		<div className='w-64 bg-white shadow-lg border-r border-gray-200 flex flex-col'>
+		<div className='w-64 bg-white shadow-lg border-r border-gray-200 '>
 			{/* Navigation Items */}
-			<nav className='flex-1 px-4 py-6'>
+			<nav className='flex-1 px-4 py-10'>
 				<ul className='space-y-2'>
 					{sidebarItems.map((item) => (
 						<li key={item.id}>
@@ -130,18 +130,17 @@ export default function Sidebar() {
 						</li>
 					))}
 				</ul>
+				{/* Logout Button */}
+				<div className='mt-4'>
+					<button
+						onClick={onLogout}
+						className='w-full flex items-center space-x-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer'
+					>
+						<LogOut className='w-5 h-5' />
+						<span className='font-medium'>Logout</span>
+					</button>
+				</div>
 			</nav>
-
-			{/* Logout Button */}
-			<div className='px-4 py-4 border-t border-gray-200'>
-				<button
-					onClick={onLogout}
-					className='w-full flex items-center space-x-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg transition-colors'
-				>
-					<LogOut className='w-5 h-5' />
-					<span className='font-medium'>Logout</span>
-				</button>
-			</div>
 		</div>
 	);
 }
