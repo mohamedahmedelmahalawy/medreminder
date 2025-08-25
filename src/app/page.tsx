@@ -12,10 +12,8 @@ import MedicalNetwork from "./components/MedicalNetwork";
 export default function Home() {
   return (
     <>
-
       <main>
         <section className="relative flex flex-col [@media(min-width:1280px)]:justify-center [@media(min-width:2440px)]:justify-start [@media(min-width:920px)]:justify-center mx-auto px-8 py-18 [@media(min-width:1280px)]:py-0 [@media(min-width:2440px)]:py-9 md:py-24 min-h-screen overflow-hidden text-white">
-
           <BackGroundVideo />
           <div className="flex flex-col items-center gap-4 mb-4 text-center">
             <h1

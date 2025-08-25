@@ -19,7 +19,9 @@ export default function page() {
   return (
     <>
       {/* bg-[#000D44]/5 */}
+
       <PrivateRoute requiredRoles={["medical"]}>
+
         <div className="mx-auto mt-10 pb-3 w-3/4 min-h-screen">
           <div className="mb-4 pt-10 rounded-md font-semibold text-[#000D44] text-2xl text-center">
             <p>All Patients</p>
